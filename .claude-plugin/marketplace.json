@@ -1,0 +1,21 @@
+{
+  "name": "ceej-skills",
+  "owner": {
+    "name": "ceej",
+    "url": "https://blog.ceejbot.com"
+  },
+  "metadata": {
+    "description": "Personal workflow skills for Rust projects",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "ceej-skills",
+      "source": {
+        "source": "github",
+        "repo": "ceejbot/ceej-skills"
+      },
+      "description": "Trivia bootstrap, session retros, Rust review, design-doc skills"
+    }
+  ]
+}
