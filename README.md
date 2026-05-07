@@ -8,6 +8,7 @@ A small Claude Code plugin holding the workflow skills I re-use on Rust personal
 - **`session-retro`** — End-of-session reflection. Recalls prior retros, captures what worked and what didn't, and stores each lesson in trivia under the project tag.
 - **`rust-project-review`** — Holistic code review pass with a general (architecture, README, simplicity, parse-don't-validate) section and a Rust-specific (types, errors, clippy, clones, idioms) section.
 - **`writing-design-docs`** — Problem-statement design doc helper distilled from [my blog post on design docs](https://blog.ceejbot.com/posts/design-docs/). Includes a fillable template.
+- **`writing-commit-messages`** — Helps draft a commit / PR message worth living in `main` for years. Inverted-pyramid structure, hard-wrap discipline, real-world anti-patterns. Distilled from ceej's "Writing great commit messages" doc.
 
 ## Install
 
@@ -34,6 +35,7 @@ skills/
   writing-design-docs/
     SKILL.md
     template.md
+  writing-commit-messages/SKILL.md
 ```
 
 ## Conventions

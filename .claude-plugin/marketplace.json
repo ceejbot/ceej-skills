@@ -15,7 +15,7 @@
         "source": "github",
         "repo": "ceejbot/ceej-skills"
       },
-      "description": "Trivia bootstrap, session retros, Rust review, design-doc skills"
+      "description": "Trivia bootstrap, session retros, Rust review, design-doc, and commit-message skills"
     }
   ]
 }
