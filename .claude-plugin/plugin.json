@@ -1,21 +1,21 @@
 {
-  "name": "ceej-skills",
-  "version": "0.1.0",
-  "description": "Personal workflow skills for Rust projects: trivia memory bootstrap, session retros, holistic + Rust-specific code review, problem-statement design docs, and great commit messages",
-  "author": {
-    "name": "ceej",
-    "url": "https://blog.ceejbot.com"
-  },
-  "license": "MIT",
-  "keywords": [
-    "rust",
-    "trivia",
-    "memory",
-    "code-review",
-    "design-docs",
-    "retro",
-    "commit-messages",
-    "git",
-    "workflows"
-  ]
+	"name": "ceej-skills",
+	"version": "0.2.0",
+	"description": "Personal workflow skills for Rust projects: trivia memory bootstrap, session retros, holistic + Rust-specific code review, problem-statement design docs, and great commit messages",
+	"author": {
+		"name": "ceej",
+		"url": "https://blog.ceejbot.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"rust",
+		"trivia",
+		"memory",
+		"code-review",
+		"design-docs",
+		"retro",
+		"commit-messages",
+		"git",
+		"workflows"
+	]
 }
