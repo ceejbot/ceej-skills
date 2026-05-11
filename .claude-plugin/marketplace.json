@@ -5,7 +5,7 @@
 		"url": "https://blog.ceejbot.com"
 	},
 	"metadata": {
-		"description": "Personal workflow skills for Rust projects",
+		"description": "Personal workflow skills for my projects",
 		"version": "0.2.0"
 	},
 	"plugins": [

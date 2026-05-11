@@ -1,6 +1,6 @@
 {
 	"name": "ceej-skills",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Personal workflow skills for Rust projects: trivia memory bootstrap, session retros, holistic + Rust-specific code review, problem-statement design docs, and great commit messages",
 	"author": {
 		"name": "ceej",
@@ -12,10 +12,14 @@
 		"trivia",
 		"memory",
 		"code-review",
-		"design-docs",
-		"retro",
 		"commit-messages",
+		"design-docs",
 		"git",
+		"memory",
+		"retro",
+		"rust",
+		"scala",
+		"trivia",
 		"workflows"
 	]
 }
