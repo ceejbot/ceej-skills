@@ -61,6 +61,7 @@ The project-review lens, restricted to what the change actually touches. Skip an
 - **Async hygiene** — no `block_on` deep in the call stack, no second runtime introduced, `Send + 'static` bounds only where required, cancel-safe across `.await` points (no half-mutated state if the future drops).
 - **`unsafe`** — every new `unsafe` block has a `// SAFETY:` comment justifying the invariants? Safer alternative considered? Default target for personal projects is zero `unsafe`.
 - **`Cargo.toml`** — new dependencies justified and not duplicating something already in the graph? Features documented? `[dev-dependencies]` separated? MSRV bump intentional if any?
+- **Security & supply chain** — does the diff handle new untrusted input, and is it parsed at a typed edge? Do new deps warrant a `cargo audit` / `cargo deny check` (RUSTSEC advisory, license, typosquat)? Any new `.unwrap()` / index access on an attacker-reachable path? Any hardcoded secret or credentialed URL introduced?
 
 ## The four change-specific questions
 

@@ -134,7 +134,8 @@ Findings should land in a single message. Don't fix anything in this pass — re
 - `cargo clippy --all-targets --all-features -- -D warnings` clean. No broad `#[allow(clippy::...)]` without a comment justifying it.
 - `cargo test` clean, including doctests.
 - `cargo doc --no-deps` warning-free.
-- `cargo audit` reviewed (informational; not always blocking for personal projects).
+- `cargo audit` reviewed — informational while hacking privately, but **blocking before a public release or `crates.io` publish**.
+- `cargo deny check` (advisories + bans + licenses + duplicate versions) as the one-command supply-chain gate, if the project has any dependencies worth gating.
 
 ### `Cargo.toml` hygiene
 
@@ -149,6 +150,13 @@ Findings should land in a single message. Don't fix anything in this pass — re
 - Every `unsafe` block has a `// SAFETY:` comment justifying the invariants.
 - Safer alternative not available?
 - For most personal projects: zero `unsafe` is the target.
+
+### Security & supply chain
+
+- **Secrets** — no hardcoded tokens, keys, or credentialed URLs in source; no committed `.env`. Secrets don't leak through a derived `Debug` impl.
+- **Untrusted input** — anything crossing a trust boundary (network, files, args, env) is parsed into a typed representation at the edge (this is "Parse, don't validate" wearing a security hat). No `unsafe` transmute of attacker-controlled bytes.
+- **Dependencies** — `cargo audit` for RUSTSEC advisories and `cargo deny check` for licenses + bans + duplicate versions (see Tooling). Eyeball `Cargo.lock` churn for unexpected new transitive deps, and watch for typosquatted crate names when something was recently added.
+- **Panics as availability bugs** — in a server or long-running binary, an attacker-reachable `.unwrap()` or index panic is a denial-of-service vector, not just a style nit (ties back to *No casual panics*).
 
 ## Summary template
 
