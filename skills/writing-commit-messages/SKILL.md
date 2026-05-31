@@ -13,7 +13,7 @@ Source: CJ's own "Writing great commit messages" document.
 
 ## When to use
 
-- About to land a PR via squash-and-merge — the PR description is going to *become* the trunk commit.
+- About to land a PR via squash-and-merge — the PR description is going to _become_ the trunk commit.
 - Drafting a PR description for work intended to merge into `main`.
 - Writing a direct commit to trunk (rare, but it happens for hotfixes and tiny doc fixes).
 - User asks "what should this commit message be?" or "write the PR description for X."
@@ -25,16 +25,17 @@ Source: CJ's own "Writing great commit messages" document.
 A great commit message is a newspaper article, not a diff summary. The pyramid:
 
 1. **Headline** (~50 chars). Conventional Commits prefix (`feat:`, `fix:`, `docs:`, `chore:`) is welcome — works great for humans and for tooling.
-2. **Lede paragraph.** What changed in the system's behavior, and *why*. Someone who reads only this paragraph should get the gist.
+2. **Lede paragraph.** What changed in the system's behavior, and _why_. Someone who reads only this paragraph should get the gist.
 3. **Technical choices / background.** Optional. Use it if the implementation was non-obvious, if there was a viable alternative worth naming, or if the problem itself was hard.
-4. **How details.** Optional. Bullet list of picky stuff: subtle invariants, edge cases handled, things deliberately not done.
-5. **Bug / issue references.** At the end. Don't put these in the headline — they eat your 50 characters.
+4. **How details.** Optional. Bullet list of picky stuff: subtle invariants, edge cases handled, things deliberately not done. Include only if unusual or interesting in some way.
+5. **Drive-by changes.** Additional small changes made along the way that did not relate to the main topic, but were easy to do, such as bug fixes in adjacent code.
+6. **Bug / issue references.** At the end. Don't put these in the headline — they eat your 50 characters.
 
 ### Length
 
 - **Headline:** ~50 chars so it fits in `git log --oneline` and GitHub file views.
 - **Body:** hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds, noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
-- **Body length:** as long as the change deserves. A boring config tweak is one paragraph. A subtle concurrency fix can be ten.
+- **Body length:** as long as the change deserves. A boring config tweak is one paragraph. A subtle concurrency fix can be ten. Think about the importance of the change and how difficult it will be to understand in the future.
 
 ### Tense
 
@@ -44,7 +45,7 @@ The doc takes no official position. Imperative for the headline (matches Convent
 
 The expected path. Most people get this wrong by accepting GitHub's default squash message — which is the concatenation of your branch's WIP commits, almost always noise.
 
-1. **Write your PR description as if it were the commit message.** Use the structure above. The PR description *is* the deliverable; the green button is just a side effect.
+1. **Write your PR description as if it were the commit message.** Use the structure above. The PR description _is_ the deliverable; the green button is just a side effect.
 2. When the PR is approved, choose **Squash and merge**.
 3. **Override the default commit message** GitHub fills in. Paste your PR description into the box.
 4. **Hard-wrap** the body to 80 chars. GitHub doesn't do this for you.
@@ -117,14 +118,14 @@ None of these belong in `main` forever.
 
 ## Anti-patterns when drafting
 
-| Don't | Why |
-|---|---|
-| Accept GitHub's default squash message | It's the concatenation of your WIP commits. Almost always noise. |
-| Skip the body for "small" changes | The change might be small; the *why* often isn't. One-paragraph body is still useful. |
-| Cram bug numbers into the headline | They eat the 50 chars and add no information for readers without the issue tracker open. End of message. |
-| Skip the *why* | The diff already says what changed. The why is the only thing the message uniquely contributes. |
-| Mix tenses within one message | "Adds X. Fixed Y. Will refactor Z." reads worse than any consistent choice. Pick one. |
-| Hand-wave "see PR" | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
+| Don't                                  | Why                                                                                                                    |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Accept GitHub's default squash message | It's the concatenation of your WIP commits. Almost always noise.                                                       |
+| Skip the body for "small" changes      | The change might be small; the _why_ often isn't. One-paragraph body is still useful.                                  |
+| Cram bug numbers into the headline     | They eat the 50 chars and add no information for readers without the issue tracker open. End of message.               |
+| Skip the _why_                         | The diff already says what changed. The why is the only thing the message uniquely contributes.                        |
+| Mix tenses within one message          | "Adds X. Fixed Y. Will refactor Z." reads worse than any consistent choice. Pick one.                                  |
+| Hand-wave "see PR"                     | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
 
 ## When asked to draft
 
