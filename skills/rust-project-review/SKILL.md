@@ -158,6 +158,22 @@ Findings should land in a single message. Don't fix anything in this pass — re
 - **Dependencies** — `cargo audit` for RUSTSEC advisories and `cargo deny check` for licenses + bans + duplicate versions (see Tooling). Eyeball `Cargo.lock` churn for unexpected new transitive deps, and watch for typosquatted crate names when something was recently added.
 - **Panics as availability bugs** — in a server or long-running binary, an attacker-reachable `.unwrap()` or index panic is a denial-of-service vector, not just a style nit (ties back to *No casual panics*).
 
+> This is the holistic-review touch on security. For a focused pass — threat model, injection,
+> authz, crypto, PHI handling, panics-as-DoS, supply chain — use the `rust-security-review` skill.
+
+**Dependency-audit output shape.** When `cargo audit` / `cargo deny` surface anything, don't bury
+it in prose — emit a compact table so the fix path is obvious:
+
+```
+| Advisory / issue   | Crate @ version | Severity | Reachable?            | Fix                       |
+|--------------------|-----------------|----------|-----------------------|---------------------------|
+| RUSTSEC-YYYY-NNNN  | foo @ 1.2.3     | High     | yes — live path <loc> | bump to 1.2.4             |
+| license: GPL-3.0   | bar @ 0.4       | —        | transitive via baz    | replace baz / allow in deny.toml |
+```
+
+"Reachable?" is the column that matters: an advisory in a dev-only or unreached dependency ranks
+below one on a live code path. Note unexpected `Cargo.lock` churn in the same place.
+
 ## Summary template
 
 End the review with:

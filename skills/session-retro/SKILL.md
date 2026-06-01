@@ -69,7 +69,7 @@ List the memories you saved, with their mnemonics. Ask if any should be edited o
 ## Anti-patterns
 
 | Don't | Why |
-|---|---|
+|-------|------|
 | Memorize the diff or session transcript | Git already has it. Trivia is for the *meaning* you extracted. |
 | Memorize "currently debugging X" as a retro | That's state, not a lesson. Update `current-focus` instead. |
 | Write a memory whose lesson is "be more careful" / "test more" | Too vague to ever match a future situation. Be specific or skip. |
