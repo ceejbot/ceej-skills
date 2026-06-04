@@ -13,9 +13,9 @@ Source: CJ's own "Writing great commit messages" document.
 
 ## When to use
 
-- About to land a PR via squash-and-merge — the PR description is going to _become_ the trunk commit.
-- Drafting a PR description for work intended to merge into `main`.
-- Writing a direct commit to trunk (rare, but it happens for hotfixes and tiny doc fixes).
+- Writing a PR description for work intended to merge into `main`.
+- Writing a message for a significant commit.
+- Writing a message for any direct commit to trunk.
 - User asks "what should this commit message be?" or "write the PR description for X."
 
 **Skip if:** committing to a feature branch where the work will be squashed later — that's Hawaiian-shirt-day territory and anything goes. Also skip for trivial fixup commits the author plans to autosquash.
@@ -24,38 +24,51 @@ Source: CJ's own "Writing great commit messages" document.
 
 A great commit message is a newspaper article, not a diff summary. The pyramid:
 
-1. **Headline** (~50 chars). Conventional Commits prefix (`feat:`, `fix:`, `docs:`, `chore:`) is welcome — works great for humans and for tooling.
-2. **Lede paragraph.** What changed in the system's behavior, and _why_. Someone who reads only this paragraph should get the gist.
-3. **Technical choices / background.** Optional. Use it if the implementation was non-obvious, if there was a viable alternative worth naming, or if the problem itself was hard.
-4. **How details.** Optional. Bullet list of picky stuff: subtle invariants, edge cases handled, things deliberately not done. Include only if unusual or interesting in some way.
-5. **Drive-by changes.** Additional small changes made along the way that did not relate to the main topic, but were easy to do, such as bug fixes in adjacent code.
-6. **Bug / issue references.** At the end. Don't put these in the headline — they eat your 50 characters.
+1. **Headline** Try for 50 chars. Conventional Commits prefix (`feat:`, `fix:`, `docs:`,
+   `chore:`) is welcome — works great for humans and for tooling.
+2. **Lede paragraph.** What changed in the system's behavior, and _why_. Someone who reads 
+   only this paragraph should get the gist.
+3. **Technical choices / background.** Optional. Use it if the implementation was non-obvious, 
+   if there was a viable alternative worth naming, or if the problem itself was hard.
+4. **Details about how.** Optional. Bullet list of picky stuff: subtle invariants, edge cases
+   handled, things deliberately not done. Include only if unusual or interesting in some way.
+5. **Drive-by changes.** Additional small changes made along the way that did not relate 
+   to the main topic, but were easy to do, such as bug fixes in adjacent code.
+6. **Bug / issue references.** At the end, to assist automation. Don't put these in the 
+   headline — they eat your 50 characters.
 
 ### Length
 
 - **Headline:** ~50 chars so it fits in `git log --oneline` and GitHub file views.
 - **Body:** hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds, noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
-- **Body length:** as long as the change deserves. A boring config tweak is one paragraph. A subtle concurrency fix can be ten. Think about the importance of the change and how difficult it will be to understand in the future.
+- **Body length:** as long as the change deserves. A boring config tweak is one paragraph. 
+  A subtle concurrency fix can be ten. Think about the importance of the change and how 
+  difficult it will be to understand in the future: devote more words to critical changes, 
+  and fewer words to small changes.
+
+### Prose style
+
+Use clear, consise English prose. Don't repeat facts. Focus on information future readers will
+need so they can understand why the work was done the way it does, and what your intentions were.
+
+Follow the Strunk & White principles of composition as much as possible:
+
+1. Choose a suitable design and stick to it.
+2. Make the paragraph the unit of composition.
+3. Use the active voice.
+4. Put statements in positive form.
+5. Use definite, specific, concrete language.
+6. Omit needless words.
+7. Avoid a succession of loose sentences.
+8. Express coordinate ideas in similar form.
+9. Keep related words together.
+10. In summaries, keep to one tense.
+11. Place the emphatic words of a sentence at the end.
 
 ### Tense
 
-The doc takes no official position. Imperative for the headline (matches Conventional Commits and Linux kernel convention), past tense for the "how it was done" details reads naturally. **Don't mix tenses within a single message.**
-
-## Workflow: PR → squash-merge
-
-The expected path. Most people get this wrong by accepting GitHub's default squash message — which is the concatenation of your branch's WIP commits, almost always noise.
-
-1. **Write your PR description as if it were the commit message.** Use the structure above. The PR description _is_ the deliverable; the green button is just a side effect.
-2. When the PR is approved, choose **Squash and merge**.
-3. **Override the default commit message** GitHub fills in. Paste your PR description into the box.
-4. **Hard-wrap** the body to 80 chars. GitHub doesn't do this for you.
-5. Press the green button.
-
-### Alternatives if you know your git
-
-- **Squash before the PR:** the squashed commit's message becomes the PR message.
-- **Soft-reset to `origin/main`,** branch, and re-commit once with the intended message. Leaves the original working branch around if you want it.
-- **`git commit --amend` as you go** — one commit on the branch, perpetually refined alongside the code.
+The doc takes no official position. Imperative for the headline (matches Conventional Commits and
+Linux kernel convention), past tense for the "how it was done" details reads naturally.
 
 ## Example: an inverted-pyramid commit
 
@@ -74,9 +87,10 @@ of the problem solved by the commit, if it was difficult or complex.
 
 You can go longer if the change deserves more words.
 
-Implementation details, if worth naming:
+Additional notes:
 
 - This is where you can get into picky things.
+- Mention things you did not related to the main work.
 - Bullet items are optional but often helpful.
 - You are writing a message to future maintainers of this software.
 - Future-you might be one of those maintainers, with no memory of
