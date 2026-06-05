@@ -5,6 +5,7 @@ A small Claude Code plugin holding the workflow skills I re-use on Rust personal
 ## Skills
 
 - **`project-trivia-setup`** — Bootstraps the trivia MCP for a project. Establishes the `project:<slug>` tag convention and seeds initial overview / focus / conventions memories.
+- **`session-start`** — The companion to `session-retro` and the other half of the loop. Opens a session by recalling the project's current focus and the few most relevant lessons from trivia (not the whole project memory), confirms the direction with you, then enters plan mode to design the work with those lessons in hand.
 - **`session-retro`** — End-of-session reflection. Recalls prior retros, captures what worked and what didn't, and stores each lesson in trivia under the project tag.
 - **`rust-project-review`** — Holistic code review pass with a general (architecture, README, simplicity, parse-don't-validate) section and a Rust-specific (types, errors, clippy, clones, idioms) section.
 - **`rust-change-review`** — Focused review of a scoped set of changes (uncommitted diff, unpushed commit stack, or GitHub PR). Applies the same quality lens as the full project review but restricted to the diff, plus targeted questions on intent, testing, documentation, and completeness. Produces a small number of ranked, highly actionable suggestions.
@@ -33,6 +34,7 @@ Or, if published to a marketplace:
 .claude-plugin/plugin.json
 skills/
   project-trivia-setup/SKILL.md
+  session-start/SKILL.md
   session-retro/SKILL.md
   rust-project-review/SKILL.md
   rust-change-review/SKILL.md
