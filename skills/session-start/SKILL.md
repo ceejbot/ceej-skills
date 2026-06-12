@@ -6,11 +6,11 @@ description: Use at the start of a working session, when the user says "let's ge
 # Session Start
 
 Open a working session by consulting what we already know and planning before we
-act. This is the other half of the `session-retro` loop: retro *writes* the
-current focus and durable lessons at session end; start *reads* them back at the
+act. This is the other half of the `session-retro` loop: retro _writes_ the
+current focus and durable lessons at session end; start _reads_ them back at the
 beginning so they shape the work from the jump.
 
-**Core principle:** load the *few most important* memories, not everything tagged
+**Core principle:** load the _few most important_ memories, not everything tagged
 `project:<slug>`. Recall is curated and capped. The goal is to walk into the
 session reminded of what matters — not to drag the whole project history into
 context.
@@ -29,8 +29,9 @@ straight in.
 
 ### 1. Derive the project slug
 
-Same convention as `project-trivia-setup`: read `Cargo.toml` and use
-`[package].name`; if there's no manifest, use the working-directory basename,
+If $0 is provided, use this as the project slug. If it isn't provided, derive the
+project slug using the same convention as `project-trivia-setup`: read `Cargo.toml`
+and use `[package].name`; if there's no manifest, use the working-directory basename,
 lowercased with non-alphanumerics replaced by hyphens. The slug becomes the tag
 `project:<slug>`.
 
@@ -53,7 +54,7 @@ recall(query = "current focus", tags = ["project:<slug>", "focus"])
 recall(query = "conventions",   tags = ["project:<slug>", "conventions"])
 ```
 
-Then a *single* lessons recall, keyed on the focus text so trivia's semantic
+Then a _single_ lessons recall, keyed on the focus text so trivia's semantic
 ranking surfaces the relevant ones, and capped at the **top ~3**:
 
 ```
@@ -71,7 +72,7 @@ retro lesson that bears on it ("last time we learned X"). Then ask: **is this
 what you want to work on this session?**
 
 - If the user redirects to something else, re-run the step-3 lessons recall
-  against the *new* focus before planning.
+  against the _new_ focus before planning.
 - If the focus reads as stale, say so and offer to update `<slug>/current-focus`
   via `edit` (the way `session-retro` does). Updating is optional here — this
   skill's job is to read and plan, not to rewrite memory.
@@ -91,13 +92,13 @@ design before any code is written.
 
 ## Anti-patterns
 
-| Don't | Why |
-|-------|------|
-| `recall` everything tagged `project:<slug>` | That's the universe. Load the curated few keyed on today's focus. |
-| Plan against a stale focus without confirming | The point of step 4 is to verify direction before investing in a plan. |
-| Start editing files before entering plan mode | Defeats "plan from the jump." Confirm, then `EnterPlanMode`, then act. |
-| Re-seed memories or write a retro here | That's `project-trivia-setup` / `session-retro`'s job. This skill only reads (plus `rate` and an optional `current-focus` edit). |
-| Fabricate context when trivia isn't bootstrapped | No memory means no recall. Point at `project-trivia-setup` and stop. |
+| Don't                                            | Why                                                                                                                              |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `recall` everything tagged `project:<slug>`      | That's the universe. Load the curated few keyed on today's focus.                                                                |
+| Plan against a stale focus without confirming    | The point of step 4 is to verify direction before investing in a plan.                                                           |
+| Start editing files before entering plan mode    | Defeats "plan from the jump." Confirm, then `EnterPlanMode`, then act.                                                           |
+| Re-seed memories or write a retro here           | That's `project-trivia-setup` / `session-retro`'s job. This skill only reads (plus `rate` and an optional `current-focus` edit). |
+| Fabricate context when trivia isn't bootstrapped | No memory means no recall. Point at `project-trivia-setup` and stop.                                                             |
 
 ## Quick template
 
