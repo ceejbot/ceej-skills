@@ -13,7 +13,7 @@ Source: CJ's own "Writing great commit messages" document.
 
 ## When to use
 
-- Writing a PR description for work intended to merge into `main`.
+- Writing a PR description for work intended to merge into `main` (or `master` or `latest`).
 - Writing a message for a significant commit.
 - Writing a message for any direct commit to trunk.
 - User asks "what should this commit message be?" or "write the PR description for X."
@@ -24,27 +24,33 @@ Source: CJ's own "Writing great commit messages" document.
 
 A great commit message is a newspaper article, not a diff summary. The pyramid:
 
-1. **Headline** Try for 50 chars. Conventional Commits prefix (`feat:`, `fix:`, `docs:`,
+1. _Headline_ Try for 50 chars. Conventional Commits prefix (`feat:`, `fix:`, `docs:`,
    `chore:`) is welcome — works great for humans and for tooling.
-2. **Lede paragraph.** What changed in the system's behavior, and _why_. Someone who reads 
-   only this paragraph should get the gist.
-3. **Technical choices / background.** Optional. Use it if the implementation was non-obvious, 
+2. _Dek_ The subhed that tells what broke or what the change was, meaningfully.
+3. _Lede paragraph._ What changed in the system's behavior, and _why_. Someone who reads
+   only this paragraph should get the gist. Keep it short.
+4. Consider if this is enough.
+5. _Technical choices / background._ Optional. Use it if the implementation was non-obvious,
    if there was a viable alternative worth naming, or if the problem itself was hard.
-4. **Details about how.** Optional. Bullet list of picky stuff: subtle invariants, edge cases
+   Keep it short.
+6. _Details about how._ Optional. Bullet list of picky stuff: subtle invariants, edge cases
    handled, things deliberately not done. Include only if unusual or interesting in some way.
-5. **Drive-by changes.** Additional small changes made along the way that did not relate 
+   Keep it short.
+7. _Drive-by changes._ Additional small changes made along the way that did not relate
    to the main topic, but were easy to do, such as bug fixes in adjacent code.
-6. **Bug / issue references.** At the end, to assist automation. Don't put these in the 
+8. _Bug / issue references._ At the end, to assist automation. Don't put these in the
    headline — they eat your 50 characters.
 
 ### Length
 
-- **Headline:** ~50 chars so it fits in `git log --oneline` and GitHub file views.
-- **Body:** hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds, noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
-- **Body length:** as long as the change deserves. A boring config tweak is one paragraph. 
-  A subtle concurrency fix can be ten. Think about the importance of the change and how 
-  difficult it will be to understand in the future: devote more words to critical changes, 
+- Headline: ~50 chars so it fits in `git log --oneline` and GitHub file views.
+- Body: hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds, noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
+- Body length: as long as the change deserves. A boring config tweak is one paragraph.
+  A subtle concurrency fix can be ten. Think about the importance of the change and how
+  difficult it will be to understand in the future: devote more words to critical changes,
   and fewer words to small changes.
+- BE CONCISE no matter what. Use simple declarative sentences. Do not use emoji or **bold**.
+- You may use `backticks` to indicate symbols, names in code, or shell commands.
 
 ### Prose style
 
@@ -148,5 +154,5 @@ Procedure when the user asks for a commit/PR message draft:
 1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
 2. **Propose the headline candidate** in chat before drafting the body. The headline is the single hardest line; getting it right early shapes the rest.
 3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
-4. **Hard-wrap to 80 chars.** Always.
+4. **Hard-wrap to 72 chars.** Always.
 5. **Confirm with the user** before pasting into a PR or running `git commit`. The user's voice and judgment about what's worth memorializing should win.
