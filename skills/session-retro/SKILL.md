@@ -23,10 +23,10 @@ Reflect on a working session and turn the lessons into durable trivia memories. 
 ### 1. Recall prior retros
 
 ```
-recall(query = "retro", tags = ["project:<slug>", "retro"])
+recall(query = "retro", tags = ["project:<slug>", "retro"], limit = 3, truncate = 500)
 ```
 
-Skim the results. If anything from the past applies to today's session, mention it — and `rate` those memories up if they helped, down if they were noise. Trivia ranking improves with feedback.
+The params carry the cap — `limit = 3` for the top three, `truncate` so a long body doesn't blow up context — rather than recalling five and skimming past two. Skim the results. If anything from the past applies to today's session, mention it — and `rate` those memories up if they helped, down if they were noise. Trivia ranking improves with feedback.
 
 ### 2. Summarize the session in 3–6 bullets
 

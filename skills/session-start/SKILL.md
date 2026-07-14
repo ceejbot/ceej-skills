@@ -38,30 +38,36 @@ lowercased with non-alphanumerics replaced by hyphens. The slug becomes the tag
 ### 2. Check that trivia is bootstrapped
 
 ```
-recall("<slug>/trivia-bootstrapped")
+recall("<slug>/trivia-bootstrapped", limit = 1)
 ```
 
-If there's **no hit**, this project has no memory yet. Don't fabricate context —
-tell the user and suggest running the `project-trivia-setup` skill first, then
-stop.
+An existence check — `limit = 1` answers the yes/no without pulling five full
+bodies into context. If there's **no hit**, this project has no memory yet.
+Don't fabricate context — suggest running the `project-trivia-setup` skill
+first, then stop.
 
 ### 3. Recall the focus — tightly
 
 Pull the state and conventions directly:
 
 ```
-recall(query = "current focus", tags = ["project:<slug>", "focus"])
-recall(query = "conventions",   tags = ["project:<slug>", "conventions"])
+recall(query = "current focus", tags = ["project:<slug>", "focus"],       limit = 1)
+recall(query = "conventions",   tags = ["project:<slug>", "conventions"], limit = 1)
 ```
 
-Then a _single_ lessons recall, keyed on the focus text so trivia's semantic
-ranking surfaces the relevant ones, and capped at the **top ~3**:
+One focus and one conventions memory per project, so `limit = 1` gets exactly
+those without four also-rans each.
+
+Then a *single* lessons recall, keyed on the focus text so trivia's semantic
+ranking surfaces the relevant ones. The params carry the cap: `limit = 3` for
+the top three, `truncate` so a long body doesn't blow up context.
 
 ```
-recall(query = "<the current-focus text>", tags = ["project:<slug>", "retro"])
+recall(query = "<the current-focus text>", tags = ["project:<slug>", "retro"], limit = 3, truncate = 500)
 ```
 
-Take only the top few. Do **not** run a tag-wildcard dump like
+Let the params cap it — recalling five and trimming after pays for bodies you
+throw away. And do **not** run a tag-wildcard dump like
 `recall(tags = ["project:<slug>"])` — that's loading the universe, and it buries
 the lessons that actually matter today.
 
@@ -100,25 +106,14 @@ design before any code is written.
 | Re-seed memories or write a retro here           | That's `project-trivia-setup` / `session-retro`'s job. This skill only reads (plus `rate` and an optional `current-focus` edit). |
 | Fabricate context when trivia isn't bootstrapped | No memory means no recall. Point at `project-trivia-setup` and stop.                                                             |
 
-## Quick template
-
-```
-1. slug ← Cargo.toml [package].name (or dir basename)
-2. recall("<slug>/trivia-bootstrapped")  → if empty, suggest project-trivia-setup, stop
-3. recall focus + conventions; recall("<focus text>", tags=[project:<slug>, retro]) → top ~3
-4. "Here's the focus + the lesson that bears on it. Work on this?"
-5. rate the memories that helped
-6. EnterPlanMode → plan that carries the lessons forward
-```
-
 ## Example
 
 ```
 User: what were we working on?
-You: [recall("ratatui-clock/trivia-bootstrapped") → hit]
-     [recall focus → "smooth redraw without flicker"; recall conventions → edition 2021, MSRV 1.74]
-     [recall("smooth redraw without flicker", tags=["project:ratatui-clock","retro"]) → top hit:
-        ratatui-clock/worked/single-swap-per-frame]
+You: [recall("ratatui-clock/trivia-bootstrapped", limit=1) → hit]
+     [recall focus (limit=1) → "smooth redraw without flicker"; recall conventions (limit=1) → edition 2021, MSRV 1.74]
+     [recall("smooth redraw without flicker", tags=["project:ratatui-clock","retro"], limit=3, truncate=500)
+        → top hit: ratatui-clock/worked/single-swap-per-frame]
      Last session you landed flicker-free redraw with a single buffer swap per frame, and
      the lesson saved was: trust ratatui's per-frame diff, swap once per tick. Current focus
      is still smooth redraw — want to keep going on that this session?
