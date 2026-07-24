@@ -155,7 +155,8 @@ Constructive review is more useful than exhaustive review. The goal is to help t
 
 ## Project-specific notes
 
-Replace this section with notes for the repository being reviewed. Example shape (from Entropic):
+Check the repository's `CLAUDE.md` (or `docs/review-notes.md`) for project-specific review
+notes, and honor them alongside this skill. Example of the shape such notes take (from Entropic):
 
 - Pay special attention to pinned test vectors and whether new behavior has corresponding entries in the generator + regression test.
 - Changes that touch sigchain actions, admission policies, or transparency should reference the relevant design doc.

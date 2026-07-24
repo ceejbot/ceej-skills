@@ -64,7 +64,7 @@ CCQ=$(ls ~/.claude/plugins/cache/cc-query-dev/cc-query/*/bin/cc-query | head -1)
 python3 -c "import json,os;d=json.load(open(os.path.expanduser('~/.claude/settings.json')));[print(('ON ' if v else 'OFF'),k) for k,v in sorted(d['enabledPlugins'].items())]"
 
 # Dead cache orphans: installed but marked orphaned (don't load)
-find ~/.claude/plugins/cache -maxdepth 4 -name .orphaned_at -printf '%h\n' 2>/dev/null
+fd --hidden --max-depth 4 '^\.orphaned_at$' ~/.claude/plugins/cache -x dirname 2>/dev/null
 ```
 
 A plugin cached but absent from `enabledPlugins` entirely is also dead weight — corroborates the `.orphaned_at` marker.

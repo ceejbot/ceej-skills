@@ -1,7 +1,7 @@
 {
 	"name": "ceej-skills",
-	"version": "0.7.3",
-	"description": "Personal workflow skills for Rust (and Scala) projects: trivia memory bootstrap, session start + retro, holistic + scoped code review, problem-statement design docs, great commit messages, and usage-driven plugin curation",
+	"version": "0.8.0",
+	"description": "Personal workflow skills for Rust (and Scala) projects: trivia memory bootstrap, session start + retro, holistic + scoped code review, problem-statement design docs, great commit messages, cross-source cited research, a prose style guide, and usage-driven plugin curation",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"
@@ -25,6 +25,10 @@
 		"plugin-curation",
 		"audit",
 		"security",
-		"workflows"
+		"workflows",
+		"writing",
+		"research",
+		"investigation",
+		"style-guide"
 	]
 }

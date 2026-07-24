@@ -66,7 +66,7 @@ Append (or create) a short section in the project's `CLAUDE.md`:
 ```markdown
 ## Project memory
 
-This project uses the trivia MCP. All memories are tagged `project:<slug>`. Recall by that tag at the start of work. Add new lessons via the `session-retro` skill.
+This project uses the trivia MCP. All memories are tagged `project:<slug>`. Open working sessions with the `session-start` skill, which recalls the current focus and top lessons under that tag. Add new lessons via the `session-retro` skill.
 ```
 
 This makes the convention discoverable to future sessions even if the trivia tag itself ever drifts.
@@ -76,7 +76,7 @@ This makes the convention discoverable to future sessions even if the trivia tag
 Tell the user:
 - The slug used and where it came from (Cargo.toml vs directory).
 - Each memory you created (mnemonic + one-line summary).
-- That subsequent sessions should `recall("project:<slug>")` to load context.
+- That subsequent sessions should open with the `session-start` skill, which recalls the focus and top lessons under that tag (not a tag-wildcard dump).
 
 ## Anti-patterns
 
@@ -99,5 +99,5 @@ User: It's a small terminal clock built on ratatui to teach myself the framework
 You: [memorizes ratatui-clock/overview, ratatui-clock/current-focus, ratatui-clock/conventions (from Cargo.toml: edition 2021, MSRV 1.74)]
      [memorizes sentinel ratatui-clock/trivia-bootstrapped]
      [appends "Project memory" section to CLAUDE.md]
-     Done. Three memories seeded under project:ratatui-clock. Future sessions can recall("project:ratatui-clock") to reload.
+     Done. Three memories seeded under project:ratatui-clock. Open future sessions with the session-start skill to reload the focus and lessons.
 ```

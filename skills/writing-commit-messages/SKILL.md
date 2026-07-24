@@ -44,7 +44,8 @@ A great commit message is a newspaper article, not a diff summary. The pyramid:
 ### Length
 
 - Headline: ~50 chars so it fits in `git log --oneline` and GitHub file views.
-- Body: hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds, noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
+- Body: hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds,
+  noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
 - Body length: as long as the change deserves. A boring config tweak is one paragraph.
   A subtle concurrency fix can be ten. Think about the importance of the change and how
   difficult it will be to understand in the future: devote more words to critical changes,
@@ -54,8 +55,8 @@ A great commit message is a newspaper article, not a diff summary. The pyramid:
 
 ### Prose style
 
-Use clear, consise English prose. Don't repeat facts. Focus on information future readers will
-need so they can understand why the work was done the way it does, and what your intentions were.
+Use clear, concise English prose. Don't repeat facts. Focus on information future readers will
+need so they can understand why the work was done the way it was, and what your intentions were.
 
 Follow the Strunk & White principles of composition as much as possible:
 
@@ -73,8 +74,8 @@ Follow the Strunk & White principles of composition as much as possible:
 
 ### Tense
 
-The doc takes no official position. Imperative for the headline (matches Conventional Commits and
-Linux kernel convention), past tense for the "how it was done" details reads naturally.
+Imperative for the headline (matches Conventional Commits and Linux kernel convention);
+past tense for the "how it was done" details reads naturally.
 
 ## Example: an inverted-pyramid commit
 
@@ -154,5 +155,5 @@ Procedure when the user asks for a commit/PR message draft:
 1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
 2. **Propose the headline candidate** in chat before drafting the body. The headline is the single hardest line; getting it right early shapes the rest.
 3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
-4. **Hard-wrap to 72 chars.** Always.
+4. **Hard-wrap the body at 80 chars.** Always, per the Length rules above.
 5. **Confirm with the user** before pasting into a PR or running `git commit`. The user's voice and judgment about what's worth memorializing should win.

@@ -178,7 +178,8 @@ finding searchable and unambiguous.
 
 ## Project-specific notes
 
-Replace with notes for the repository under review. Default posture for these projects is
+Check the repository's `CLAUDE.md` (or `docs/review-notes.md`) for project-specific security
+notes, and honor them alongside this skill. Default posture for these projects is
 **HIPAA**, so unless told otherwise:
 
 - PHI must never appear in logs, error bodies, metrics labels, trace attributes, or panic
