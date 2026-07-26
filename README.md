@@ -2,6 +2,8 @@
 
 A small Claude Code plugin holding the workflow skills I re-use on Rust personal projects.
 
+This repo also hosts a second plugin, [**`enotime`**](./enotime/README.md) — an Oblique Strategy at session start, courtesy of the [`oblique`](https://github.com/ceejbot/oblique) CLI, plus an `/oblique-strategy` command. Install it with `/plugin marketplace add ceejbot/ceej-skills` then `/plugin install enotime@ceej-skills`.
+
 ## Skills
 
 - **`project-trivia-setup`** — Bootstraps the trivia MCP for a project. Establishes the `project:<slug>` tag convention and seeds initial overview / focus / conventions memories.

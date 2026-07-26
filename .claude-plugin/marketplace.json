@@ -6,7 +6,7 @@
 	},
 	"metadata": {
 		"description": "Personal workflow skills for my projects",
-		"version": "0.8.0"
+		"version": "0.9.0"
 	},
 	"plugins": [
 		{
@@ -16,6 +16,11 @@
 				"repo": "ceejbot/ceej-skills"
 			},
 			"description": "Trivia bootstrap, session start + retro, Rust + Scala review, design-doc, commit-message, cited-research, prose style, and plugin-curation skills"
+		},
+		{
+			"name": "enotime",
+			"source": "./enotime",
+			"description": "An Oblique Strategy at session start, courtesy of the oblique CLI"
 		}
 	]
 }
