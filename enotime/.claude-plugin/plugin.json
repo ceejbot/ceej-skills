@@ -1,6 +1,6 @@
 {
 	"name": "enotime",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Draws an Oblique Strategy (Brian Eno & Peter Schmidt) at session start via the `oblique` CLI, plus an /oblique-strategy command for drawing one on demand",
 	"author": {
 		"name": "ceej",

@@ -1,7 +1,12 @@
 #!/bin/sh
+# Emit hook JSON output: systemMessage is displayed directly to the user by
+# Claude Code, so delivery does not depend on the model choosing to relay it.
+escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+
 if command -v oblique >/dev/null 2>&1; then
-  printf 'Oblique strategy for this session: "%s". Quote it to the user, verbatim, at the top of your first reply.\n' "$(oblique)"
+  strategy=$(escape "$(oblique)")
+  printf '{"systemMessage":"Oblique strategy for this session: %s","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"This session'"'"'s Oblique Strategy, already shown to the user: %s. Let it inform your approach; no need to repeat it."}}\n' "$strategy" "$strategy"
 else
-  echo "enotime: the oblique CLI is not installed. Tell the user to run: brew install ceejbot/tap/oblique  (or: cargo install --git https://github.com/ceejbot/oblique)"
+  printf '{"systemMessage":"enotime: the oblique CLI is not installed. Install it with: brew install ceejbot/tap/oblique  (or: cargo install --git https://github.com/ceejbot/oblique)"}\n'
 fi
 exit 0
