@@ -8,7 +8,9 @@ description: Use at the start of a working session, when the user says "let's ge
 Open a working session by consulting what we already know and planning before we
 act. This is the other half of the `session-retro` loop: retro _writes_ the
 current focus and durable lessons at session end; start _reads_ them back at the
-beginning so they shape the work from the jump.
+beginning so they shape the work from the jump. (Trivia is
+[chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
+instructions are Rust-oriented, but it's quite good.)
 
 **Core principle:** load the _few most important_ memories, not everything tagged
 `project:<slug>`. Recall is curated and capped. The goal is to walk into the

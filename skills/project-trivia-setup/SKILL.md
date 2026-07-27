@@ -5,7 +5,7 @@ description: Use when starting trivia memory in a Rust project for the first tim
 
 # Project Trivia Setup
 
-Bootstrap the trivia MCP for a Rust project so that future sessions can recall what this project is, what's being worked on, and what conventions it follows — without polluting the global trivia DB shared across all projects.
+Bootstrap the trivia MCP for a Rust project so that future sessions can recall what this project is, what's being worked on, and what conventions it follows — without polluting the global trivia DB shared across all projects. (Trivia is [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup instructions are Rust-oriented, but it's quite good.)
 
 **Core principle:** every memory belonging to a project carries the tag `project:<slug>`. Recall by tag, memorize with the tag, and the global DB stays organized.
 
@@ -22,6 +22,7 @@ Bootstrap the trivia MCP for a Rust project so that future sessions can recall w
 ### 1. Derive the project slug
 
 In order:
+
 1. Read `Cargo.toml` and use `[package].name` (lowercase, hyphens already canonical).
 2. If no `Cargo.toml`, use the basename of the working directory, lowercased, with non-alphanumerics replaced by hyphens.
 
@@ -39,11 +40,11 @@ If that returns a hit, **stop**. Surface the existing seed memories to the user 
 
 Ask the user (or infer from `README.md` / `Cargo.toml` / recent git activity if obvious) for these three facts. Memorize each one with tags `project:<slug>` plus the topical tag in the table:
 
-| Mnemonic | Topical tag | Content |
-|---|---|---|
-| `<slug>/overview` | `overview` | One paragraph: what this project is and why it exists. |
-| `<slug>/current-focus` | `focus` | One paragraph: what the user is working on right now. |
-| `<slug>/conventions` | `conventions` | Any non-obvious project rules: build commands, MSRV, lint config, style choices, layout decisions. |
+| Mnemonic               | Topical tag   | Content                                                                                            |
+| ---------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
+| `<slug>/overview`      | `overview`    | One paragraph: what this project is and why it exists.                                             |
+| `<slug>/current-focus` | `focus`       | One paragraph: what the user is working on right now.                                              |
+| `<slug>/conventions`   | `conventions` | Any non-obvious project rules: build commands, MSRV, lint config, style choices, layout decisions. |
 
 Only memorize facts the user has stated or that are unambiguous from the repo. Do not invent.
 
@@ -67,6 +68,8 @@ Append (or create) a short section in the project's `CLAUDE.md`:
 ## Project memory
 
 This project uses the trivia MCP. All memories are tagged `project:<slug>`. Open working sessions with the `session-start` skill, which recalls the current focus and top lessons under that tag. Add new lessons via the `session-retro` skill.
+
+Use lowercased tags
 ```
 
 This makes the convention discoverable to future sessions even if the trivia tag itself ever drifts.
@@ -74,18 +77,19 @@ This makes the convention discoverable to future sessions even if the trivia tag
 ### 6. Report back
 
 Tell the user:
+
 - The slug used and where it came from (Cargo.toml vs directory).
 - Each memory you created (mnemonic + one-line summary).
 - That subsequent sessions should open with the `session-start` skill, which recalls the focus and top lessons under that tag (not a tag-wildcard dump).
 
 ## Anti-patterns
 
-| Don't | Why |
-|---|---|
-| Overwrite an existing bootstrap | The sentinel exists for a reason — past sessions have refined those memories. |
-| Seed speculative memories | Every memory should be a fact the user has stated or that's unambiguous from the repo. Speculation pollutes recall. |
-| Store secrets, tokens, or private credentials | The trivia DB is global to your machine and easy to export. Treat it like a public README. |
-| Use a different tag scheme per project | The `project:<slug>` convention is the whole point. Stick to it. |
+| Don't                                         | Why                                                                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Overwrite an existing bootstrap               | The sentinel exists for a reason — past sessions have refined those memories.                                       |
+| Seed speculative memories                     | Every memory should be a fact the user has stated or that's unambiguous from the repo. Speculation pollutes recall. |
+| Store secrets, tokens, or private credentials | The trivia DB is global to your machine and easy to export. Treat it like a public README.                          |
+| Use a different tag scheme per project        | The `project:<slug>` convention is the whole point. Stick to it.                                                    |
 
 ## Example
 

@@ -5,7 +5,7 @@ description: Use at the end of a working session, before final commit, when the 
 
 # Session Retro
 
-Reflect on a working session and turn the lessons into durable trivia memories. The point is the *feedback loop*: next session's first `recall` should pick up what we learned.
+Reflect on a working session and turn the lessons into durable trivia memories. The point is the *feedback loop*: next session's first `recall` should pick up what we learned. (Trivia is [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup instructions are Rust-oriented, but it's quite good.)
 
 **Core principle:** specific lessons or none. "Be more careful" is not a lesson. "Don't reach for `Box<dyn Error>` in library APIs because we hit `?` ergonomic problems three times" is.
 
@@ -32,7 +32,7 @@ The params carry the cap — `limit = 3` for the top three, `truncate` so a long
 
 Plain prose, not a diff. What got done, what stalled, what surprised us. This is for the user to confirm before we commit lessons; don't memorize it.
 
-### 3. Two columns
+### 3. Three columns
 
 Walk through the session and identify:
 
@@ -56,7 +56,27 @@ memorize(
 )
 ```
 
-The `Why` field is non-negotiable. Without it the lesson can't survive contact with a different situation.
+**Learned** — durable facts about the domain, a tool, an API, or the codebase that surfaced during the session. Not process lessons (that's worked/avoid) and not state (that's `current-focus`). For each:
+
+```
+memorize(
+  mnemonic = "<slug>/learned/<short-handle>",
+  content  = "Fact: ... | Where it came from: ... | Why it matters: ...",
+  tags     = ["project:<slug>", "retro", "learned"]
+)
+```
+
+The `Why` field is non-negotiable in all three. Without it the lesson can't survive contact with a different situation.
+
+### 3½. Smooth sailing is a valid outcome
+
+Some sessions produce zero new memories — everything went the way prior lessons said it would. That's a *successful* retro, not a failure. The retro work for such a session is maintenance of the memories that got you there:
+
+- `rate` up the memories that guided the session (down for noise) — same discipline as step 1.
+- `edit` to add tags or mnemonic aliases to a memory that was hard to find this time.
+- `link` memories that this session revealed are related.
+
+Don't invent a lesson just to have something to save.
 
 ### 4. Update `current-focus`
 
@@ -64,7 +84,7 @@ If the session changed what you're working on next, `edit` the `<slug>/current-f
 
 ### 5. Confirm with the user
 
-List the memories you saved, with their mnemonics. Ask if any should be edited or dropped before they cement.
+List the memories you saved, with their mnemonics. Ask if any should be edited or dropped before they cement. If it was a smooth-sailing session, report the maintenance you did instead (ratings, tags, links).
 
 ## Anti-patterns
 
@@ -74,6 +94,7 @@ List the memories you saved, with their mnemonics. Ask if any should be edited o
 | Memorize "currently debugging X" as a retro | That's state, not a lesson. Update `current-focus` instead. |
 | Write a memory whose lesson is "be more careful" / "test more" | Too vague to ever match a future situation. Be specific or skip. |
 | Save five lessons from a one-hour session | Most sessions produce 0–2 durable lessons. Quality over volume. |
+| Force a lesson out of a smooth session | Zero new memories plus some ratings, tags, or links is a successful retro. |
 | Skip the `Why` field | Without the reason, the lesson can't generalize and won't help next time. |
 
 ## Quick template
@@ -91,6 +112,12 @@ Avoid:
     What we tried: ...
     Why it failed: ...
     What to try instead: ...
+
+Learned:
+  <slug>/learned/<handle>
+    Fact: ...
+    Where it came from: ...
+    Why it matters: ...
 ```
 
 ## Example
@@ -114,3 +141,5 @@ You: [recall("retro", tags=["project:ratatui-clock", "retro"]) → finds one pri
 User: yes
 You: [memorizes both, confirms]
 ```
+
+A smooth-sailing session looks different: "Today went exactly the way the saved lessons predicted — nothing new to memorize. I rated single-swap-per-frame up and linked it to the frame-timing memory, since we used them together."

@@ -8,7 +8,9 @@ description: Use when the user asks to investigate or research a topic across so
 **Core principle**: act as a librarian and research assistant. Investigate
 sources, surface facts that *seem relevant* to the research, store them in
 a structured fashion along with citation information so they can be referenced
-later. If there are no citations, you do not have a memory.
+later. If there are no citations, you do not have a memory. Findings live in
+the trivia MCP ([chrisdickinson/trivia](https://github.com/chrisdickinson/trivia)
+— setup instructions are Rust-oriented, but it's quite good).
 
 ## When to use
 
