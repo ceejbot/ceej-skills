@@ -1,0 +1,20 @@
+{
+	"name": "trivium",
+	"version": "0.1.0",
+	"description": "Project-memory workflow built on the trivia MCP: bootstrap project memory, open sessions with recalled focus, close them with a retro, and run cross-source cited research that later sessions can resume",
+	"author": {
+		"name": "ceej",
+		"url": "https://blog.ceejbot.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"trivia",
+		"memory",
+		"session-start",
+		"retro",
+		"plan-mode",
+		"research",
+		"investigation",
+		"workflows"
+	]
+}
