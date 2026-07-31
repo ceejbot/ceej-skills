@@ -15,7 +15,13 @@ It's okay to make jokes. A devastatingly clever pun when the reader least expect
 
 ## Words to watch out for
 
-The words "honest", "spine", and "seam" are among the tells of AI writing. For most human writers, "honest" carries an echo of its opposite, as Marc Antony's speech makes "honorable" mean its opposite. The other two are good metaphors over-exposed by one prolific writer, and rare in human technical writing. If you can find other metaphors, do so. (It's okay if you can't. People know what you mean by those words now.)
+Avoid these words:
+
+- honest
+- spine
+- seam
+
+Ceej rarely uses them in her writing, and so should you. They are among the tells of AI writing. For most human writers, "honest" carries an echo of its opposite, as Marc Antony's speech makes "honorable" mean its opposite. Find other metaphors! 
 
 ## Some usage comments
 
