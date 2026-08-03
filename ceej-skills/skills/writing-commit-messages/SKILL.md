@@ -53,24 +53,10 @@ A great commit message is a newspaper article, not a diff summary. The pyramid:
 - BE CONCISE no matter what. Use simple declarative sentences. Do not use emoji or **bold**.
 - You may use `backticks` to indicate symbols, names in code, or shell commands.
 
-### Prose style
-
 Use clear, concise English prose. Don't repeat facts. Focus on information future readers will
 need so they can understand why the work was done the way it was, and what your intentions were.
 
-Follow the Strunk & White principles of composition as much as possible:
-
-1. Choose a suitable design and stick to it.
-2. Make the paragraph the unit of composition.
-3. Use the active voice.
-4. Put statements in positive form.
-5. Use definite, specific, concrete language.
-6. Omit needless words.
-7. Avoid a succession of loose sentences.
-8. Express coordinate ideas in similar form.
-9. Keep related words together.
-10. In summaries, keep to one tense.
-11. Place the emphatic words of a sentence at the end.
+Avoid _leaked frames._ Leaked frames are references that only parse from inside the session that produced them. From inside they read as clear, which is why the writer cannot see them. Assume that the reader of a commit message has only the context of the repo itself.
 
 ### Tense
 
@@ -106,6 +92,28 @@ Additional notes:
 Fixes #42, #44, #47.
 ```
 
+## Anti-patterns when drafting
+
+| Don't | Why |
+| ----- | --- |
+| Accept GitHub's default squash message | It's the concatenation of your WIP commits. Almost always noise.                                                       |
+| Skip the body for "small" changes      | The change might be small; the _why_ often isn't. One body sentence body is still useful.                                  |
+| Cram bug numbers into the headline     | Put them at the end of the message.               |
+| Skip the _why_                         | The diff already says what changed. The why is the only thing the message uniquely contributes. |
+| Mix tenses within one message          | Use the past tense. |
+| Hand-wave "see PR"                     | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
+| Write ten paragraphs.                  | Long explanatations belong in documentation |
+
+## When asked to draft
+
+Procedure when the user asks for a commit/PR message draft:
+
+1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
+2. **Propose the headline candidate** in chat before drafting the body. The headline is the single hardest line; getting it right early shapes the rest.
+3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
+4. **Hard-wrap the body at 80 chars.** Always, per the Length rules above.
+5. **Confirm with the user** before pasting into a PR or running `git commit`. The user's voice and judgment about what's worth memorializing should win.
+
 ## What a great commit message is NOT — real-world specimens
 
 CJ's collection from the wild. The fourth specimen is the most common — it's what GitHub gives you by default if you don't override the squash message.
@@ -136,24 +144,3 @@ fixed some lifestyle stuff
 ```
 
 None of these belong in `main` forever.
-
-## Anti-patterns when drafting
-
-| Don't                                  | Why                                                                                                                    |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Accept GitHub's default squash message | It's the concatenation of your WIP commits. Almost always noise.                                                       |
-| Skip the body for "small" changes      | The change might be small; the _why_ often isn't. One-paragraph body is still useful.                                  |
-| Cram bug numbers into the headline     | They eat the 50 chars and add no information for readers without the issue tracker open. End of message.               |
-| Skip the _why_                         | The diff already says what changed. The why is the only thing the message uniquely contributes.                        |
-| Mix tenses within one message          | "Adds X. Fixed Y. Will refactor Z." reads worse than any consistent choice. Pick one.                                  |
-| Hand-wave "see PR"                     | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
-
-## When asked to draft
-
-Procedure when the user asks for a commit/PR message draft:
-
-1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
-2. **Propose the headline candidate** in chat before drafting the body. The headline is the single hardest line; getting it right early shapes the rest.
-3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
-4. **Hard-wrap the body at 80 chars.** Always, per the Length rules above.
-5. **Confirm with the user** before pasting into a PR or running `git commit`. The user's voice and judgment about what's worth memorializing should win.

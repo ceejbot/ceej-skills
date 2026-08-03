@@ -1,7 +1,7 @@
 {
 	"name": "ceej-skills",
-	"version": "0.9.0",
-	"description": "Personal workflow skills for Rust (and Scala) projects: holistic + scoped code review, security review, problem-statement design docs, great commit messages, a prose style guide, and usage-driven plugin curation",
+	"version": "0.10.0",
+	"description": "Personal workflow skills for Rust (and Scala) projects: holistic + scoped code review, security review, problem-statement design docs, great commit messages, code comments worth keeping, a prose style guide, and usage-driven plugin curation",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"
@@ -15,6 +15,8 @@
 		"pr-review",
 		"change-review",
 		"commit-messages",
+		"code-comments",
+		"documentation",
 		"design-docs",
 		"git",
 		"plugin-curation",

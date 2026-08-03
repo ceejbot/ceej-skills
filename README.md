@@ -27,6 +27,7 @@ General workflow skills for (mostly) Rust projects. No MCP servers required.
 - **`writing-design-docs`** — Problem-statement design doc helper distilled from [my blog post on design docs](https://blog.ceejbot.com/posts/design-docs/). Includes a fillable template.
 - **`writing-commit-messages`** — Helps draft a commit / PR message worth living in `main` for years. Inverted-pyramid structure, hard-wrap discipline, real-world anti-patterns. Distilled from ceej's "Writing great commit messages" doc.
 - **`writing-clearly`** — A style guide for my preferred English: warm, direct, laconic, occasionally devastating. Applied whenever Claude writes prose on my behalf.
+- **`writing-code-comments`** — Comments and doc strings that earn their place: document what the code cannot say, explain why rather than what, stay sparse. Doc strings answer the caller's real questions instead of restating the signature. Fires whenever generated code includes comments, not just on request.
 - **`plugin-curation`** — Audits an installed Claude Code setup against real usage signals (`~/.claude.json` `skillUsage` + `favoritePlugins`, plus cc-query for MCP/subagent traffic) and produces keep / consolidate / prune recommendations. Built to re-run periodically.
 
 ## trivium

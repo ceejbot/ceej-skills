@@ -12,7 +12,7 @@
 		{
 			"name": "ceej-skills",
 			"source": "./ceej-skills",
-			"description": "Rust + Scala project and change review, security review, design-doc, commit-message, prose style, and plugin-curation skills"
+			"description": "Rust + Scala project and change review, security review, design-doc, commit-message, code-comment, prose style, and plugin-curation skills"
 		},
 		{
 			"name": "trivium",
