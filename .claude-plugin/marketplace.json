@@ -6,7 +6,7 @@
 	},
 	"metadata": {
 		"description": "Personal workflow skills for my projects",
-		"version": "0.10.0"
+		"version": "0.11.0"
 	},
 	"plugins": [
 		{
@@ -23,6 +23,11 @@
 			"name": "enotime",
 			"source": "./enotime",
 			"description": "An Oblique Strategy at session start, courtesy of the oblique CLI"
+		},
+		{
+			"name": "relay",
+			"source": "./relay",
+			"description": "Session relay: /handoff compacts a session into a self-contained document any agent can pick up; /pickup reads it back. Trivia-aware, with a plain-file fallback"
 		}
 	]
 }

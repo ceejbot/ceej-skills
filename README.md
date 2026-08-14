@@ -1,6 +1,6 @@
 # ceej-skills
 
-A small Claude Code plugin marketplace holding the workflow skills I re-use on personal projects, split into three plugins so you install only what you need.
+A small Claude Code plugin marketplace holding the workflow skills I re-use on personal projects, split into four plugins so you install only what you need.
 
 Add the marketplace once:
 
@@ -14,6 +14,7 @@ Then install whichever plugins you want:
 /plugin install ceej-skills@ceej-skills
 /plugin install trivium@ceej-skills
 /plugin install enotime@ceej-skills
+/plugin install relay@ceej-skills
 ```
 
 ## ceej-skills
@@ -45,6 +46,13 @@ All trivia memories these skills create carry the tag `project:<slug>`, where `<
 
 An Oblique Strategy at session start, courtesy of the [`oblique`](https://github.com/ceejbot/oblique) CLI, plus an `/oblique-strategy` command. See [its README](./enotime/README.md).
 
+## relay
+
+Relay a session to a fresh agent with a clean context. Trivia is optional here, unlike trivium: with it, the pair follows the `project:<slug>` conventions; without it, everything works on plain files. See [its README](./relay/README.md).
+
+- **`handoff`** — Compacts the current session into a self-contained document: task, state, decisions with their whys, artifact links, verification commands. Redacts secrets before saving. The document addresses whatever agent reads it, so Codex, Grok, or a human can pick it up with one pasted line.
+- **`pickup`** — Finds the newest handoff (trivia pointer first, then `./tmp/`, then `.claude/relay/`), checks whether the repo has drifted past it, resumes the work, and offers to clean up the document and its pointer together.
+
 ## Layout
 
 The root `.claude-plugin/` holds only `marketplace.json`; each plugin lives in its own subdirectory with its own manifest.
@@ -63,6 +71,10 @@ enotime/
   .claude-plugin/plugin.json
   commands/
   hooks/
+relay/
+  .claude-plugin/plugin.json
+  skills/
+    <one directory per skill, each with a SKILL.md>
 ```
 
 ## Status

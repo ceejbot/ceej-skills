@@ -1,0 +1,19 @@
+{
+	"name": "relay",
+	"version": "0.1.0",
+	"description": "Relay a session to a fresh agent: /handoff compacts the conversation into a self-contained document any agent (Claude, Codex, Grok, …) can pick up; /pickup reads it back. Trivia-aware when the trivium conventions are in place, plain files otherwise",
+	"author": {
+		"name": "ceej",
+		"url": "https://blog.ceejbot.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"handoff",
+		"pickup",
+		"session",
+		"context",
+		"relay",
+		"continuity",
+		"trivia"
+	]
+}
