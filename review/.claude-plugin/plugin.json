@@ -1,0 +1,19 @@
+{
+	"name": "review",
+	"version": "0.10.0",
+	"description": "Ceej's project and change-set review skills for Rust, with a Scala hanger-on.",
+	"author": {
+		"name": "ceej",
+		"url": "https://blog.ceejbot.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"rust",
+		"scala",
+		"code-review",
+		"diff-review",
+		"pr-review",
+		"change-review",
+		"audit"
+	]
+}

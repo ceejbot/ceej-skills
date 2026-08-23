@@ -1,11 +1,11 @@
 ---
-name: rust-security-review
+name: review-rust-security
 description: Use when reviewing code for security — threat-modeling a change or service, auditing untrusted-input handling, secrets or PHI exposure, injection, auth, crypto, panics-as-DoS, or supply-chain risk. Triggers on "security review", "is this safe to expose", "threat model this", "check for vulnerabilities", "audit before it takes untrusted input", "HIPAA review". Rust-shaped but applies to any language. Produces ranked, exploitable-first findings with an attacker path, a CWE reference, and the smallest fix.
 ---
 
 # Rust Security Review
 
-The security counterpart to `rust-project-review` and `rust-change-review`. Same evidence
+The security counterpart to `review-rust-project` and `review-rust-change`. Same evidence
 discipline — file, line, smallest fix — but the lens is "what can an attacker do?" rather than
 "is this clean code?". Can run over a whole service or a single diff; the threat surface scales
 to the scope.

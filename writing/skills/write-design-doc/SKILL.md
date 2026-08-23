@@ -1,5 +1,5 @@
 ---
-name: writing-design-docs
+name: write-design-doc
 description: Use when the user wants to write a problem-statement design doc, says "let's plan a feature properly" / "write a design doc" / "I'm thinking about how to do X" for a non-trivial X, or before committing to a non-obvious technical direction
 ---
 

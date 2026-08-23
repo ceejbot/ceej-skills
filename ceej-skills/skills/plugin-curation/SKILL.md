@@ -123,7 +123,7 @@ You: [reads ~/.claude.json skillUsage + favoritePlugins; runs queries.sql; reads
      anything older than that.
 
      Keep — live core
-       ceej-skills (session-retro 27×/today, writing-commit-messages 7×/this week)
+       ceej-skills (session-retro 27×/today, write-commit-message 7×/this week)
        codex (codex-rescue: 25 Agent spawns) · trivia (458 mcp__trivia__* calls)
        rust-analyzer-lsp — 0 Skill calls, but it's the language server. Silent, essential.
 

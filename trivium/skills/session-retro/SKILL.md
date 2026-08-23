@@ -5,9 +5,18 @@ description: Use at the end of a working session, before final commit, when the 
 
 # Session Retro
 
-Reflect on a working session and turn the lessons into durable trivia memories. The point is the *feedback loop*: next session's first `recall` should pick up what we learned. (Trivia is [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup instructions are Rust-oriented, but it's quite good.)
+Turn a session's lessons into trivia memories the next session can actually
+find. This is half of a loop: retro writes, `session-start` reads. A lesson
+nobody recalls is a lesson not learned, so this skill spends as much care on
+*findability* — dedupe, aliases, hubs — as on the lesson itself. The memory
+shape is defined once in `${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`; read it at the
+top of every retro. (Trivia is
+[chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
+instructions are Rust-oriented, but it's quite good.)
 
-**Core principle:** specific lessons or none. "Be more careful" is not a lesson. "Don't reach for `Box<dyn Error>` in library APIs because we hit `?` ergonomic problems three times" is.
+**Core principle:** specific lessons or none. "Be more careful" is not a
+lesson. "Don't reach for `Box<dyn Error>` in library APIs because we hit `?`
+ergonomic problems three times" is.
 
 ## When to use
 
@@ -16,130 +25,170 @@ Reflect on a working session and turn the lessons into durable trivia memories. 
 - After a feature lands, a bug is fixed, or an investigation concludes.
 - User asks for a retro explicitly.
 
-**Skip if:** session was trivial (one-line fix, doc tweak) or was pure exploration with no conclusion.
+**Skip if:** the session was trivial (one-line fix, doc tweak) or was pure
+exploration with no conclusion.
 
 ## Steps
 
-### 1. Recall prior retros
+### 1. Recall the hubs for the themes this session touched
+
+Name the one to three themes the session worked in (from the project's list in
+`<slug>/conventions`). For each:
 
 ```
-recall(query = "retro", tags = ["project:<slug>", "retro"], limit = 3, truncate = 500)
+recall(query = "<slug>/habits/<theme>", tags = ["project:<slug>"], limit = 1)
 ```
 
-The params carry the cap — `limit = 3` for the top three, `truncate` so a long body doesn't blow up context — rather than recalling five and skimming past two. Skim the results. If anything from the past applies to today's session, mention it — and `rate` those memories up if they helped, down if they were noise. Trivia ranking improves with feedback.
+One tag per call — a second tag widens the filter to other projects. A result
+is the hub only when its `mnemonic` equals the queried string exactly; recall
+always returns *something*, and a near miss is another memory, not the hub.
+Skim each real hub. If it guided the session, `rate` it up; if it was noise,
+down. Note any theme with no hub yet; step 5 creates it.
 
 ### 2. Summarize the session in 3–6 bullets
 
-Plain prose, not a diff. What got done, what stalled, what surprised us. This is for the user to confirm before we commit lessons; don't memorize it.
+Plain prose, not a diff. What got done, what stalled, what surprised us. This
+is for the user to confirm before lessons cement; it is not memorized.
 
-### 3. Three columns
+### 3. Draft candidates in three columns
 
-Walk through the session and identify:
+Walk the session and draft each candidate with four labels — **kind**,
+**theme**, **generality** (project-only, or `general:<domain>`), and the body
+in the taxonomy's format:
 
-**Worked well** — approaches, tools, patterns, framings that produced results faster or cleaner than expected. For each:
+- **Worked** — an approach, tool, or framing that produced results faster or
+  cleaner than expected. `Situation | What we did | Why it worked`.
+- **Avoid** — a dead end, a tool that fought us, advice that was wrong.
+  `Situation | What we tried | Why it failed | What to try instead`.
+- **Learned** — a durable fact about the domain, a tool, an API, or the
+  codebase. Not process (that's worked/avoid), not state (that's
+  `current-focus`). `Fact | Where it came from | Why it matters`.
 
-```
-memorize(
-  mnemonic = "<slug>/worked/<short-handle>",
-  content  = "Situation: ... | What we did: ... | Why it worked: ...",
-  tags     = ["project:<slug>", "retro", "worked"]
-)
-```
+`Why` is non-negotiable in all three. A long subagent-driven session may
+legitimately produce three to five candidates; a short one, zero to two. The
+bar is per lesson, not per session: every candidate must pass step 4.
 
-**Didn't work / friction** — dead ends, tools that fought us, framings that misled us, advice that was wrong. For each:
+### 4. Dedupe every candidate
 
-```
-memorize(
-  mnemonic = "<slug>/avoid/<short-handle>",
-  content  = "Situation: ... | What we tried: ... | Why it failed: ... | What to try instead: ...",
-  tags     = ["project:<slug>", "retro", "avoid"]
-)
-```
-
-**Learned** — durable facts about the domain, a tool, an API, or the codebase that surfaced during the session. Not process lessons (that's worked/avoid) and not state (that's `current-focus`). For each:
+The corpus probably already holds a version of this lesson. For each
+candidate:
 
 ```
-memorize(
-  mnemonic = "<slug>/learned/<short-handle>",
-  content  = "Fact: ... | Where it came from: ... | Why it matters: ...",
-  tags     = ["project:<slug>", "retro", "learned"]
-)
+recall(query = "<the lesson's gist in plain words>", tags = ["project:<slug>"],
+       full_text_search = "<one distinctive term from the body>",
+       limit = 3, truncate = 400, exclude_tags = ["archive"])
 ```
 
-The `Why` field is non-negotiable in all three. Without it the lesson can't survive contact with a different situation.
+Three verdicts:
 
-### 3½. Smooth sailing is a valid outcome
+- **Covered** — an existing spoke says this. *Reinforce* it: `memorize` the
+  same mnemonic with the same tags and a sharper body that folds in today's
+  instance; `rate` it up. No new memory.
+- **Related but distinct** — a new spoke, plus `link(new, existing,
+  "related")` in step 5.
+- **Nothing** — a new spoke.
 
-Some sessions produce zero new memories — everything went the way prior lessons said it would. That's a *successful* retro, not a failure. The retro work for such a session is maintenance of the memories that got you there:
+Done when every candidate has a verdict. A candidate that duplicates an
+existing spoke and gets saved anyway is the single most common way this corpus
+degrades.
 
-- `rate` up the memories that guided the session (down for noise) — same discipline as step 1.
-- `edit` to add tags or mnemonic aliases to a memory that was hard to find this time.
-- `link` memories that this session revealed are related.
+### 5. Save each new spoke — five moves
 
-Don't invent a lesson just to have something to save.
+1. **Memorize** with the full tag set: `["project:<slug>", "<kind>",
+   "theme:<theme>"]`, plus `"general:<domain>"` if it transfers. Read the
+   response: if it reports an auto-merge into an existing memory, your
+   mnemonic does not exist — switch to the *Covered* path and reinforce the
+   memory it merged into instead.
+2. **Alias** it: `edit(mnemonic, add_mnemonics = [...])` with one or two
+   natural-phrasing questions a future session would ask. The slug alone
+   embeds poorly; the alias is what recall matches.
+3. **Hub line**: the hub from step 1 (exact mnemonic match, or none). Insert
+   a one-line rule naming the spoke at its priority position and `memorize`
+   `<slug>/habits/<theme>` with the new body and tags `["project:<slug>",
+   "habits", "theme:<theme>"]`. No hub yet means this line is the first. If
+   the hub would reach thirteen lines, say so to the user —
+   `memory-gardening` splits it; the retro doesn't squeeze.
+4. **Link** `link(spoke, hub, "related")`, plus `link(spoke, existing,
+   "related")` for each memory step 4 judged related but distinct. A general
+   spoke also links to its domain hub — `general/habits/agent-process`,
+   `general/habits/rust-toolchain`, and so on per the taxonomy — created if
+   missing.
+5. **Bug report**: a spoke with `theme:memory` and kind `avoid` is a defect in
+   these skills. Memorize it, then tell the user which skill step failed so
+   the skill gets patched. A process lesson that lives only in project memory
+   never flows back.
 
-### 4. Update `current-focus`
+Done when each saved spoke has an alias, a theme tag, a hub line, a hub
+link, and a link to every related memory from step 4.
 
-If the session changed what you're working on next, `edit` the `<slug>/current-focus` memory rather than memorizing a new retro entry. Retros are for *durable* lessons, not state.
+### 6. Update `current-focus`
 
-### 5. Confirm with the user
+If the session moved the frontier, first recall `<slug>/current-focus` by
+exact mnemonic (a retro without a preceding `session-start` has no copy in
+context), then rewrite it in the four-section format: `memorize` the same
+mnemonic with tags `["project:<slug>", "seed"]`. `edit` cannot change a body.
+Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
+— `shipped <hash>` — and stay on the list. Retros hold durable lessons; state
+lives here.
 
-List the memories you saved, with their mnemonics. Ask if any should be edited or dropped before they cement. If it was a smooth-sailing session, report the maintenance you did instead (ratings, tags, links).
+### 7. Confirm with the user
+
+Show a table: mnemonic · reinforced or new · aliases · hub line. Ask if any
+should be edited or dropped before they cement. For a smooth-sailing session,
+report the maintenance done instead.
+
+## Smooth sailing is a valid outcome
+
+Some sessions produce zero new memories — everything went the way prior
+lessons said it would. That's a *successful* retro. Its work is maintenance of
+the memories that got you there:
+
+- `rate` up the hubs and spokes that guided the session, down the noise.
+- `edit` to add an alias to a memory that was hard to find this time.
+- `link` memories the session revealed are related.
+
+Don't invent a lesson to have something to save.
 
 ## Anti-patterns
 
-| Don't | Why |
-|-------|------|
-| Memorize the diff or session transcript | Git already has it. Trivia is for the *meaning* you extracted. |
-| Memorize "currently debugging X" as a retro | That's state, not a lesson. Update `current-focus` instead. |
-| Write a memory whose lesson is "be more careful" / "test more" | Too vague to ever match a future situation. Be specific or skip. |
-| Save five lessons from a one-hour session | Most sessions produce 0–2 durable lessons. Quality over volume. |
-| Force a lesson out of a smooth session | Zero new memories plus some ratings, tags, or links is a successful retro. |
-| Skip the `Why` field | Without the reason, the lesson can't generalize and won't help next time. |
-
-## Quick template
-
-```
-Worked:
-  <slug>/worked/<handle>
-    Situation: ...
-    What we did: ...
-    Why it worked: ...
-
-Avoid:
-  <slug>/avoid/<handle>
-    Situation: ...
-    What we tried: ...
-    Why it failed: ...
-    What to try instead: ...
-
-Learned:
-  <slug>/learned/<handle>
-    Fact: ...
-    Where it came from: ...
-    Why it matters: ...
-```
+| Don't                                                  | Why                                                                                       |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Memorize the diff or session transcript                | Git has it. Trivia holds the *meaning* you extracted.                                     |
+| Memorize "currently debugging X" as a retro            | State, not a lesson. It belongs in `current-focus`.                                       |
+| Save a lesson without running step 4                   | Four memories saying "nightly fmt got skipped" is how a corpus drowns its own lessons.    |
+| Save a spoke with no alias                             | The slug loses to older, vaguer memories; the lesson is unfindable by the session it's for.|
+| Pass two tags to `recall`                              | OR semantics: the second tag pulls in every other project carrying it.                   |
+| `edit` to update content                               | `edit` only touches mnemonics, aliases, and tags. Re-`memorize` the same mnemonic.        |
+| Write a lesson whose content is "be more careful"      | Too vague to match a future situation. Be specific or skip.                               |
+| Skip the `Why` field                                   | Without the reason, the lesson can't generalize.                                          |
 
 ## Example
 
 ```
 User: let's wrap up
-You: [recall("retro", tags=["project:ratatui-clock", "retro"]) → finds one prior memory about a ratatui redraw quirk]
-     Today: smooth redraw is working. The fix turned out to be a single buffer.swap_buffers() at the end of each frame, not the per-widget approach we tried first.
-     Lessons:
-       Worked → ratatui-clock/worked/single-swap-per-frame
-         Situation: flicker on full-screen redraws.
-         What we did: Single buffer swap at end of frame, draw to back buffer only.
-         Why it worked: ratatui's diff is per-frame; per-widget swaps fight it.
-       Avoid → ratatui-clock/avoid/per-widget-redraw
-         Situation: same.
-         What we tried: forcing redraw on each Widget::render.
-         Why it failed: ratatui already diffs internally; doubling up causes flicker.
-         What to try instead: trust the framework's diff and only swap once per tick.
-     Also rated the prior "ratatui frame timing" memory up — it pointed us at the buffer model.
-     Save these?
+You: [recall("ratatui-clock/habits/rendering", tags=["project:ratatui-clock"], limit=1)
+        → hub with 3 lines; the frame-timing line guided today. Rated up.]
+     Today: smooth redraw is working. The fix was a single buffer.swap_buffers()
+     at the end of each frame, not the per-widget approach we tried first.
+     Candidates:
+       Worked · theme:rendering · project-only
+         ratatui-clock/worked/single-swap-per-frame
+         Situation: flicker on full-screen redraws. | What we did: one swap at
+         end of frame, draw to back buffer only. | Why it worked: ratatui diffs
+         per frame; per-widget swaps fight it.
+       Avoid · theme:rendering · project-only
+         ratatui-clock/avoid/per-widget-redraw
+         … | What to try instead: trust the framework's diff, swap once per tick.
+     [dedupe: recall("flicker from swapping buffers", tags=[project], full_text_search="swap")
+        → nothing covers it; the frame-timing memory is related]
+     Saving both with aliases ("why does ratatui flicker on redraw?",
+     "how many buffer swaps per frame?"), a new line at the top of
+     habits/rendering, and links to the hub and to frame-timing. OK?
 User: yes
-You: [memorizes both, confirms]
+You: [memorize ×2, edit add_mnemonics ×2, memorize hub, link ×3, memorize current-focus]
 ```
 
-A smooth-sailing session looks different: "Today went exactly the way the saved lessons predicted — nothing new to memorize. I rated single-swap-per-frame up and linked it to the frame-timing memory, since we used them together."
+A smooth-sailing session reads: "Today went the way the saved lessons
+predicted — nothing new. I rated habits/rendering up and added the alias 'why
+does the clock flicker?' to single-swap-per-frame, which took two tries to
+find."

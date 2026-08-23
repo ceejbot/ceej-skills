@@ -1,21 +1,31 @@
 ---
 name: project-trivia-setup
-description: Use when starting trivia memory in a Rust project for the first time, when the user says "set up trivia" or "bootstrap project memory", or when no `project:<slug>`-tagged memories exist yet for this repo
+description: Use when starting trivia memory in a project for the first time, when the user says "set up trivia" or "bootstrap project memory", or when no `project:<slug>`-tagged memories exist yet for this repo
 ---
 
 # Project Trivia Setup
 
-Bootstrap the trivia MCP for a Rust project so that future sessions can recall what this project is, what's being worked on, and what conventions it follows — without polluting the global trivia DB shared across all projects. (Trivia is [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup instructions are Rust-oriented, but it's quite good.)
+Bootstrap the trivia MCP for a project so future sessions can recall what it
+is, what's being worked on, and what conventions it follows — without
+polluting the global trivia DB shared across all projects. The memory shape
+every later skill relies on is defined in `${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`;
+this skill seeds it. (Trivia is
+[chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
+instructions are Rust-oriented, but it's quite good.)
 
-**Core principle:** every memory belonging to a project carries the tag `project:<slug>`. Recall by tag, memorize with the tag, and the global DB stays organized.
+**Core principle:** every memory belonging to a project carries the tag
+`project:<slug>`. Recall by tag, memorize with the tag, and the global DB
+stays organized.
 
 ## When to use
 
 - New project, first time using trivia for it.
 - Existing project where memories were never set up under the tag convention.
-- User asks to "set up trivia" / "bootstrap project memory" / "remember this project".
+- User asks to "set up trivia" / "bootstrap project memory" / "remember this
+  project".
 
-**Skip if:** the sentinel memory `<slug>/trivia-bootstrapped` already exists (run `recall` for that exact mnemonic first). In that case, list what's already there and stop.
+**Skip if:** the sentinel memory `<slug>/trivia-bootstrapped` already exists
+(recall that exact mnemonic first). List what's already there and stop.
 
 ## Steps
 
@@ -23,30 +33,41 @@ Bootstrap the trivia MCP for a Rust project so that future sessions can recall w
 
 In order:
 
-1. Read `Cargo.toml` and use `[package].name` (lowercase, hyphens already canonical).
-2. If no `Cargo.toml`, use the basename of the working directory, lowercased, with non-alphanumerics replaced by hyphens.
+1. Read `Cargo.toml` and use `[package].name` (lowercase, hyphens already
+   canonical).
+2. If no `Cargo.toml`, use the basename of the working directory, lowercased,
+   with non-alphanumerics replaced by hyphens.
 
 The slug becomes the project tag: `project:<slug>`.
 
 ### 2. Check for an existing bootstrap
 
 ```
-recall("<slug>/trivia-bootstrapped")
+recall(query = "<slug>/trivia-bootstrapped", tags = ["project:<slug>"], limit = 1)
 ```
 
-If that returns a hit, **stop**. Surface the existing seed memories to the user instead of overwriting them. Offer to update individual memories, not re-run bootstrap.
+A hit whose `mnemonic` is exactly `<slug>/trivia-bootstrapped` means
+**stop**: surface the existing seeds to the user instead of overwriting them,
+and offer to update individual memories rather than re-run bootstrap. Any
+other mnemonic is recall's nearest neighbour, not the sentinel — proceed.
 
-### 3. Seed the initial memories
+### 3. Seed the three memories
 
-Ask the user (or infer from `README.md` / `Cargo.toml` / recent git activity if obvious) for these three facts. Memorize each one with tags `project:<slug>` plus the topical tag in the table:
+Ask the user (or infer from `README.md` / `Cargo.toml` / recent git activity
+when obvious) for these facts. Memorize each with tags `["project:<slug>",
+"seed"]`:
 
-| Mnemonic               | Topical tag   | Content                                                                                            |
-| ---------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `<slug>/overview`      | `overview`    | One paragraph: what this project is and why it exists.                                             |
-| `<slug>/current-focus` | `focus`       | One paragraph: what the user is working on right now.                                              |
-| `<slug>/conventions`   | `conventions` | Any non-obvious project rules: build commands, MSRV, lint config, style choices, layout decisions. |
+| Mnemonic               | Content                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<slug>/overview`      | One paragraph: what this project is and why it exists.                                                                                                  |
+| `<slug>/current-focus` | The four-section format: `FRONTIER` / `GROUND TRUTH` / `NEXT` / `FOLLOW-UPS`. Empty sections are fine on day one.                                      |
+| `<slug>/conventions`   | Non-obvious rules — build commands, MSRV, lint config, layout — and the project's **theme list** for `theme:` tags, chosen from the taxonomy's starters. |
 
-Only memorize facts the user has stated or that are unambiguous from the repo. Do not invent.
+The theme list is the one decision worth a sentence with the user: it's the
+axis every later lesson gets filed on. Three to six themes is typical at the
+start; `memory-gardening` extends it as spokes accumulate.
+
+Only memorize facts the user has stated or that are unambiguous from the repo.
 
 ### 4. Drop the sentinel
 
@@ -54,11 +75,11 @@ Only memorize facts the user has stated or that are unambiguous from the repo. D
 memorize(
   mnemonic = "<slug>/trivia-bootstrapped",
   content  = "Trivia bootstrap completed for <slug> on <YYYY-MM-DD>. Project tag: project:<slug>.",
-  tags     = ["project:<slug>", "meta"]
+  tags     = ["project:<slug>", "seed"]
 )
 ```
 
-Future sessions detect this in step 2 and avoid re-running.
+Future sessions detect this in step 2 and skip re-running.
 
 ### 5. Document the convention in `CLAUDE.md`
 
@@ -67,20 +88,23 @@ Append (or create) a short section in the project's `CLAUDE.md`:
 ```markdown
 ## Project memory
 
-This project uses the trivia MCP. All memories are tagged `project:<slug>`. Open working sessions with the `session-start` skill, which recalls the current focus and top lessons under that tag. Add new lessons via the `session-retro` skill.
-
-Use lowercased tags
+This project uses the trivia MCP. All memories are tagged `project:<slug>`
+and follow the trivium taxonomy (seeds, `habits/<theme>` hubs, and
+`worked` / `avoid` / `learned` spokes). Themes: <list>. Open sessions with
+`session-start`, close them with `session-retro`, and run `memory-gardening`
+when lessons stop surfacing.
 ```
 
-This makes the convention discoverable to future sessions even if the trivia tag itself ever drifts.
+This keeps the convention discoverable even if the trivia tag ever drifts.
 
 ### 6. Report back
 
 Tell the user:
 
-- The slug used and where it came from (Cargo.toml vs directory).
-- Each memory you created (mnemonic + one-line summary).
-- That subsequent sessions should open with the `session-start` skill, which recalls the focus and top lessons under that tag (not a tag-wildcard dump).
+- The slug used and where it came from (`Cargo.toml` vs directory).
+- Each memory created (mnemonic + one-line summary) and the theme list.
+- That subsequent sessions open with `session-start`, which recalls the focus,
+  hubs, and one probe — not a tag-wildcard dump.
 
 ## Anti-patterns
 
@@ -90,6 +114,7 @@ Tell the user:
 | Seed speculative memories                     | Every memory should be a fact the user has stated or that's unambiguous from the repo. Speculation pollutes recall. |
 | Store secrets, tokens, or private credentials | The trivia DB is global to your machine and easy to export. Treat it like a public README.                          |
 | Use a different tag scheme per project        | The `project:<slug>` convention is the whole point. Stick to it.                                                    |
+| Skip the theme list                           | Without it, every later spoke lands untagged and the hubs have nothing to hang from.                                |
 
 ## Example
 
@@ -97,11 +122,18 @@ Tell the user:
 User: set up trivia for this project
 You: [reads Cargo.toml, finds name = "ratatui-clock"]
      Slug: ratatui-clock. Tag: project:ratatui-clock.
-     [recall("ratatui-clock/trivia-bootstrapped") → no results, proceeding]
-     What's the one-line description of this project? What are you working on right now?
-User: It's a small terminal clock built on ratatui to teach myself the framework. Right now I'm trying to get smooth redraw without flicker.
-You: [memorizes ratatui-clock/overview, ratatui-clock/current-focus, ratatui-clock/conventions (from Cargo.toml: edition 2021, MSRV 1.74)]
+     [recall("ratatui-clock/trivia-bootstrapped", tags=["project:ratatui-clock"], limit=1) → no results]
+     What's the one-line description of this project, and what are you working
+     on right now? For themes I'd start with rendering, tooling, and
+     rust-idioms — sound right?
+User: It's a small terminal clock built on ratatui to teach myself the
+      framework. Right now I'm trying to get smooth redraw without flicker.
+      Themes are fine.
+You: [memorizes ratatui-clock/overview; ratatui-clock/current-focus with
+      FRONTIER "nothing shipped yet", NEXT "smooth redraw without flicker";
+      ratatui-clock/conventions with edition 2021, MSRV 1.74, themes]
      [memorizes sentinel ratatui-clock/trivia-bootstrapped]
      [appends "Project memory" section to CLAUDE.md]
-     Done. Three memories seeded under project:ratatui-clock. Open future sessions with the session-start skill to reload the focus and lessons.
+     Done. Four memories seeded under project:ratatui-clock. Open future
+     sessions with session-start.
 ```

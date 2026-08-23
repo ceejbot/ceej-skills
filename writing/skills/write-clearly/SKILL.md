@@ -1,5 +1,5 @@
 ---
-name: writing-clearly
+name: write-clearly
 description: Use whenever writing or revising prose on the user's behalf — documentation, READMEs, comments, error messages, announcements, blog drafts. A style guide for the user's preferred English: warm, direct, laconic, occasionally devastating.
 ---
 

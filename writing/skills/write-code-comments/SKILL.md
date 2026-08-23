@@ -1,5 +1,5 @@
 ---
-name: writing-code-comments
+name: write-code-comments
 description: Use when writing or revising code comments or API documentation — doc comments, Rust doc strings, module docs, inline comments. Triggers on phrases like "add comments", "document this function", "write doc comments", "clean up these comments", or whenever generating code that includes comments. Comments explain WHY, appear sparingly, and never overshadow the code.
 ---
 
@@ -11,7 +11,7 @@ true. Often the better fix is clearer code: a well-named function needs no
 introduction.
 
 For prose style within comments, apply the rules in the
-`ceej-skills:writing-clearly` skill: active voice, definite concrete language,
+`writing:write-clearly` skill: active voice, definite concrete language,
 omit needless words, present tense for software behavior ("crashes", not
 "will crash"). Disciplined economy matters *more* in comments than in
 documents, because comments share the screen with code.

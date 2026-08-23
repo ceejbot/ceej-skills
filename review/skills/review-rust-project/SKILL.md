@@ -1,5 +1,5 @@
 ---
-name: rust-project-review
+name: review-rust-project
 description: Use when the user asks for a holistic / wholistic review of a Rust project, "is this codebase healthy", "review the project", "audit before sharing", or at a periodic checkpoint in a personal Rust project
 ---
 
@@ -159,7 +159,7 @@ Findings should land in a single message. Don't fix anything in this pass — re
 - **Panics as availability bugs** — in a server or long-running binary, an attacker-reachable `.unwrap()` or index panic is a denial-of-service vector, not just a style nit (ties back to *No casual panics*).
 
 > This is the holistic-review touch on security. For a focused pass — threat model, injection,
-> authz, crypto, PHI handling, panics-as-DoS, supply chain — use the `rust-security-review` skill.
+> authz, crypto, PHI handling, panics-as-DoS, supply chain — use the `review-rust-security` skill.
 
 **Dependency-audit output shape.** When `cargo audit` / `cargo deny` surface anything, don't bury
 it in prose — emit a compact table so the fix path is obvious:

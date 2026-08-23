@@ -1,11 +1,11 @@
 ---
-name: rust-change-review
+name: review-rust-change
 description: Use when reviewing a scoped Rust change — uncommitted diff, unpushed commit stack, or open PR. Triggers on phrases like "review this change", "review my diff", "review this PR", "look over what I'm about to push", or "is this ready to merge". Applies the project-review quality lens scoped to the diff and answers four targeted questions (intent match, testing, documentation, completeness). Produces a small number of ranked, highly actionable suggestions.
 ---
 
 # Rust Change / Diff / PR Review
 
-The change-oriented counterpart to `rust-project-review`. Same standards, but ruthlessly restricted to what the diff actually touches.
+The change-oriented counterpart to `review-rust-project`. Same standards, but ruthlessly restricted to what the diff actually touches.
 
 **Core principle:** Every finding must cite a file and a line in the diff. "Could use more tests" is not a finding; "`src/parser.rs:42-58` adds the empty-header branch but no test covers empty input" is. Project-wide advice is out of scope unless the diff makes an existing problem materially worse.
 
@@ -143,7 +143,7 @@ Constructive review is more useful than exhaustive review. The goal is to help t
 
 | Don't | Why |
 |---|---|
-| Review the whole project instead of the diff | Out of scope. Project-wide concerns belong in `rust-project-review`. |
+| Review the whole project instead of the diff | Out of scope. Project-wide concerns belong in `review-rust-project`. |
 | Give 10 nits at equal weight | Forces the user to do the prioritization. Top few, then a tail. |
 | Vague advice ("needs more tests") | Useless without naming the behavior or the file in the diff. |
 | Suggest large refactors unrelated to the goal | The diff has a job. Don't expand its scope to fit your review. |
@@ -163,4 +163,4 @@ notes, and honor them alongside this skill. Example of the shape such notes take
 - Documentation should be concise; this project values precise, non-repetitive comments and design docs over long inline prose.
 - "Complete" often means "the generator produces the vector and the test asserts it" for cryptographic or protocol work.
 
-Use the same high standards as `rust-project-review`, but ruthlessly scoped to the diff and the stated intent of the change.
+Use the same high standards as `review-rust-project`, but ruthlessly scoped to the diff and the stated intent of the change.

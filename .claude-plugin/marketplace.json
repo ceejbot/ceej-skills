@@ -2,32 +2,43 @@
 	"name": "ceej-skills",
 	"owner": {
 		"name": "ceej",
-		"url": "https://blog.ceejbot.com"
+		"url": "https://github.com/ceejbot/ceej-skills"
 	},
 	"metadata": {
-		"description": "Personal workflow skills for my projects",
-		"version": "0.11.0"
+		"description": "Personal agentic workflow skills developed for use with my work projects",
+		"version": "0.12.0"
 	},
 	"plugins": [
 		{
 			"name": "ceej-skills",
 			"source": "./ceej-skills",
-			"description": "Rust + Scala project and change review, security review, design-doc, commit-message, code-comment, prose style, and plugin-curation skills"
-		},
-		{
-			"name": "trivium",
-			"source": "./trivium",
-			"description": "Project-memory workflow on the trivia MCP: bootstrap, session start + retro, and cross-source cited research"
+			"description": "Legacy skill pile. Will be retired."
 		},
 		{
 			"name": "enotime",
 			"source": "./enotime",
-			"description": "An Oblique Strategy at session start, courtesy of the oblique CLI"
+			"description": "An Oblique Strategy at session start, courtesy of the oblique CLI."
 		},
 		{
 			"name": "relay",
 			"source": "./relay",
-			"description": "Session relay: /handoff compacts a session into a self-contained document any agent can pick up; /pickup reads it back. Trivia-aware, with a plain-file fallback"
+			"description": "Session relay: /handoff compacts a session into a self-contained document any agent can pick up; /pickup reads it back. Trivia-aware, with a plain-file fallback."
+		},
+		{
+			"name": "review",
+			"source": "./review",
+			"description": "Skills for holistic review of Rust projects and changesets, with a stray Scala version because work."
+		},
+		{
+			"name": "trivium",
+			"source": "./trivium",
+			"description": "Project-memory workflow on the trivia MCP: bootstrap, session start + retro, periodic memory gardening, and cross-source cited research."
+		},
+		{
+			"name": "writing",
+			"source": "./writing",
+			"description": "Skills for writing prose, commits, code comments, and design docs clearly and concisely, without bafflegab and with the necessary information."
+
 		}
 	]
 }

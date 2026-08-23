@@ -1,5 +1,5 @@
 ---
-name: writing-commit-messages
+name: write-commit-message
 description: Use when writing a commit message or PR description for work that will land on main/trunk (typically via squash-and-merge). Triggers on phrases like "write the commit message", "draft the PR", "what should this commit say", or before any commit that becomes part of the durable git log. Skip for WIP/fixup commits on a feature branch — those don't need ceremony.
 ---
 
