@@ -116,9 +116,12 @@ A fan-out Explore agent over the specs directory and the cited types returns
 an authoritative map in one shot and keeps this context clean. Done when every
 item the plan depends on has been read at its source.
 
-An item found already shipped gets a tombstone now — `memorize`
-`<slug>/current-focus` with the same tags and `shipped <hash>` on that line —
-so the next session doesn't re-plan it.
+An item found already shipped gets a tombstone now — re-`memorize`
+`<slug>/current-focus` with the same tags and the **full current body**, with
+`shipped <hash>` added on that line — so the next session doesn't re-plan it.
+**`memorize` on an existing mnemonic REPLACES the body**: saving only the
+tombstone line deletes the rest of the focus (this happened; a gardening pass
+had to restore the seed from a same-day recall). Carry everything forward.
 
 ### 7. Rate what helped
 

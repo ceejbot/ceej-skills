@@ -83,7 +83,9 @@ Three verdicts:
 
 - **Covered** — an existing spoke says this. *Reinforce* it: `memorize` the
   same mnemonic with the same tags and a sharper body that folds in today's
-  instance; `rate` it up. No new memory.
+  instance; `rate` it up. No new memory. **The body you pass REPLACES the old
+  one entirely** — fold means recall the full existing body and rewrite it
+  whole; an "ADDENDUM"-only save silently deletes everything else.
 - **Related but distinct** — a new spoke, plus `link(new, existing,
   "related")` in step 5.
 - **Nothing** — a new spoke.
