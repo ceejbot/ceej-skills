@@ -39,14 +39,23 @@ drift; a retro's maintenance pass covers it.
 ### 1. Export and measure
 
 ```
-export(directory = "<scratch>/export-0", tags = ["project:<slug>"])
+export(directory = "<scratch>/export-0")          # full store, no tag filter
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/memory-gardening/stats.py <scratch>/export-0 <slug> [<old-slug> …]
 ```
 
 `export-0` is the undo for the whole pass: copy it somewhere durable and
-never write into it. Every later step that needs current state takes a fresh
-export (`export-1`, `export-2`, …) and points `stats.py` at the newest one;
-tags set through MCP never reach an old export.
+never write into it. Export the **whole store**, not just the project tag —
+the project's real working set is usually bigger than its tag. Memories
+written during briefings and prep (person facts, calendar identities,
+preferences, voice notes) tend to carry topical tags (`calendar`, `meetings`,
+`people`, `<user>`) but not `project:<slug>`; on the 2026-08 running-notes
+pass the untagged strays (56) outnumbered the tagged corpus (49), and the
+project's most-recalled memory was among them. Sweep the export for
+project-relevant memories missing the project tag — skip any already homed to
+another `project:` tag — and carry the list into triage. Every later step
+that needs current state takes a fresh export (`export-1`, `export-2`, …)
+and points `stats.py` at the newest one; tags set through MCP never reach an
+old export.
 
 The report gives recall concentration, never-recalled share, net-negative
 ratings, off-prefix and off-shape mnemonics, tag coverage, hubs present
@@ -56,8 +65,11 @@ nothing, which confirms the duplicates are in the bodies and need step 5.
 
 ### 2. Triage with the user
 
-Present the numbers and three decisions:
+Present the numbers and four decisions:
 
+- **The adoption set.** The step-1 stray sweep's list of project-relevant
+  memories missing `project:<slug>`. The user says which get adopted (tagged
+  into the project and gardened with it) and which stay a shared pool.
 - **The theme list.** Read it from `<slug>/conventions`; propose additions
   for clusters the stats show and splits for themes over twenty spokes. The
   user owns this list.
@@ -85,7 +97,9 @@ Done when a fresh export shows no memory the user chose to archive outside
 
 ### 4. Partition and normalize on disk
 
-No store calls in this step. From `export-0`, build three files:
+No store calls in this step. The corpus is the project-tagged memories plus
+the adoption set the user approved in step 2. From `export-0`, build three
+files over that corpus:
 
 - **`decisions.tsv`** — one row per memory: mnemonic, kind, theme, action
   (`keep` / `archive` / `seed`). Kind comes from the mnemonic's second
