@@ -81,6 +81,20 @@ memorize(
 
 Future sessions detect this in step 2 and skip re-running.
 
+Then verify the bootstrap actually took — do not trust the memorize
+responses alone. A serialization glitch once wrote the tags into the memory
+*bodies* as literal text, leaving four seeds invisible to tag-scoped recall
+for a month:
+
+```
+recall(query = "<slug>/trivia-bootstrapped", tags = ["project:<slug>"], limit = 1)
+list-tags()
+```
+
+The recall must return the sentinel (exact mnemonic match), and `list-tags`
+must show `project:<slug>`. If either fails, repair each seed with
+`edit(mnemonic, add_tags = ["project:<slug>", …])` before finishing.
+
 ### 5. Document the convention in the agent instructions
 
 Append (or create) a short section in the project's agent instruction file:
