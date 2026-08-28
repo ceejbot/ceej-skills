@@ -6,28 +6,23 @@
 	},
 	"metadata": {
 		"description": "Personal agentic workflow skills developed for use with my work projects",
-		"version": "0.12.1"
+		"version": "0.14.0"
 	},
 	"plugins": [
 		{
-			"name": "ceej-skills",
-			"source": "./ceej-skills",
-			"description": "Legacy skill pile. Will be retired."
-		},
-		{
 			"name": "enotime",
 			"source": "./enotime",
-			"description": "An Oblique Strategy at session start, courtesy of the oblique CLI."
+			"description": "ENOTIME draws an Oblique Strategy on demand in Codex or Claude Code, and automatically at Claude Code session start."
 		},
 		{
 			"name": "relay",
 			"source": "./relay",
-			"description": "Session relay: /handoff compacts a session into a self-contained document any agent can pick up; /pickup reads it back. Trivia-aware, with a plain-file fallback."
+			"description": "Session relay: handoff writes a self-contained document any agent can pick up; pickup verifies and resumes it. Trivia-aware, with a plain-file fallback."
 		},
 		{
 			"name": "review",
 			"source": "./review",
-			"description": "Skills for holistic review of Rust projects and changesets, with a stray Scala version because work."
+			"description": "Skills for holistic and change-set Rust review, language-neutral application security, and Rust-specific security."
 		},
 		{
 			"name": "trivium",

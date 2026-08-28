@@ -1,0 +1,5 @@
+interface:
+  display_name: "Create a session handoff"
+  short_description: "Write a handoff another agent can resume"
+policy:
+  allow_implicit_invocation: false

@@ -1,192 +1,173 @@
 ---
 name: review-rust-security
-description: Use when reviewing code for security — threat-modeling a change or service, auditing untrusted-input handling, secrets or PHI exposure, injection, auth, crypto, panics-as-DoS, or supply-chain risk. Triggers on "security review", "is this safe to expose", "threat model this", "check for vulnerabilities", "audit before it takes untrusted input", "HIPAA review". Rust-shaped but applies to any language. Produces ranked, exploitable-first findings with an attacker path, a CWE reference, and the smallest fix.
+description: "Use when security-reviewing Rust code or a Rust diff for language- and ecosystem-specific risks: unsafe or FFI invariants, attacker-reachable panics and allocation, deserialization limits, concurrency and cancellation, secret-bearing debug output, cryptographic APIs, and Cargo supply-chain exposure. Pair with review-application-security for networked services or broad threat models. Produces ranked, exploitable-first findings with attacker paths and the smallest fixes."
 ---
 
 # Rust Security Review
 
-The security counterpart to `review-rust-project` and `review-rust-change`. Same evidence
-discipline — file, line, smallest fix — but the lens is "what can an attacker do?" rather than
-"is this clean code?". Can run over a whole service or a single diff; the threat surface scales
-to the scope.
+Rust's safe subset removes a large class of memory bugs; it does not remove
+attacker-reachable panics, unbounded work, unsafe invariant failures, logic
+bugs, or compromised build dependencies.
 
-**Core principle:** every finding needs an **attacker path**, not a theory. "Uses `format!` in a
-query" is not a finding; "`src/repo.rs:88` interpolates the user-supplied `tenant` into the SQL
-string via `format!`, and `tenant` arrives unvalidated from the `/search` query param
-(`handlers.rs:31`) — SQL injection, CWE-89" is. A vulnerability nobody can reach is, at most, a
-defense-in-depth note — mark it as such and rank it below anything exploitable.
+**Core principle:** trace hostile data to a Rust-specific failure mode. An
+`unwrap` is not a security finding merely because it exists. It becomes one
+when a modeled attacker can make it fail repeatedly and affect availability or
+integrity.
 
-Security review drowns in theoretical findings if you let it. The job is to find the handful of
-things an attacker can actually do, ranked, with the smallest fix for each — not to recite the
-OWASP list.
+## Boundary with application security
 
-## Determining scope
+This skill owns Rust implementation and Cargo ecosystem risks. It does not
+repeat broad injection, authorization, tenancy, PHI, or protocol findings;
+`review-application-security` owns those. For a Rust service review, share its
+threat model, apply both lenses, and return one deduplicated report.
 
-Establish what's under review and, crucially, **where the trust boundary sits**:
+For a Rust library or crate with no service boundary, establish who controls
+its public inputs and what callers rely on, then apply this skill alone. For a
+diff, capture intent and restrict findings to risks introduced or materially
+worsened by the change. Read the full changed files and their nearby tests.
 
-- **Whole service / project** — the attack surface is every place untrusted data enters: network
-  handlers, file/blob reads, CLI args, env, message-queue payloads, deserialization, FFI.
-- **Scoped diff / PR** — `gh pr diff` / `git diff`. Ask the narrower question: does this change
-  *add* attacker-reachable surface, *weaken* an existing control, or *handle* a new asset (PHI,
-  secrets, tokens)? A diff that touches none of those is a short review — say so.
-- **Capture intent** (commit/PR text or the service's purpose) and **read the full files**, not
-  just hunks — a control might live three functions away from the change.
+Review only. Do not implement fixes unless separately asked. Redact any secret
+or sensitive value found in source, logs, fixtures, or generated output.
 
-## How to run
+## Rust security lens
 
-1. **Build the threat model first** (below). You cannot rank a finding without it.
-2. Walk the **Security lens**, but only where the threat model says data is attacker-reachable.
-3. Run the **Tooling** (supply-chain + unsafe surface). Failures are findings, not footnotes.
-4. Synthesize a small, ranked list with the **Output template** — exploitable-first.
+### Panics, arithmetic, and allocation
 
-Review only. Don't fix in this pass. And **never paste a real secret or real PHI into the
-findings** — reference the location, redact the value.
+- Trace attacker-controlled values to `.unwrap()`, `.expect()`, indexing,
+  assertions, `unreachable!`, integer arithmetic, and infallible conversions.
+- Treat a panic as denial of service only when the attacker can reach and
+  repeat it in a long-running process (CWE-248, CWE-400).
+- Check attacker-influenced lengths before `Vec::with_capacity`, `read_to_end`,
+  collection growth, decompression, and buffering. Use bounded reads and
+  checked or saturating arithmetic where semantics permit.
+- Watch release/debug differences in overflow and any cast that truncates a
+  size, offset, duration, or identifier.
 
-## Step 1 — Threat model (do this before the lens)
+### Unsafe code and FFI
 
-Four questions, answered explicitly at the top of the output:
+- Inventory `unsafe`, `unsafe fn`, `extern` blocks, raw pointers, `transmute`,
+  manual allocation, and unchecked UTF-8 or indexing.
+- A `// SAFETY:` comment is a claim to verify, not proof. Follow hostile input
+  through every invariant: validity, alignment, provenance, aliasing,
+  initialization, lifetime, thread safety, and unwind behavior.
+- At FFI boundaries, validate lengths, nullability, ownership, callback
+  lifetime, error conventions, and whether a foreign panic/exception can cross
+  the boundary.
+- Rank unreachable unsafe as hardening, below unsafe that consumes attacker
+  bytes or crosses a live boundary.
 
-- **Trust boundaries** — where does untrusted data cross into trusted code? (HTTP/gRPC handlers,
-  Kafka/queue consumers, file/S3 reads, CLI/env, FFI, deserialization.)
-- **Assets** — what's worth stealing or breaking here? Name them: **PHI/PII**, secrets/keys,
-  auth tokens, money, availability, integrity of an audit record.
-- **Attacker capabilities** — unauthenticated remote? Authenticated-but-other-tenant? A
-  malicious upstream service? A poisoned dependency at build time?
-- **Existing controls** — what already defends each boundary (typed parsing at the edge, authz
-  middleware, parameterized queries, KMS)? A finding is "this control is missing/weak *here*".
+### Parsing and deserialization
 
-## Step 2 — Security lens (only where the threat model points)
+- Bound serde nesting, collection lengths, strings/bytes, decompression, and
+  format-specific work before allocating from untrusted input.
+- Check custom `Deserialize`, visitors, `deserialize_any`, untagged enums, and
+  unchecked conversions for ambiguous or unexpectedly expensive inputs.
+- Avoid parsing untrusted bytes by first allocating the size they claim. Fuzz
+  parsers and state machines that sit on a real trust boundary when the
+  project has a fuzzing setup.
 
-### Untrusted input & injection
-- **Parse, don't validate, as security** — untrusted bytes converted to a typed representation at
-  the edge, so interior code can't be confused. Re-validation scattered everywhere is a smell.
-- **SQL** — parameterized only. `sqlx` bind params / query macros, never `format!`/`+` into SQL
-  (CWE-89). Watch dynamic `ORDER BY`/identifiers — those need allow-listing, not binding.
-- **Command / path / template** — `std::process::Command` with attacker args (CWE-78); path
-  joins from user input without canonicalize + prefix check (path traversal, CWE-22); any
-  user-controlled format/template string.
-- **Deserialization & decompression** — `serde` over untrusted input with no size/shape limits;
-  zip/gzip/JSON bombs; unbounded `Vec`/`String` allocation from a length field (CWE-502, CWE-400).
+### Async and concurrency
 
-### Sensitive data — secrets & PHI (HIPAA)
-- **Secrets** — no hardcoded tokens/keys/credentialed URLs; no committed `.env`; secrets not
-  leaking through a derived `Debug`/`Display`, an error message, or a log line (CWE-532, CWE-798).
-- **PHI / PII** — never in logs, error messages, metrics labels, span attributes, or panic
-  messages (ties to the no-PHI-in-dimensions rule). Encrypted at rest (per-tenant KMS) and in
-  transit (TLS). **Minimum necessary** — does this code read or move more PHI than it needs?
-- **Audit** — is access to a sensitive asset recorded where it should be? (See the audit-log
-  design thinking — PHI access is an auditable event.)
+- Look for unbounded task spawning, channels, retry loops, and blocking work on
+  an async runtime.
+- Check locks held across `.await`, lock-order cycles, cancellation that leaves
+  half-mutated state, and detached tasks that outlive authorization or tenant
+  context.
+- Verify `Send + Sync` assumptions around interior mutability and unsafe impls;
+  prefer compiler-enforced ownership over comments and global mutable state.
 
-### Memory & availability (Rust-shaped)
-- **Panics as DoS** — an attacker-reachable `.unwrap()`/`.expect()`/`arr[i]`/integer overflow in
-  a server is a denial-of-service vector, not a style nit (CWE-248, CWE-400). Bounds-checked
-  access, `checked_*`/`saturating_*` arithmetic on attacker-influenced numbers.
-- **`unsafe` on attacker bytes** — any `unsafe` touching untrusted input is a top finding unless
-  the `// SAFETY:` invariant provably holds for hostile input. `transmute` of attacker bytes is a
-  red flag.
-- **Resource limits** — request body caps, timeouts, connection/concurrency limits, regex with
-  bounded backtracking. Unbounded anything reachable from the network is a finding.
+### Secrets and cryptographic APIs
 
-### Authn / authz
-- **Object-level authorization** — does every handler check the caller may act on *this*
-  resource, not just that they're logged in? Missing per-object/per-tenant checks (IDOR, CWE-639,
-  CWE-862) are the most common real vuln in CRUD services.
-- **Tokens / sessions** — validated, expired, scoped; not logged; not in URLs.
+- Secret-bearing types should not derive or expose unsafe `Debug`, `Display`,
+  serialization, or error output. Use redaction wrappers and `zeroize` only
+  where the threat model justifies memory clearing.
+- Use maintained Rust crypto/TLS crates and their high-level APIs. Check CSPRNG
+  selection, nonce uniqueness, constant-time verification, key parsing, and
+  certificate/hostname verification.
+- Treat `dangerous_configuration`, custom verifiers, or disabled TLS checks as
+  findings when reachable in a production configuration.
 
-### Crypto
-- No homegrown crypto. Vetted crates (`ring`, `rustls`, `aws-lc-rs`); no MD5/SHA-1 for security
-  (CWE-327); constant-time comparison for secrets/MACs (CWE-208); CSPRNG (`OsRng`) for keys/tokens,
-  not a fast PRNG; TLS verification never disabled "to make it work" (CWE-295).
+### Cargo and build-time supply chain
 
-### Supply chain
-- `cargo audit` (RUSTSEC advisories), `cargo deny check` (advisories + bans + licenses +
-  sources). Eyeball `Cargo.lock` churn for unexpected new transitive deps; watch typosquatted
-  crate names; treat a new `build.rs` or proc-macro dependency as code that runs on your machine
-  (CWE-1357).
+- Review `Cargo.lock` churn, new registries/git sources, similarly named
+  crates, feature expansion, and unexpected duplicate security-sensitive
+  dependencies.
+- Treat `build.rs`, proc macros, and native build dependencies as code that
+  executes on developer and CI machines (CWE-1357).
+- Confirm dependencies are maintained and advisories are understood; determine
+  whether an advisory is reachable and whether it affects runtime, build, or
+  dev-only code.
 
 ## Tooling
 
-Run, scoped to the touched crate(s) where possible:
+Run only what is relevant and available, scoped to touched crates where
+possible:
 
-- `cargo audit` — RUSTSEC advisories. **Blocking** for anything network-facing or pre-release.
-- `cargo deny check` — advisories + bans + licenses + sources in one gate.
-- `cargo-geiger` (if available) — `unsafe` surface across the dependency tree.
-- For web services, a quick `semgrep` / `cargo-vet` pass if configured.
+- `cargo audit` for RUSTSEC advisories.
+- `cargo deny check` for advisories, bans, licenses, and sources when configured.
+- `cargo geiger` for unsafe surface and `cargo vet` for supply-chain policy when
+  already available.
+- Existing fuzz, Miri, sanitizer, or loom tests when they cover the reachable
+  boundary under review.
 
-If a tool isn't installed or the code won't build, say so explicitly — don't silently skip a
-supply-chain gate.
+Do not install missing tools without approval. State what was not run and why.
+Tool output becomes a finding only after reachability and impact are assessed.
 
-## Severity
+## Findings and severity
 
-Use the standard security tiers, not the project-review ones:
+Every finding cites a file and line, names the attacker-controlled input or
+build-time capability, describes the Rust failure mode, gives the smallest
+fix, and says how to verify it.
 
-- **Critical** — exploitable now by the modeled attacker; data loss, RCE, auth bypass, PHI
-  exposure.
-- **High** — exploitable with a precondition, or serious info leak.
-- **Medium** — requires unlikely conditions, or meaningful defense-in-depth.
-- **Low / Hardening** — good practice, no concrete attacker path today.
+- **Critical:** exploitable memory unsafety/RCE or equivalent catastrophic
+  compromise under the modeled attacker.
+- **High:** serious attacker-reachable availability, integrity, secret, or
+  build compromise with a meaningful precondition.
+- **Medium:** constrained exploitability or significant defense-in-depth.
+- **Low / Hardening:** no concrete attacker path today.
 
-**CVSS is the one number allowed** — and only on Critical/High, because it's an external standard,
-not a vibe. No invented "security score out of 10". Always attach a **CWE** id; it makes the
-finding searchable and unambiguous.
+Attach a CWE where it clarifies the class. CVSS is optional on Critical/High;
+never invent an overall security score.
 
-## Output template
+## Output
 
-```
+```markdown
 ## Scope & threat model
-- Under review: <service / diff / commit range>
-- Trust boundaries: <where untrusted data enters>
-- Assets: <PHI, secrets, tokens, availability, …>
-- Attacker assumed: <unauth remote / cross-tenant / malicious upstream / build-time>
+- Rust scope: <crate / diff / boundary>
+- Hostile inputs or build-time capabilities: ...
+- Companion application review: <used / not needed / not requested>
 
 ## What's solid
-<One or two sentences on controls that are correctly in place — so the fixes land in context.>
+<One or two sentences on Rust controls that hold.>
 
 ## Findings (ranked, exploitable-first)
-
-**Critical**
-1. `<file:line>` — <vuln> (CWE-NNN[, CVSS x.x]). **Attack path:** <how it's reached>.
-   **Fix:** <smallest change that closes it>. **Verify:** <how to confirm it's closed>.
-
-**High** / **Medium** / **Low — hardening**
-...
+1. `<file:line>` — <Rust-specific vulnerability> (CWE-NNN).
+   **Attack path:** ... **Fix:** ... **Verify:** ...
 
 ## Tooling
 - `cargo audit`: ...
-- `cargo deny check`: ...
-(One line each. "Not run — <reason>" is acceptable.)
+- `cargo deny`: ...
+- other relevant checks: ...
 
 ## Verdict
-<"Safe to expose", "One critical must-fix before it takes untrusted input", etc.>
+<Rust-specific readiness under the modeled inputs.>
 
 ## Recommended next action
-<Single concrete step, or "None — no exploitable issue found.">
+<One concrete step, or none.>
 ```
 
-## Anti-patterns in the review itself
+## Project-specific posture
 
-| Don't | Why |
-|---|---|
-| List a vuln with no attacker path | If nothing can reach it, it's a hardening note at most. Rank it accordingly or cut it. |
-| Dump the OWASP / CWE catalog | Recite-the-list isn't review. Find the few things reachable *here*. |
-| Inflate severity to look thorough | Critical means exploitable now. Crying wolf gets the whole review ignored. |
-| Recommend adopting a security framework | This is a review. Name the smallest fix for the concrete hole. |
-| Paste the secret or PHI you found | Reference the location, redact the value — the finding shouldn't leak the asset. |
-| Invent a numeric "security score" | Feels rigorous, isn't. CWE always, CVSS where it helps, no vibe grades. |
-| Manufacture findings on safe code | If the attack surface is clean, "no exploitable issue found" *is* the review. |
-| Conflate defense-in-depth with exploitable-now | Both are worth saying — but not at the same severity. Keep them in separate tiers. |
+Check the repository's agent instructions (`AGENTS.md` or `CLAUDE.md`) and
+`docs/review-notes.md` for lint, unsafe, dependency, MSRV, and testing rules.
 
-## Project-specific notes
+## Anti-patterns
 
-Check the repository's `CLAUDE.md` (or `docs/review-notes.md`) for project-specific security
-notes, and honor them alongside this skill. Default posture for these projects is
-**HIPAA**, so unless told otherwise:
-
-- PHI must never appear in logs, error bodies, metrics labels, trace attributes, or panic
-  messages. Treat any path that could emit it as a finding.
-- Untrusted input crossing a service boundary is parsed to a typed representation at the edge;
-  flag anything that threads raw strings/bytes inward.
-- Secrets come from the configured secret store + KMS, not source or `.env`; confirm they don't
-  surface through a derived `Debug`.
-- Access to PHI is an auditable event — note where an audit record is expected but missing.
-- A panic reachable from the network is a DoS finding in a long-running service, not a style nit.
+- Do not report every `unwrap` or unsafe block; prove attacker reachability.
+- Do not repeat application-level findings from the companion review.
+- Do not treat every advisory as runtime-exploitable; check reachability and
+  dependency role.
+- Do not recommend replacing a crate or rewriting unsafe code when a narrow
+  bound, invariant check, or version update closes the path.
+- Do not manufacture findings when Rust's types and bounds already make the
+  modeled path impossible.

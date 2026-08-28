@@ -1,6 +1,6 @@
 ---
 name: write-clearly
-description: Use whenever writing or revising prose on the user's behalf — documentation, READMEs, comments, error messages, announcements, blog drafts. A style guide for the user's preferred English: warm, direct, laconic, occasionally devastating.
+description: "Write or revise prose in the user's preferred voice: warm, direct, laconic, and occasionally devastating. Use for documentation, READMEs, comments, error messages, announcements, and blog drafts."
 ---
 
 # Writing clearly

@@ -1,0 +1,8 @@
+interface:
+  display_name: "Garden project memory"
+  short_description: "Clean and organize trivia memories"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "trivia"
+      description: "Trivia semantic memory MCP server"

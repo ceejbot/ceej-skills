@@ -1,0 +1,8 @@
+interface:
+  display_name: "Research across sources"
+  short_description: "Investigate and preserve cited findings"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "trivia"
+      description: "Trivia semantic memory MCP server"

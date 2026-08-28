@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document a fresh agent can pick up
+description: Use only when the user explicitly asks to create a handoff. Compact the current conversation into a document a fresh agent can pick up.
 argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
@@ -20,8 +20,8 @@ them.
 
 ## When to use
 
-- The user runs `/handoff`, usually because context is filling up or the
-  session is ending mid-task.
+- The user explicitly invokes the handoff skill or asks for a handoff, usually
+  because context is filling up or the session is ending mid-task.
 - Before deliberately restarting with a clean context.
 
 If the user passed arguments, treat them as a description of what the next
@@ -106,11 +106,11 @@ each saying what the artifact is. Content lives in the artifact, not here.>
 
 <Gotchas, flaky tests, environment quirks, anything that burned this session.>
 
-## For Claude Code readers
+## For skill-aware agents
 
-<Optional section — other agents should skip it. Suggested skills to invoke,
-starting with `session-start` if this project is trivia-bootstrapped, and any
-trivia memories worth recalling, named by mnemonic.>
+<Optional section. Suggested skills to invoke, starting with `session-start`
+if this project is trivia-bootstrapped, and any trivia memories worth
+recalling, named by mnemonic. Use the invocation syntax of the current host.>
 ```
 
 Verify every path you write into the document exists (`ls` / `fd`) — a handoff
@@ -156,8 +156,9 @@ agent picks this up:
 Read <path> and continue the work it describes.
 ```
 
-That single line is the whole cross-agent story: Claude Code users can run
-`/pickup` instead, but any agent that can read a file can take the baton.
+That single line is the whole cross-agent story: skill-aware users can invoke
+`$relay:pickup` in Codex or `/pickup` in Claude Code, but any agent that can
+read a file can take the baton.
 
 ## Anti-patterns
 
@@ -165,7 +166,7 @@ That single line is the whole cross-agent story: Claude Code users can run
 | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | Paste diff, spec, or plan content into the doc   | The artifact is the source of truth; a copy goes stale the moment the artifact changes. Link it.    |
 | Write a path without checking it exists          | An uncommitted or imagined path sends the next agent hunting for a file that isn't there.           |
-| Address the reader as Claude outside the labeled section | The next reader may be Codex, Grok, or a human. Claude-specific advice lives in its own section. |
+| Address the reader as a particular agent                 | The next reader may be Codex, Claude, Grok, or a human. Host-specific advice belongs in the skill-aware section. |
 | Skip the redaction pass                          | The doc outlives the session and may be pasted into other tools. Treat it like a public README.      |
 | Bury next steps under narrative                  | The first thing the next agent needs is what to do; the story of how we got here comes second.      |
 | Seed trivia memories beyond the pointer          | Lessons belong to `session-retro`; bootstrap belongs to `project-trivia-setup`. Handoff writes one pointer. |
@@ -173,7 +174,7 @@ That single line is the whole cross-agent story: Claude Code users can run
 ## Example
 
 ```
-User: /handoff picking this up tomorrow to finish the retry logic
+User: create a handoff; I'm picking this up tomorrow to finish the retry logic
 You: [slug from Cargo.toml: fetch-queue; recall("fetch-queue/trivia-bootstrapped") → hit: trivia mode]
      [one durable lesson emerged (tokio::select! ordering bug) — suggests session-retro first; user declines]
      [./tmp exists → writes tmp/handoff-2026-08-13-1642.md from the template,
@@ -181,7 +182,7 @@ You: [slug from Cargo.toml: fetch-queue; recall("fetch-queue/trivia-bootstrapped
      [memorize("fetch-queue/handoff", "Handoff at tmp/handoff-2026-08-13-1642.md — retry logic half-done,
       backoff works, jitter untested (2026-08-13)", tags=["project:fetch-queue", "handoff"])]
      [offers to update fetch-queue/current-focus → user accepts, edits it to "finish retry jitter + tests"]
-     Handoff written to tmp/handoff-2026-08-13-1642.md. To resume, run /pickup —
-     or paste this into any agent: "Read tmp/handoff-2026-08-13-1642.md and
+     Handoff written to tmp/handoff-2026-08-13-1642.md. To resume, invoke the
+     pickup skill — or paste this into any agent: "Read tmp/handoff-2026-08-13-1642.md and
      continue the work it describes."
 ```

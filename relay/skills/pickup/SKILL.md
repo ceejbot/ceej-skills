@@ -1,6 +1,6 @@
 ---
 name: pickup
-description: Read the handoff document written by an earlier session and resume the work it describes
+description: Use only when the user explicitly asks to resume a handoff. Read the document written by an earlier session and continue the work it describes.
 disable-model-invocation: true
 ---
 
@@ -16,8 +16,8 @@ of silently acting on stale instructions.
 
 ## When to use
 
-- The user runs `/pickup` at the start of a session that continues earlier
-  work.
+- The user explicitly invokes the pickup skill or asks to resume a handoff at
+  the start of a session that continues earlier work.
 
 ## Steps
 
@@ -58,10 +58,11 @@ branch than the current one deserves the same flag.
 - Summarize the task and state back to the user in a few sentences — this is
   their confirmation that you picked up the right baton.
 - Run the document's "Verify state" commands and report any mismatch.
-- Follow its "For Claude Code readers" section if present: invoke
+- Follow its "For skill-aware agents" section if present: invoke
   `session-start` when the doc calls for it (it layers the project's recalled
   focus and lessons on top of the handoff's fine-grained state), and recall
-  any trivia memories it names.
+  any trivia memories it names. Older handoffs may call this section "For
+  Claude Code readers"; treat it the same way when the named skills exist.
 - Then continue from the document's "Next steps."
 
 ### 4. Offer cleanup — both halves together
@@ -86,7 +87,7 @@ this skill's main failure mode. If the user declines, leave both in place.
 ## Example
 
 ```
-User: /pickup
+User: resume from the handoff
 You: [slug: fetch-queue; recall("fetch-queue/handoff") → tmp/handoff-2026-08-13-1642.md; file exists]
      [git log 4f3a2c1..HEAD → one commit since, touching src/retry.rs]
      Found yesterday's handoff (tmp/handoff-2026-08-13-1642.md): retry logic

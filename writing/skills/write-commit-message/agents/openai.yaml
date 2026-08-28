@@ -1,0 +1,3 @@
+interface:
+  display_name: "Write a commit message"
+  short_description: "Write an inverted pyramid commit message"

@@ -109,10 +109,10 @@ Fixes #42, #44, #47.
 Procedure when the user asks for a commit/PR message draft:
 
 1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
-2. **Propose the headline candidate** in chat before drafting the body. The headline is the single hardest line; getting it right early shapes the rest.
+2. **Draft the headline and body together.** The headline is the hardest line and should shape the rest, but it does not require a separate round trip unless a real ambiguity would change it.
 3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
 4. **Hard-wrap the body at 80 chars.** Always, per the Length rules above.
-5. **Confirm with the user** before pasting into a PR or running `git commit`. The user's voice and judgment about what's worth memorializing should win.
+5. **Respect the requested scope.** If the user asked only for a draft, return it for review. If they already authorized creating or updating the commit or PR, use the draft without asking again.
 
 ## What a great commit message is NOT — real-world specimens
 

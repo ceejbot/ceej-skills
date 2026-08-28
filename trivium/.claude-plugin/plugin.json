@@ -1,6 +1,6 @@
 {
 	"name": "trivium",
-	"version": "0.2.1",
+	"version": "0.2.3",
 	"description": "Project-memory workflow built on the trivia MCP: bootstrap project memory, open sessions with recalled focus, close them with a retro, garden the corpus periodically, and run cross-source cited research that later sessions can resume",
 	"author": {
 		"name": "ceej",

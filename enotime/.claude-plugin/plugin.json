@@ -1,12 +1,25 @@
 {
 	"name": "enotime",
-	"version": "0.1.1",
-	"description": "Draws an Oblique Strategy (Brian Eno & Peter Schmidt) at session start via the `oblique` CLI, plus an /oblique-strategy command for drawing one on demand",
+	"version": "0.2.0",
+	"description": "ENOTIME draws an Oblique Strategy at session start in Claude Code and provides a cross-host skill for drawing one on demand",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"
 	},
 	"license": "MIT",
+	"interface": {
+		"displayName": "ENOTIME",
+		"shortDescription": "Draw an Oblique Strategy for fresh perspective",
+		"longDescription": "Draw one of Brian Eno and Peter Schmidt's Oblique Strategies on demand in Codex or Claude Code, with an automatic Claude Code session-start hook.",
+		"developerName": "ceej",
+		"category": "Productivity",
+		"capabilities": [
+			"Interactive"
+		],
+		"defaultPrompt": [
+			"Draw an Oblique Strategy."
+		]
+	},
 	"keywords": [
 		"oblique-strategies",
 		"eno",

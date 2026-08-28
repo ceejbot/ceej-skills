@@ -1,8 +1,27 @@
 # ceej-skills
 
-A small Claude Code plugin marketplace holding the agentic workflow skills I re-use on my projects, split into five plugins so you install only what you need. I wrote these to help me get things done at work. Judge me all you feel you need to in order to make yourself feel good.
+A small Codex and Claude Code plugin marketplace holding the agentic workflow
+skills I re-use on my projects, split into focused plugins so you install only
+what you need. I wrote these to help me get things done at work. Judge me all
+you feel you need to in order to make yourself feel good.
 
-Add the marketplace once:
+For Codex, add the marketplace once:
+
+```
+codex plugin marketplace add ceejbot/ceej-skills
+```
+
+Then install whichever skill plugins you want:
+
+```
+codex plugin add enotime@ceej-skills
+codex plugin add relay@ceej-skills
+codex plugin add review@ceej-skills
+codex plugin add trivium@ceej-skills
+codex plugin add writing@ceej-skills
+```
+
+For Claude Code, add the marketplace once:
 
 ```
 /plugin marketplace add ceejbot/ceej-skills
@@ -18,9 +37,13 @@ Then install whichever plugins you want:
 /plugin install writing@ceej-skills
 ```
 
-## enotime
+## ENOTIME
 
-An Oblique Strategy at session start, courtesy of the [`oblique`](https://github.com/ceejbot/oblique) CLI, plus an `/oblique-strategy` command. See [its README](./enotime/README.md).
+**ENOTIME** draws an Oblique Strategy on demand via the
+[`oblique`](https://github.com/ceejbot/oblique) CLI. Invoke
+`$enotime:oblique-strategy` in Codex or `/oblique-strategy` in Claude Code;
+Claude Code also draws one automatically at session start. See
+[its README](./enotime/README.md).
 
 ## relay
 
@@ -35,7 +58,8 @@ General workflow skills for (mostly) Rust projects. No MCP servers required.
 
 - **`review-rust-project`** — Holistic code review pass with a general (architecture, README, simplicity, parse-don't-validate) section and a Rust-specific (types, errors, clippy, clones, idioms) section.
 - **`review-rust-change`** — Focused review of a scoped set of changes (uncommitted diff, unpushed commit stack, or GitHub PR). Applies the same quality lens as the full project review but restricted to the diff, plus targeted questions on intent, testing, documentation, and completeness. Produces a small number of ranked, highly actionable suggestions.
-- **`review-rust-security`** — Security review: threat modeling, untrusted-input handling, secrets exposure, injection, auth, crypto, panics-as-DoS, supply-chain risk. Rust-shaped but applies to any language. Produces ranked, exploitable-first findings, each with an attacker path, a CWE reference, and the smallest fix.
+- **`review-application-security`** — Language-neutral application and service security: threat modeling, injection, authorization, secrets and PHI, cryptography, abuse resistance, and dependency exposure. Produces ranked, exploitable-first findings with attacker paths and the smallest fixes.
+- **`review-rust-security`** — The Rust-specific overlay: unsafe and FFI invariants, attacker-reachable panics or allocation, deserialization limits, concurrency, cryptographic APIs, and Cargo supply-chain exposure. A comprehensive Rust service review combines it with `review-application-security` into one report.
 
 ## trivium
 
@@ -51,17 +75,10 @@ All four project-memory skills share one memory shape, defined in [`trivium/TAXO
 
 ## writing
 
-- **`write-clearly`** — A style guide for my preferred English: warm, direct, laconic, occasionally devastating. Applied whenever Claude writes prose on my behalf.
+- **`write-clearly`** — A style guide for my preferred English: warm, direct, laconic, occasionally devastating. Applied whenever the agent writes prose on my behalf.
 - **`write-code-comments`** — Comments and doc strings that earn their place: document what the code cannot say, explain why rather than what, stay sparse. Doc strings answer the caller's real questions instead of restating the signature. Fires whenever generated code includes comments, not just on request.
 - **`write-commit-message`** — Helps draft a commit / PR message worth living in `main` for years. Inverted-pyramid structure, hard-wrap discipline, real-world anti-patterns. Distilled from ceej's "Writing great commit messages" doc.
 - **`write-design-doc`** — Problem-statement design doc helper distilled from [my blog post on design docs](https://blog.ceejbot.com/posts/design-docs/). Includes a fillable template.
-
-## ceej-skills
-
-The plugin used to have all its skills under a single grab-bag. Some of the skills are still there with their original names, but I will be retiring them. All one users care. These are the skills I haven't moved yet:
-
-- **`plugin-curation`** — Audits an installed Claude Code setup against real usage signals (`~/.claude.json` `skillUsage` + `favoritePlugins`, plus cc-query for MCP/subagent traffic) and produces keep / consolidate / prune recommendations. Built to re-run periodically.
-- **`scala-project-review`** — The Scala counterpart to `review-rust-project`: a general section plus Scala-specific hygiene (idioms, ADTs, effects, implicits/givens, build tooling).
 
 ## LICENSE
 

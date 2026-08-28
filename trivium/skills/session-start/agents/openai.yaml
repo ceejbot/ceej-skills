@@ -1,0 +1,8 @@
+interface:
+  display_name: "Start a project session"
+  short_description: "Recall project focus and relevant lessons"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "trivia"
+      description: "Trivia semantic memory MCP server"

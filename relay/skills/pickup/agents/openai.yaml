@@ -1,0 +1,5 @@
+interface:
+  display_name: "Resume from a handoff"
+  short_description: "Verify and resume a prior session handoff"
+policy:
+  allow_implicit_invocation: false

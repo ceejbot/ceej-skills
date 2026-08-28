@@ -12,8 +12,8 @@ saved four times in different words; themes grow past what a checklist can
 hold; a project rename leaves half the mnemonics under the old prefix.
 `session-retro` prevents some of this one lesson at a time. Gardening runs
 fresh, over the whole corpus, and repairs the rest. The target shape and the
-tool semantics this skill leans on are in `${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`;
-read it first.
+tool semantics this skill leans on are in `../../TAXONOMY.md`, relative to
+this `SKILL.md`; read it first.
 
 **Core principle:** read the export, decide on files, then execute a compiled
 op list. `trivia export` writes one markdown file per memory with the recall
@@ -40,10 +40,11 @@ drift; a retro's maintenance pass covers it.
 
 ```
 export(directory = "<scratch>/export-0")          # full store, no tag filter
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/memory-gardening/stats.py <scratch>/export-0 <slug> [<old-slug> …]
+python3 <skill-directory>/scripts/stats.py <scratch>/export-0 <slug> [<old-slug> …]
 ```
 
-`export-0` is the undo for the whole pass: copy it somewhere durable and
+Resolve `scripts/stats.py` relative to this `SKILL.md`. `export-0` is the undo
+for the whole pass: copy it somewhere durable and
 never write into it. Export the **whole store**, not just the project tag —
 the project's real working set is usually bigger than its tag. Memories
 written during briefings and prep (person facts, calendar identities,

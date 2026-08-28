@@ -1,0 +1,3 @@
+interface:
+  display_name: "Review a Rust change"
+  short_description: "Review a Rust diff for merge readiness"

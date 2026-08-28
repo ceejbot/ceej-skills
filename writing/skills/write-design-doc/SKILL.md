@@ -78,15 +78,15 @@ Each stage finds different gaps. Skipping stages means you find them all at once
 
 ## Output
 
-Use the template at `template.md` in this skill directory. Drop it into the project as `docs/design/<topic>.md` (or wherever the project keeps design docs) and fill it in stage by stage.
+Use [the design-doc template](assets/template.md). Drop it into the project as `docs/design/<topic>.md` (or wherever the project keeps design docs) and fill it in stage by stage.
 
-When drafting interactively with the user, work one section at a time — don't generate the whole doc in one shot. The shared understanding *is* the value, and it only forms through the conversation.
+When the framing is still open, work one section at a time so the shared understanding develops through the conversation. If the user asks for a complete draft, or the context already establishes all six sections, draft the whole document and surface assumptions and open questions.
 
 ## Anti-patterns when drafting
 
 | Don't | Why |
 |---|---|
-| Generate all six sections at once | The writing process is the point. Draft §1, confirm, then §2, etc. |
+| Generate all six sections before the problem and values are clear | The later sections become unsupported. Establish §1–§3 first, then draft as much as the request and context support. |
 | Hand-wave §3 (values) | Without values, §4 and §5 collapse into preference. |
 | Hide the recommendation in §1 | "We're going to do X" before §2–§4 means everything after is post-hoc rationalization. |
 | Skip §6 to look confident | Honest open questions invite help. Polished docs invite rubber-stamping. |

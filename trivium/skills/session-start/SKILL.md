@@ -9,7 +9,7 @@ Open a working session by consulting what we already know and planning before
 we act. This is the reading half of the `session-retro` loop: retro writes
 the focus, hubs, and lessons at session end; start reads them back so they
 shape the work from the jump. The memory shape is defined in
-`${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`. (Trivia is
+`../../TAXONOMY.md`, relative to this `SKILL.md`. (Trivia is
 [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
 instructions are Rust-oriented, but it's quite good.)
 
@@ -30,10 +30,10 @@ what they want and says so.
 
 ### 1. Derive the project slug
 
-If `$0` is provided, that is the slug. Otherwise read `Cargo.toml` and use
-`[package].name`; with no manifest, use the working-directory basename,
-lowercased with non-alphanumerics replaced by hyphens. The tag is
-`project:<slug>`.
+If the user supplied a slug with the skill invocation, use it. Otherwise read
+`Cargo.toml` and use `[package].name`; with no manifest, use the
+working-directory basename, lowercased with non-alphanumerics replaced by
+hyphens. The tag is `project:<slug>`.
 
 ### 2. Check that trivia is bootstrapped
 
@@ -112,9 +112,10 @@ it at its consumption site:
   design doc's implementation-status header, and the roadmap's "last
   refreshed" line — the GROUND TRUTH section says where.
 
-A fan-out Explore agent over the specs directory and the cited types returns
-an authoritative map in one shot and keeps this context clean. Done when every
-item the plan depends on has been read at its source.
+A fan-out exploration task over the specs directory and the cited types —
+using a subagent when the host provides one — returns an authoritative map in
+one shot and keeps this context clean. Done when every item the plan depends
+on has been read at its source.
 
 An item found already shipped gets a tombstone now — re-`memorize`
 `<slug>/current-focus` with the same tags and the **full current body**, with
@@ -129,12 +130,13 @@ had to restore the seed from a same-day recall). Carry everything forward.
 they were noise. Ranking learns from this; it is what keeps the caps
 meaningful next time.
 
-### 8. Enter plan mode and plan
+### 8. Plan before editing
 
-Call `EnterPlanMode`, then produce a plan for the confirmed focus that
-**explicitly carries the recalled lessons forward** — "we hit Y last time, so
-the plan avoids it by doing Z." This is the payoff: the lessons inform the
-design before any code is written.
+Use the host's plan mode when it is available; otherwise present and maintain
+a plan before editing. The plan for the confirmed focus must **explicitly
+carry the recalled lessons forward** — "we hit Y last time, so the plan avoids
+it by doing Z." This is the payoff: the lessons inform the design before any
+code is written.
 
 ## Anti-patterns
 
@@ -144,7 +146,7 @@ design before any code is written.
 | Pass two tags to `recall`                                | OR semantics: the second tag pulls in other projects, which can outrank this one's seeds.     |
 | Plan against a NEXT item without reading its source      | Three sessions of this project's history lost their first hour to a stale pointer.           |
 | Plan against a stale focus without confirming            | Step 5 exists to verify direction before investing in a plan.                                |
-| Start editing files before entering plan mode            | Defeats "plan from the jump." Confirm, verify, then `EnterPlanMode`, then act.               |
+| Start editing files before planning                      | Defeats "plan from the jump." Confirm, verify, plan, then act.                               |
 | Write a retro here                                       | That's `session-retro`'s job. This skill reads, rates, and tombstones shipped follow-ups.    |
 | Fabricate context when trivia isn't bootstrapped         | No memory means no recall. Point at `project-trivia-setup` and stop.                         |
 
@@ -167,7 +169,7 @@ You: [recall("ratatui-clock/trivia-bootstrapped", tags=["project:ratatui-clock"]
 User: yes.
 You: [git log -S "second_pane" → nothing; confirmed unshipped]
      [rate habits/rendering up]
-     [EnterPlanMode]
+     [enters the host's plan mode]
      Plan: draw the second pane into the same back buffer and keep the single
      end-of-frame swap (per the hub — no per-pane swap), then verify on resize.
 ```

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Review Rust security"
+  short_description: "Find Rust-specific exploitable weaknesses"

@@ -2,9 +2,11 @@
 
 Tinker to Evers to Chance.
 
-Relay a session to a fresh agent with a clean context: `/handoff` compacts the
-current conversation into a document, and `/pickup` reads it back in the next
-session. My trivia-aware take on a very common skill pair.
+Relay a session to a fresh agent with a clean context: `handoff` compacts the
+current conversation into a document, and `pickup` reads it back in the next
+session. In Codex, invoke them as `$relay:handoff` and `$relay:pickup`; in
+Claude Code, use `/handoff` and `/pickup`. My trivia-aware take on a very
+common skill pair.
 
 ## The two skills
 
@@ -33,13 +35,14 @@ Without trivia, everything works on plain files. Handoff documents land in
 ## Other agents
 
 The handoff document stands alone — it opens by addressing whatever agent
-reads it, and keeps Claude-specific suggestions in a clearly labeled section
-other agents can skip. To relay to Codex, Grok, or anything else that can read
-a file, paste the line handoff prints:
+reads it, and keeps skill-aware suggestions in a clearly labeled section. To
+relay to Codex, Claude, Grok, or anything else that can read a file, paste the
+line handoff prints:
 
 ```
 Read tmp/handoff-2026-08-13-1642.md and continue the work it describes.
 ```
 
-Coming back to Claude Code, `/pickup` also understands handoffs those tools
-leave behind, as long as they land in the same place with the same naming.
+Coming back to a skill-aware agent, invoke `pickup` with that host's syntax. It
+also understands handoffs other tools leave behind, as long as they land in
+the same place with the same naming.

@@ -1,6 +1,6 @@
 ---
 name: project-trivia-setup
-description: Use when starting trivia memory in a project for the first time, when the user says "set up trivia" or "bootstrap project memory", or when no `project:<slug>`-tagged memories exist yet for this repo
+description: Use when starting trivia memory in a project for the first time, when the user says "set up trivia" or "bootstrap project memory", or when no project-tagged memories exist yet for this repo
 ---
 
 # Project Trivia Setup
@@ -8,8 +8,8 @@ description: Use when starting trivia memory in a project for the first time, wh
 Bootstrap the trivia MCP for a project so future sessions can recall what it
 is, what's being worked on, and what conventions it follows — without
 polluting the global trivia DB shared across all projects. The memory shape
-every later skill relies on is defined in `${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`;
-this skill seeds it. (Trivia is
+every later skill relies on is defined in `../../TAXONOMY.md`, relative to
+this `SKILL.md`; this skill seeds it. (Trivia is
 [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
 instructions are Rust-oriented, but it's quite good.)
 
@@ -81,9 +81,12 @@ memorize(
 
 Future sessions detect this in step 2 and skip re-running.
 
-### 5. Document the convention in `CLAUDE.md`
+### 5. Document the convention in the agent instructions
 
-Append (or create) a short section in the project's `CLAUDE.md`:
+Append (or create) a short section in the project's agent instruction file:
+`AGENTS.md` for Codex, or `CLAUDE.md` for Claude Code. If the repository
+already uses one of these, update that file rather than creating a competing
+instruction file.
 
 ```markdown
 ## Project memory
@@ -133,7 +136,7 @@ You: [memorizes ratatui-clock/overview; ratatui-clock/current-focus with
       FRONTIER "nothing shipped yet", NEXT "smooth redraw without flicker";
       ratatui-clock/conventions with edition 2021, MSRV 1.74, themes]
      [memorizes sentinel ratatui-clock/trivia-bootstrapped]
-     [appends "Project memory" section to CLAUDE.md]
+     [appends "Project memory" to the repo's agent instruction file]
      Done. Four memories seeded under project:ratatui-clock. Open future
      sessions with session-start.
 ```

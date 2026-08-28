@@ -9,8 +9,8 @@ Turn a session's lessons into trivia memories the next session can actually
 find. This is half of a loop: retro writes, `session-start` reads. A lesson
 nobody recalls is a lesson not learned, so this skill spends as much care on
 *findability* — dedupe, aliases, hubs — as on the lesson itself. The memory
-shape is defined once in `${CLAUDE_PLUGIN_ROOT}/TAXONOMY.md`; read it at the
-top of every retro. (Trivia is
+shape is defined once in `../../TAXONOMY.md`, relative to this `SKILL.md`;
+read it at the top of every retro. (Trivia is
 [chrisdickinson/trivia](https://github.com/chrisdickinson/trivia) — setup
 instructions are Rust-oriented, but it's quite good.)
 
