@@ -12,7 +12,7 @@ writes memories in this shape, so a memory written by `session-retro` is one
 | `<slug>/overview`                | `seed`    | What the project is and why. Slow-changing.                           |
 | `<slug>/conventions`             | `seed`    | Non-obvious rules, build commands, lint config, the theme list.       |
 | `<slug>/current-focus`           | `seed`    | State, in the four-section format below. Changes every session.       |
-| `<slug>/habits/<theme>`          | `habits`  | A **hub**: ordered checklist, at most 12 lines, each naming a spoke.  |
+| `<slug>/habits/<theme>`          | `habits`  | A **hub**: the theme's working set — at most 12 lines, each a rule citing 1–4 spokes. |
 | `<slug>/worked/<handle>`         | `worked`  | A **spoke**: an approach that paid off.                               |
 | `<slug>/avoid/<handle>`          | `avoid`   | A spoke: an approach that failed, and what to do instead.             |
 | `<slug>/learned/<handle>`        | `learned` | A spoke: a durable fact about the domain, a tool, or the codebase.    |
@@ -96,16 +96,36 @@ learned:  Fact: … | Where it came from: … | Why it matters: …
 `Why` is non-negotiable. Without it the lesson cannot survive contact with a
 different situation.
 
-A **hub** body is an ordered list, the most costly-to-forget rule first. Each
-line is one sentence plus the spoke it came from:
+A **hub** is the theme's **working set** — the rules most costly to forget
+right now — not an index of every spoke. Its body is an ordered list, the
+most costly-to-forget rule first. Each line states one rule and cites the
+spoke(s) it distills, up to four; spokes that are instances of one rule share
+a line:
 
 ```
 1. Run nightly fmt before declaring CI green; subagents skip it — <slug>/avoid/subagent-acceptance-skips-nightly-fmt
-2. …
+2. Treat every prose sentence about code as a code claim; read the source before writing it — <slug>/avoid/reuse-claims-are-code-claims, <slug>/avoid/design-doc-claims-inherited-by-citation
 ```
 
-Twelve lines is the cap. A thirteenth is a signal to split the theme at the
-next gardening pass, not to squeeze.
+Twelve lines is the cap. Under it, a genuine new rule gets a line at its
+priority position; **at the cap, admission is by displacement** — a new line
+earns its place by joining an existing rule as a citation, or by being more
+costly to forget than the current line 12. A spoke without a hub line is
+healthy, not homeless — its aliases and the session-start probes still find
+it; it just isn't front of mind. When the cap presses, the moves in order:
+
+1. **Cluster** — fold sibling lines that state one rule into a single line
+   citing all their spokes. The test: if the merged rule as written would
+   not have prevented each cited spoke's specific mistake, it is two rules.
+2. **Evict** — demote the line whose spokes have stopped earning recalls.
+   This is a gardening-pass move: only the export's `recall_count` and
+   rating counters can say which lines are cold without the survey itself
+   bumping them. The spokes keep their aliases and links, so eviction is
+   reversible at any pass. Coldness alone never evicts a rule whose
+   violation is irreversible; such lines leave only by clustering.
+3. **Split the theme** — last resort, only when the surviving lines
+   genuinely serve two disciplines; every split adds a hub each
+   session-start must load.
 
 **`current-focus`** has four labelled sections, so the parts that go stale
 are visibly marked as such:

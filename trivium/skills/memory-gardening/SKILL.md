@@ -8,8 +8,9 @@ description: Use when the user says "garden the memories" / "clean up our memori
 Reorganize a project's trivia memories so that recall keeps working. A corpus
 that grows one retro at a time drifts in predictable ways: old state memories
 accumulate recalls and outrank every specific lesson; the same lesson gets
-saved four times in different words; themes grow past what a checklist can
-hold; a project rename leaves half the mnemonics under the old prefix.
+saved four times in different words; hubs fill with one-spoke lines that no
+retro clustered or evicted; a project rename leaves half the mnemonics under
+the old prefix.
 `session-retro` prevents some of this one lesson at a time. Gardening runs
 fresh, over the whole corpus, and repairs the rest. The target shape and the
 tool semantics this skill leans on are in `../../TAXONOMY.md`, relative to
@@ -28,7 +29,8 @@ ever sees the result.
 - The user asks to garden, tidy, clean up, or reorganize project memory.
 - `session-start` could not find a lesson that `current-focus` named.
 - A project was renamed; the old slug is still a mnemonic prefix.
-- A hub has hit twelve lines, or `stats.py` reports a theme over twenty spokes.
+- A hub is full and retro reports its lines no longer cluster, or `stats.py`
+  reports a theme over forty spokes.
 - Roughly every ten sessions on a project that retros regularly.
 
 **Skip if:** the project has fewer than ~30 memories. Nothing has had time to
@@ -72,8 +74,10 @@ Present the numbers and four decisions:
   memories missing `project:<slug>`. The user says which get adopted (tagged
   into the project and gardened with it) and which stay a shared pool.
 - **The theme list.** Read it from `<slug>/conventions`; propose additions
-  for clusters the stats show and splits for themes over twenty spokes. The
-  user owns this list.
+  for clusters the stats show. Propose a split only for a theme whose hub
+  cannot hold its live rules even after clustering and eviction (over forty
+  spokes is the smell) — every split adds a hub each session-start loads.
+  The user owns this list.
 - **The archive set.** Every memory that is *state* rather than a lesson —
   session summaries, "phase complete" reports, gap inventories, anything with
   a date in its mnemonic and a net-negative rating. Merge is irreversible, so
@@ -130,8 +134,15 @@ MCP). Each returns JSON:
 - **Generality**: project-only or `general:<domain>`, with a one-line reason.
 - **Misfiled**: memories that belong in another theme.
 - **Links**: related-but-distinct pairs.
-- **Hub lines**: the theme's checklist, at most twelve, most costly-to-forget
-  first, each naming its spoke; an `overflow` count if more rules exist.
+- **Hub lines**: the theme's working set, at most twelve lines, most
+  costly-to-forget first, each line one rule citing the 1–4 spokes it
+  distills; an `evict` list naming lines *of the proposed set* that are
+  cold — every cited spoke's `recall_count` below the theme median and net
+  rating ≤ 0, and the rule's violation reversible (irreversibility lessons
+  never evict on coldness) — and an `overflow` count if more live rules
+  exist than fit. The agent brief carries the taxonomy's hub-line format
+  verbatim (numbered lines, ` — ` before the citations, comma-separated
+  full mnemonics); fresh-context agents never see `TAXONOMY.md`.
 
 Validate the set with a script before reading it: every mnemonic exists in
 the export, none is claimed by two themes or two merge sets, every merge set
@@ -144,8 +155,12 @@ Done when every theme's proposal validates and you have read all of it.
 ### 6. Write the hubs
 
 For each project theme, `memorize` `<slug>/habits/<theme>` with the
-accepted checklist and tags `["project:<slug>", "habits", "theme:<theme>"]`.
-Compose the general hubs from the agents' candidates, capped at twelve each:
+accepted working set and tags `["project:<slug>", "habits", "theme:<theme>"]`.
+When a theme's live rules exceed twelve lines, apply the taxonomy's moves in
+order: cluster sibling lines under one rule, evict the agents' cold-line
+candidates (the spokes keep their aliases and links — eviction is reversible
+at any pass), and only then split the theme. Compose the general hubs from
+the agents' candidates the same way, capped at twelve each:
 `general/habits/<domain>[-<facet>]` with tags `["habits", "general:<domain>"]`
 and no project tag. Hubs exist before step 7 links anything to them.
 
@@ -206,7 +221,7 @@ lesson for this skill.
 | Rely on `automerge`                                  | It compares mnemonics, and retro slugs are built to be distinct. Bodies hold the dupes.|
 | Let an agent decide what to merge while it executes  | Judgment on disk, validated; execution verbatim. Irreversible ops get no improvisation.|
 | Treat any `limit = 1` hit as the hub                 | Recall returns the nearest neighbour; the mnemonic must match exactly or the hub is absent. |
-| Let a hub grow past twelve lines                     | A checklist nobody reads to the end is a list, not a habit. Split the theme.           |
+| Let a hub grow past twelve lines                     | A checklist nobody reads to the end is a list, not a habit. Cluster, evict, then split — in that order. |
 | Garden without the user on the archive set           | Merging state into history is irreversible.                                            |
 
 ## Example
@@ -220,8 +235,8 @@ You: [export-0 → 448 files; stats.py → 72% never recalled, top 15 carry 68% 
      (listed), and general tags on the tooling/orchestration/idiom spokes.
 User: yes to all three.
 You: [rename keeper → history/…; merge ×16; edit tags + remove 16 aliases]
-     [decisions.tsv, themes/ staged; 8 theme agents → 59 merge sets, 60 misfiled, 89 hub lines; validator: 0 errors]
-     [read every merge set and hub; accepted; one theme split out (installer)]
+     [decisions.tsv, themes/ staged; 8 theme agents → 59 merge sets, 60 misfiled, 71 hub lines + 11 evict candidates; validator: 0 errors]
+     [read every merge set and hub; accepted; two hubs clustered to fit, 9 lines evicted, one theme (installer) split after clustering couldn't hold it]
      [memorize 9 project hubs + 4 general hubs]
      [ops compiled: ~1,400 calls; ran memory (17) by hand; 8 executors for the rest, 2 expected failures]
      [patched session-start step 6; rerun the stage-6 recall with full_text_search="native" → top hit]

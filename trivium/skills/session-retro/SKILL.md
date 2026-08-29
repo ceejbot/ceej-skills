@@ -104,12 +104,28 @@ degrades.
 2. **Alias** it: `edit(mnemonic, add_mnemonics = [...])` with one or two
    natural-phrasing questions a future session would ask. The slug alone
    embeds poorly; the alias is what recall matches.
-3. **Hub line**: the hub from step 1 (exact mnemonic match, or none). Insert
-   a one-line rule naming the spoke at its priority position and `memorize`
-   `<slug>/habits/<theme>` with the new body and tags `["project:<slug>",
-   "habits", "theme:<theme>"]`. No hub yet means this line is the first. If
-   the hub would reach thirteen lines, say so to the user —
-   `memory-gardening` splits it; the retro doesn't squeeze.
+3. **Hub placement**: the hub from step 1 (exact mnemonic match, or none —
+   no hub yet means this spoke's rule is the first line). The hub is a
+   working set; place the spoke by the first test it passes:
+   - *Instance of an existing line's rule* → append the spoke's mnemonic
+     to that line's citations. A line carries up to four; at four, the
+     oldest citation rotates out — the rule already covers it.
+   - *A genuinely new rule, hub under twelve lines* → insert a line at
+     its priority position.
+   - *A genuinely new rule, hub at the cap* → admission is by
+     displacement: it enters only if it is more costly to forget than the
+     current line 12. Make room by clustering sibling lines that state
+     one rule; twelve lines stays the cap.
+   - *None of these* → the spoke ships **lineless by design**: its
+     aliases and the session-start probes carry it. A normal outcome, not
+     a deferral.
+
+   When a line changes, `memorize` `<slug>/habits/<theme>` with the full
+   new body and tags `["project:<slug>", "habits", "theme:<theme>"]`.
+   Eviction is a gardening move, not a retro move — only the export's
+   counters can say which lines are cold without the check itself bumping
+   them — so a full hub where nothing clusters is the one case to flag
+   for `memory-gardening`.
 4. **Link** `link(spoke, hub, "related")`, plus `link(spoke, existing,
    "related")` for each memory step 4 judged related but distinct. A general
    spoke also links to its domain hub — `general/habits/agent-process`,
@@ -120,8 +136,9 @@ degrades.
    the skill gets patched. A process lesson that lives only in project memory
    never flows back.
 
-Done when each saved spoke has an alias, a theme tag, a hub line, a hub
-link, and a link to every related memory from step 4.
+Done when each saved spoke has an alias, a theme tag, a hub link, a link to
+every related memory from step 4, and a hub placement — cited on a line, or
+lineless by design.
 
 ### 6. Update `current-focus`
 
@@ -135,7 +152,7 @@ lives here.
 
 ### 7. Confirm with the user
 
-Show a table: mnemonic · reinforced or new · aliases · hub line. Ask if any
+Show a table: mnemonic · reinforced or new · aliases · hub placement. Ask if any
 should be edited or dropped before they cement. For a smooth-sailing session,
 report the maintenance done instead.
 
@@ -159,6 +176,7 @@ Don't invent a lesson to have something to save.
 | Memorize "currently debugging X" as a retro            | State, not a lesson. It belongs in `current-focus`.                                       |
 | Save a lesson without running step 4                   | Four memories saying "nightly fmt got skipped" is how a corpus drowns its own lessons.    |
 | Save a spoke with no alias                             | The slug loses to older, vaguer memories; the lesson is unfindable by the session it's for.|
+| Give every spoke its own hub line                      | The hub is a working set; a line per spoke saturates the cap in weeks and buries the costly-to-forget rules. Cluster, or ship the spoke lineless. |
 | Pass two tags to `recall`                              | OR semantics: the second tag pulls in every other project carrying it.                   |
 | `edit` to update content                               | `edit` only touches mnemonics, aliases, and tags. Re-`memorize` the same mnemonic.        |
 | Write a lesson whose content is "be more careful"      | Too vague to match a future situation. Be specific or skip.                               |

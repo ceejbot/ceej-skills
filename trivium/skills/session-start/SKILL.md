@@ -59,7 +59,7 @@ call: trivia's tag filter is OR, so a second tag (`focus`, `conventions`)
 widens the net to every project using it, and another project's seed can
 outrank this one's.
 
-### 4. Recall the lessons — hubs first, then one probe
+### 4. Recall the lessons — hubs first, then the probes
 
 From the focus's FRONTIER and NEXT sections, name the one or two themes the
 session is about to work in. Recall their hubs by mnemonic:
@@ -68,15 +68,21 @@ session is about to work in. Recall their hubs by mnemonic:
 recall(query = "<slug>/habits/<theme>", tags = ["project:<slug>"], limit = 1)
 ```
 
-Hubs are ordered checklists that name their spokes; this is the curated view.
-A result is a hub only if its `mnemonic` matches exactly; otherwise the theme
-has no hub yet. Then one probe for spokes the hubs may not carry yet:
+Hubs are each theme's working set — rule lines citing their spokes; this is
+the curated view, not the whole corpus. A result is a hub only if its
+`mnemonic` matches exactly; otherwise the theme has no hub yet. Then a task
+probe for spokes the hubs may not carry:
 
 ```
 recall(query = "<the NEXT sentence, in plain words>", tags = ["project:<slug>"],
        full_text_search = "<a distinctive word from NEXT>",
        limit = 3, truncate = 500, exclude_tags = ["archive"])
 ```
+
+When NEXT touches a named **mechanism** — a containment check, a wire
+format, a cache header — add one probe keyed on the mechanism itself, not
+the task: the spoke that predicts a bug in that code often sits lineless
+under another theme, where a task-worded probe never lands.
 
 If `current-focus` names a lesson the probe did not return, probe once more
 with `full_text_search` on a word from that lesson's handle before concluding
@@ -142,7 +148,7 @@ code is written.
 
 | Don't                                                    | Why                                                                                          |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `recall` everything tagged `project:<slug>`              | That's the universe. Load the hubs plus one probe keyed on today's focus.                    |
+| `recall` everything tagged `project:<slug>`              | That's the universe. Load the hubs, one task probe keyed on today's focus, and one mechanism probe when NEXT names one. |
 | Pass two tags to `recall`                                | OR semantics: the second tag pulls in other projects, which can outrank this one's seeds.     |
 | Plan against a NEXT item without reading its source      | Three sessions of this project's history lost their first hour to a stale pointer.           |
 | Plan against a stale focus without confirming            | Step 5 exists to verify direction before investing in a plan.                                |
@@ -160,7 +166,7 @@ You: [recall("ratatui-clock/trivia-bootstrapped", tags=["project:ratatui-clock"]
           NEXT: add a second pane without reintroducing flicker.]
      [recall("ratatui-clock/conventions", …, limit=1) → edition 2021, MSRV 1.74; themes: rendering, tooling]
      [recall("ratatui-clock/habits/rendering", …, limit=1)
-        → 1. Swap the buffer once per frame — worked/single-swap-per-frame …]
+        → 1. Swap the buffer once per frame — ratatui-clock/worked/single-swap-per-frame …]
      [recall("add a second pane without flicker", …, full_text_search="pane", limit=3, exclude_tags=["archive"])
         → nothing new beyond the hub]
      Last session you landed flicker-free redraw with one buffer swap per frame.

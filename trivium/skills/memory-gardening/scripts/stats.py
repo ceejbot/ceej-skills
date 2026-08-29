@@ -184,8 +184,8 @@ def main():
         print("themes in use with no hub:", sorted(want - hub_themes) or "none")
     else:
         print("themes in use with no hub: (no theme tags yet)")
-    big = [(t, c) for t, c in spoke_themes.items() if c > 20]
-    print("themes over 20 spokes (split candidates):", big or "none")
+    big = [(t, c) for t, c in spoke_themes.items() if c > 40]
+    print("themes over 40 spokes (split candidates after cluster/evict):", big or "none")
 
     section("findability")
     spokes = [r for r in rows if kind_of(r) in SPOKE_KINDS or re.search(r"/(worked|avoid|learned)/", r["mn"])]

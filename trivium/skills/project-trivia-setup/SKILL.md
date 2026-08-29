@@ -121,7 +121,8 @@ Tell the user:
 - The slug used and where it came from (`Cargo.toml` vs directory).
 - Each memory created (mnemonic + one-line summary) and the theme list.
 - That subsequent sessions open with `session-start`, which recalls the focus,
-  hubs, and one probe — not a tag-wildcard dump.
+  hubs, a task probe, and a mechanism probe when NEXT names one — not a
+  tag-wildcard dump.
 
 ## Anti-patterns
 
