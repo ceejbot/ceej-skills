@@ -14,6 +14,7 @@ codex plugin marketplace add ceejbot/ceej-skills
 Then install whichever skill plugins you want:
 
 ```
+codex plugin add design@ceej-skills
 codex plugin add enotime@ceej-skills
 codex plugin add relay@ceej-skills
 codex plugin add review@ceej-skills
@@ -30,12 +31,20 @@ For Claude Code, add the marketplace once:
 Then install whichever plugins you want:
 
 ```
+/plugin install design@ceej-skills
 /plugin install enotime@ceej-skills
 /plugin install relay@ceej-skills
 /plugin install review@ceej-skills
 /plugin install trivium@ceej-skills
 /plugin install writing@ceej-skills
 ```
+
+## design
+
+Design-phase skills, adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT) and reframed from interrogation to mutual exploration. Trivia is optional: with it, a dive's settled decisions can be memorized; without it, the glossary and ADRs are the record.
+
+- **`deep-dive`** — Explore a plan, decision, or idea together until nothing is silently assumed. Maps the territory as a design tree and asks whole rounds of frontier questions at a time, each with a recommended answer; the agent's own assumptions go on the frontier too. Facts are the agent's job, decisions are made together. Hands off to `domain-modeling` for capture and to `write-design-doc` when the direction deserves a full document.
+- **`domain-modeling`** — Actively build and sharpen the project's domain model: challenge terms against the `CONTEXT.md` glossary, sharpen fuzzy language, stress-test relationships with edge-case scenarios, and record qualifying decisions as [MADR-minimal](https://github.com/adr/madr) ADRs in `docs/adr/`. ADRs are offered only when a decision is hard to reverse, surprising without context, and a real trade-off.
 
 ## ENOTIME
 

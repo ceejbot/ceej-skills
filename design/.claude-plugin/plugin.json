@@ -1,0 +1,18 @@
+{
+	"name": "design",
+	"version": "0.1.0",
+	"description": "Design-phase skills: deep-dive a plan to shared understanding, and maintain the project's domain model with a glossary and ADRs",
+	"author": {
+		"name": "ceej",
+		"url": "https://blog.ceejbot.com"
+	},
+	"license": "MIT",
+	"keywords": [
+		"design",
+		"deep-dive",
+		"domain-modeling",
+		"adr",
+		"glossary",
+		"planning"
+	]
+}

@@ -6,9 +6,14 @@
 	},
 	"metadata": {
 		"description": "Personal agentic workflow skills developed for use with my work projects",
-		"version": "0.14.0"
+		"version": "0.15.0"
 	},
 	"plugins": [
+		{
+			"name": "design",
+			"source": "./design",
+			"description": "Design-phase skills: deep-dive a plan to shared understanding a round of questions at a time, and maintain the project's domain model with a CONTEXT.md glossary and MADR-minimal ADRs."
+		},
 		{
 			"name": "enotime",
 			"source": "./enotime",
