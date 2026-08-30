@@ -1,12 +1,8 @@
 # ADR Format
 
-ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`,
-`0002-slug.md`, etc. Scan `docs/adr/` for the highest existing number and
-increment by one. Create the directory lazily: only when the first ADR is
-needed.
+ADRs live in `docs/adr/` and use sequential numbering: `0001-slug.md`, `0002-slug.md`, etc. Scan `docs/adr/` for the highest existing number and increment by one. Create the directory lazily: only when the first ADR is needed.
 
-The bar for _whether_ a decision earns an ADR lives in
-[SKILL.md](./SKILL.md); this file is the format.
+The bar for _whether_ a decision earns an ADR lives in [SKILL.md](./SKILL.md); this file is the format.
 
 ## Template
 
@@ -17,16 +13,13 @@ The bar for _whether_ a decision earns an ADR lives in
 
 ## Context and Problem Statement
 
-{Describe the context and problem statement, e.g., in free form using two to
-three sentences or in the form of an illustrative story. You may want to
-articulate the problem in form of a question and add links to collaboration
-boards or issue management systems.}
+{Describe the context and problem statement, e.g., in free form using two to three sentences or in the form of an illustrative story. You may want to articulate the problem in form of a question and add links to collaboration boards or issue management systems.}
 
 ## Considered Options
 
-* {title of option 1}
-* {title of option 2}
-* {title of option 3}
+- {title of option 1}
+- {title of option 2}
+- {title of option 3}
 
 ## Decision Outcome
 
@@ -34,15 +27,11 @@ Chosen option: "{title of option 1}", because {justification}.
 
 ### Consequences
 
-* Good, because {positive consequence}
-* Bad, because {negative consequence}
+- Good, because {positive consequence}
+- Bad, because {negative consequence}
 ```
 
-`Consequences` is optional: include it only when non-obvious downstream
-effects need calling out. An ADR can be short — the value is in recording
-_that_ a decision was made and _why_, not in filling out sections. When
-decisions get revisited, add `status` frontmatter
-(`proposed | accepted | deprecated | superseded by ADR-NNNN`).
+`Consequences` is optional: include it only when non-obvious downstream effects need calling out. An ADR can be short — the value is in recording _that_ a decision was made and _why_, not in filling out sections. When decisions get revisited, add `status` frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`).
 
 ## What qualifies
 

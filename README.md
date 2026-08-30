@@ -45,6 +45,7 @@ Design-phase skills, adapted from [Matt Pocock's skills](https://github.com/matt
 
 - **`deep-dive`** — Explore a plan, decision, or idea together until nothing is silently assumed. Maps the territory as a design tree and asks whole rounds of frontier questions at a time, each with a recommended answer; the agent's own assumptions go on the frontier too. Facts are the agent's job, decisions are made together. Hands off to `domain-modeling` for capture and to `write-design-doc` when the direction deserves a full document.
 - **`domain-modeling`** — Actively build and sharpen the project's domain model: challenge terms against the `CONTEXT.md` glossary, sharpen fuzzy language, stress-test relationships with edge-case scenarios, and record qualifying decisions as [MADR-minimal](https://github.com/adr/madr) ADRs in `docs/adr/`. ADRs are offered only when a decision is hard to reverse, surprising without context, and a real trade-off.
+- **`prototype`** — Throwaway code that answers a design question. Two branches: a logic prototype is a single shareable HTML file anyone can drive by clicking buttons; a UI prototype renders radically different variants on one route, switchable from a floating bar. Deep-dive reaches for it when a frontier question can only be answered in running code.
 
 ## ENOTIME
 
@@ -87,6 +88,8 @@ All four project-memory skills share one memory shape, defined in [`trivium/TAXO
 - **`write-clearly`** — A style guide for my preferred English: warm, direct, laconic, occasionally devastating. Applied whenever the agent writes prose on my behalf.
 - **`write-code-comments`** — Comments and doc strings that earn their place: document what the code cannot say, explain why rather than what, stay sparse. Doc strings answer the caller's real questions instead of restating the signature. Fires whenever generated code includes comments, not just on request.
 - **`write-commit-message`** — Helps draft a commit / PR message worth living in `main` for years. Inverted-pyramid structure, hard-wrap discipline, real-world anti-patterns. Distilled from ceej's "Writing great commit messages" doc.
+- **`write-for-agents`** — Reference for writing any document an agent consumes: skills, `AGENTS.md` / `CLAUDE.md`, docs reached by pointers. Context pointers, the two loads, information hierarchy, completion criteria, leading words, pruning. Carries the house `LEXICON.md`: canonical engineering vocabulary with `Avoid` lists, because agent documents have a human reader too. Adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT).
+- **`wait-what`** — "Stop. That last message did not land: re-pitch it." User-invoked conversational repair, in Simplified Technical English and the project's ubiquitous language.
 - **`write-design-doc`** — Problem-statement design doc helper distilled from [my blog post on design docs](https://blog.ceejbot.com/posts/design-docs/). Includes a fillable template.
 
 ## LICENSE

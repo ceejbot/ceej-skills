@@ -1,7 +1,7 @@
 {
 	"name": "design",
-	"version": "0.1.0",
-	"description": "Design-phase skills: deep-dive a plan to shared understanding, and maintain the project's domain model with a glossary and ADRs",
+	"version": "0.2.0",
+	"description": "Design-phase skills: deep-dive a plan to shared understanding, maintain the project's domain model with a glossary and ADRs, and prototype to answer questions reasoning can't",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"

@@ -1,7 +1,7 @@
 {
 	"name": "writing",
-	"version": "0.10.1",
-	"description": "Writing skills for clear prose, useful code comments, durable commit messages, and problem-first design docs",
+	"version": "0.11.0",
+	"description": "Writing skills for clear prose, useful code comments, durable commit messages, problem-first design docs, and agent documents in the house lexicon",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"
@@ -14,6 +14,8 @@
 		"design-docs",
 		"git",
 		"writing",
-		"style-guide"
+		"style-guide",
+		"skills",
+		"lexicon"
 	]
 }
