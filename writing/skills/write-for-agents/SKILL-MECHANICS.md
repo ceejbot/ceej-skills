@@ -11,6 +11,8 @@ Two choices, trading the two loads:
 
 Pick model-invocation only when the agent must reach the skill on its own, or another skill must. If it only ever fires by hand, make it user-invoked and pay no context load.
 
+"By hand" means a literal `/name` invocation, nothing looser: a user-invoked skill is invisible to the agent, so naming it in a sentence ("commit that, then run handoff") reaches nothing. A skill you'd ask for conversationally but never want fired unbidden takes the third shape: model-invoked, with a description that gates on the user asking for it by name ("Use only when the user explicitly asks for X. Never invoke on your own judgment."). That buys prose reach for the usual price of one always-loaded description line; the guard is behavioral rather than mechanical, which is exactly what lets it tell "user asked in prose" apart from "agent decided on its own" — a distinction no frontmatter flag can draw.
+
 Shared reference that two user-invoked skills both need can live in neither: with no descriptions, neither can fire the other. Push it to a plain file outside the skill system: external reference any skill can point at.
 
 ## Splitting by invocation

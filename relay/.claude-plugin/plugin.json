@@ -1,6 +1,6 @@
 {
 	"name": "relay",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"description": "Relay a session to a fresh agent: handoff writes a self-contained document and pickup resumes it. Trivia-aware when the trivium conventions are in place, plain files otherwise",
 	"author": {
 		"name": "ceej",

@@ -1,8 +1,7 @@
 ---
 name: handoff
-description: Use only when the user explicitly asks to create a handoff. Compact the current conversation into a document a fresh agent can pick up.
+description: Use only when the user explicitly asks for a handoff by name — "run handoff", "write a handoff", "/relay:handoff". Never invoke on your own judgment. Compacts the current conversation into a document a fresh agent can pick up.
 argument-hint: "What will the next session be used for?"
-disable-model-invocation: true
 ---
 
 # Handoff

@@ -1,7 +1,6 @@
 ---
 name: pickup
-description: Use only when the user explicitly asks to resume a handoff. Read the document written by an earlier session and continue the work it describes.
-disable-model-invocation: true
+description: Use only when the user explicitly asks to resume or pick up a handoff by name — "run pickup", "pick up the handoff", "/relay:pickup". Never invoke on your own judgment. Reads the document written by an earlier session and continues the work it describes.
 ---
 
 # Pickup

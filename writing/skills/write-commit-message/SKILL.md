@@ -103,6 +103,7 @@ Fixes #42, #44, #47.
 | Mix tenses within one message          | Use the past tense. |
 | Hand-wave "see PR"                     | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
 | Write ten paragraphs.                  | Long explanatations belong in documentation |
+| Narrate what the diff already shows    | Listing changed files or restating hunks doubles the length and buries the why. Name only what the diff can't show. |
 
 ## When asked to draft
 
