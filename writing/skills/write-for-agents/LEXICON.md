@@ -27,3 +27,38 @@ _Avoid_: seam
 A required verification before work proceeds. A pipeline has steps; a step
 has checks; a failed check stops the work.
 _Avoid_: gate, quality gate
+
+**Decision** / **ratification decision**:
+The point where a human approves or rejects a proposed bundle of changes.
+Checks verify; decisions choose.
+_Avoid_: gate, approval gate
+
+**Integrate**:
+Bring reviewed changes or amendment text into the authoritative document or
+line of work.
+_Avoid_: fold, fold in
+
+**Golden**:
+A committed expected artifact that tests compare against: golden vector,
+golden file, golden test. Reserve "pin" for dependency and toolchain
+versions — its package-management sense.
+_Avoid_: pinned test vector, pinned constant
+
+**Case**:
+One path through a multi-path verification or test matrix.
+_Avoid_: leg
+
+**Wrap-up**:
+The finishing work that closes a stage or arc: final review, docs, loose
+ends.
+_Avoid_: closeout
+
+**Re-verify**:
+Check work or claims against the authoritative source again. "Re-ground"
+points elsewhere in both electrical engineering and plain English.
+_Avoid_: re-ground, re-grounding
+
+## Shared vocabulary
+
+Confirmed shared between both readers, no swap needed: land, arc, lane,
+latch, wire up, ship, spike, fan out, polish, harden.
