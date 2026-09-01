@@ -130,6 +130,13 @@ An item found already shipped gets a tombstone now — re-`memorize`
 tombstone line deletes the rest of the focus (this happened; a gardening pass
 had to restore the seed from a same-day recall). Carry everything forward.
 
+It can also **drop the tag set** even though you passed one, which quietly
+breaks step 3's tag-filtered recall next session — that lookup then returns a
+stale focus instead of nothing. So after re-`memorize`ing, repeat the step 3
+call and confirm both the mnemonic and the `tags:` line; repair with
+`edit(mnemonic, add_tags = ["project:<slug>", "seed"])`. A bare-mnemonic
+recall still finds the untagged seed, so it cannot be the check.
+
 ### 7. Rate what helped
 
 `rate` the recalled hubs and spokes up if they shaped the direction, down if

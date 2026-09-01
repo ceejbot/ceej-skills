@@ -146,6 +146,17 @@ is how a list rots: the next session re-plans work that already shipped.
 - To rewrite a body, `memorize` with the **same mnemonic**. This overwrites
   the content, **replaces the tag set** with the one you pass, and keeps the
   memory's aliases and links. Pass the full tag set every time.
+- **Verify the tags survived.** `memorize` onto an existing mnemonic has been
+  observed dropping the tag set entirely *despite* the call passing it —
+  three times in one session, on a `current-focus` seed and two hubs. The
+  write reports success and the memory still scores ~1.5 on a bare-mnemonic
+  query, so nothing looks wrong; only the **tag-filtered** recall misses it,
+  and it misses by returning a plausible stale memory rather than nothing.
+  After any `memorize` onto an existing mnemonic, re-`recall` it *with the
+  tag filter* and read the `tags:` line. Repair with `edit(mnemonic,
+  add_tags = [...])`, whose response echoes the resulting tag set. A
+  bare-mnemonic recall is not a sufficient check: it succeeds precisely when
+  the filtered one fails.
 - `memorize` with a *new* mnemonic that lands within distance 0.15 of an
   existing one is auto-merged into it. Read the response: if it reports a
   merge, the memory you meant to create does not exist under your name.

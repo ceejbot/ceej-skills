@@ -169,6 +169,13 @@ four-section format if it isn't already, tombstoning any follow-up found
 shipped. Add the theme list and a `last gardened <date>` line to
 `<slug>/conventions`.
 
+Every write in this step lands on an existing mnemonic, so every one can lose
+its tag set silently (see the taxonomy's tool semantics). Close the step with
+one tag-filtered recall per hub and per seed touched, confirming the `tags:`
+line; repair with `edit(mnemonic, add_tags = [...])`. An untagged hub is
+invisible to the tag-scoped recalls in step 1 and in `session-start`, which is
+the whole point of gardening them.
+
 ### 7. Compile the op list and execute it
 
 A script turns the accepted proposals into one JSONL op list per theme, in

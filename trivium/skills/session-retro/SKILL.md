@@ -121,8 +121,10 @@ degrades.
      a deferral.
 
    When a line changes, `memorize` `<slug>/habits/<theme>` with the full
-   new body and tags `["project:<slug>", "habits", "theme:<theme>"]`.
-   Eviction is a gardening move, not a retro move — only the export's
+   new body and tags `["project:<slug>", "habits", "theme:<theme>"]`, then
+   verify the tags survived the write (see step 6 — hubs are hit by the
+   same tag-drop as the seeds, and an untagged hub vanishes from step 1's
+   recall next session). Eviction is a gardening move, not a retro move — only the export's
    counters can say which lines are cold without the check itself bumping
    them — so a full hub where nothing clusters is the one case to flag
    for `memory-gardening`.
@@ -149,6 +151,15 @@ mnemonic with tags `["project:<slug>", "seed"]`. `edit` cannot change a body.
 Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
 — `shipped <hash>` — and stay on the list. Retros hold durable lessons; state
 lives here.
+
+**Then verify the write with a tag-filtered recall** — `recall(query =
+"<slug>/current-focus", tags = ["project:<slug>"], limit = 1)`, the exact call
+session-start makes — and confirm the result's mnemonic *and* its `tags:`
+line. `memorize` has been seen dropping the tag set despite being passed one;
+it reports success either way, and the untagged seed still answers a
+bare-mnemonic query, so this filtered recall is the only check that catches
+it. Repair with `edit(mnemonic, add_tags = ["project:<slug>", "seed"])`. Skip
+this and the next session-start silently reads a months-old focus instead.
 
 ### 7. Confirm with the user
 
