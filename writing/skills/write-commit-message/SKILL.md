@@ -1,147 +1,125 @@
 ---
 name: write-commit-message
-description: Use when writing a commit message or PR description for work that will land on main/trunk (typically via squash-and-merge). Triggers on phrases like "write the commit message", "draft the PR", "what should this commit say", or before any commit that becomes part of the durable git log. Skip for WIP/fixup commits on a feature branch — those don't need ceremony.
+description: Use before running `git commit`, `gh pr create`, or `gh pr edit`, and when asked to draft a commit message or PR description. In squash-merge repos the PR title and body become the trunk commit, so a PR description is a commit message. A fixup commit the author will autosquash needs only a headline.
 ---
 
 # Writing Commit Messages
 
-Helps draft a commit message worth living in `main` for years. The reader you're writing for is some future maintainer — often you, three years from now, with no memory of what you were thinking — staring at a single `git blame` line and trying to figure out why the code is the way it is.
+In a squash-merge repo the PR title becomes the headline and the PR body becomes
+the message of the commit that lands on trunk. A PR description is therefore a
+commit message, and this skill covers both. The reader is a maintainer years
+from now, often you with no memory of the work, staring at one `git blame` line
+and asking why the code is the way it is.
 
-**Core principle:** trunk commits are the durable record. Branch commits can be anything ("Friday is Hawaiian shirt day"). The commit trail in `main` is what survives the migration from GitHub to GitLab and back; that's what you're writing for.
-
-Source: CJ's own "Writing great commit messages" document.
+**Core principle:** trunk commits are the durable record. They outlive the PR,
+the issue tracker, and the hosting provider. Write the message that reader
+needs, at the length the change earns, and nothing more.
 
 ## When to use
 
-- Writing a PR description for work intended to merge into `main` (or `master` or `latest`).
-- Writing a message for a significant commit.
-- Writing a message for any direct commit to trunk.
-- User asks "what should this commit message be?" or "write the PR description for X."
+- Before `git commit` on work that will reach trunk.
+- Before `gh pr create` or `gh pr edit`: the PR title and body are the commit.
+- When asked to draft a commit message or PR description.
 
-**Skip if:** committing to a feature branch where the work will be squashed later — that's Hawaiian-shirt-day territory and anything goes. Also skip for trivial fixup commits the author plans to autosquash.
+A fixup commit the author will autosquash needs only a headline.
 
-## Structure: the inverted pyramid
+## Steps
 
-A great commit message is a newspaper article, not a diff summary. The pyramid:
+### 1. Read the diff
 
-1. _Headline_ Try for 50 chars. Conventional Commits prefix (`feat:`, `fix:`, `docs:`,
-   `chore:`) is welcome — works great for humans and for tooling.
-2. _Dek_ The subhed that tells what broke or what the change was, meaningfully.
-3. _Lede paragraph._ What changed in the system's behavior, and _why_. Someone who reads
-   only this paragraph should get the gist. Keep it short.
-4. Consider if this is enough.
-5. _Technical choices / background._ Optional. Use it if the implementation was non-obvious,
-   if there was a viable alternative worth naming, or if the problem itself was hard.
-   Keep it short.
-6. _Details about how._ Optional. Bullet list of picky stuff: subtle invariants, edge cases
-   handled, things deliberately not done. Include only if unusual or interesting in some way.
-   Keep it short.
-7. _Drive-by changes._ Additional small changes made along the way that did not relate
-   to the main topic, but were easy to do, such as bug fixes in adjacent code.
-8. _Bug / issue references._ At the end, to assist automation. Don't put these in the
-   headline — they eat your 50 characters.
+`git diff <range>` or `git log <range>`. The diff is ground truth; conversation
+memory is not. Note what a reader could not learn from the diff alone: the
+problem that prompted the change, the alternative not taken, the thing left
+deliberately undone. Done when you can say why the change exists in one
+sentence.
 
-### Length
+### 2. Write the headline
 
-- Headline: ~50 chars so it fits in `git log --oneline` and GitHub file views.
-- Body: hard-wrap at 80 chars. Unwrapped lines are miserable in a terminal pager. Linus Torvalds,
-  noted relaxation coach, says 74; CJ says 80; pick something in 72–80 and stick with it.
-- Body length: as long as the change deserves. A boring config tweak is one paragraph.
-  A subtle concurrency fix can be ten. Think about the importance of the change and how
-  difficult it will be to understand in the future: devote more words to critical changes,
-  and fewer words to small changes.
-- BE CONCISE no matter what. Use simple declarative sentences. Do not use emoji or **bold**.
-- You may use `backticks` to indicate symbols, names in code, or shell commands.
+Imperative mood, about 50 characters, a Conventional Commits prefix (`feat:`,
+`fix:`, `docs:`, `chore:`) with an optional scope. Issue numbers go on the last
+line of the body, where they cost no headline characters. The headline is the
+hardest line; let it shape the rest.
 
-Use clear, concise English prose. Don't repeat facts. Focus on information future readers will
-need so they can understand why the work was done the way it was, and what your intentions were.
+### 3. Write the lede
 
-Avoid _leaked frames._ Leaked frames are references that only parse from inside the session that produced them. From inside they read as clear, which is why the writer cannot see them. Assume that the reader of a commit message has only the context of the repo itself.
+One paragraph: what was happening, what it caused, and what the change does
+about it. How does the system behave now that it did not before, and why? Done
+when a reader who stops here has the gist.
 
-### Tense
+### 4. Decide whether the change earns more
 
-Imperative for the headline (matches Conventional Commits and Linux kernel convention);
-past tense for the "how it was done" details reads naturally.
+A config tweak or a routine fix is finished at the lede. Add a paragraph only
+for something the lede could not hold: a non-obvious technical choice, a viable
+alternative rejected and why, a deliberate omission, a drive-by fix in adjacent
+code. A subtle concurrency fix can run to ten paragraphs; most changes run to
+one or two. Done when every paragraph tells the reader something the diff
+cannot.
 
-## Example: an inverted-pyramid commit
+### 5. Add references last
 
-```
-docs(commits): meta-description of an inverted-pyramid commit
+`Closes #NN` or `Refs #NN` on the final line, for tooling.
 
-The first paragraph is the lede. It must describe what change this
-commit makes. How does the software behave after the commit that is
-different from how it behaved before? Why did you make this change?
-Somebody who reads ONLY this first paragraph should get the gist.
+### 6. Wrap and hand back
 
-The second paragraph can get into the technical choices made to
-accomplish the work, if they're at all interesting or if there was an
-alternative to the method chosen. It might also go into the background
-of the problem solved by the commit, if it was difficult or complex.
+Hard-wrap the body at 80 columns. If the user asked for a draft, return it for
+review. If they authorized the commit or PR, use the draft without asking again.
 
-You can go longer if the change deserves more words.
+## Voice
 
-Additional notes:
+Plain declarative English, one tense throughout the body, backticks for symbols
+and commands. The body is prose: paragraphs and an occasional bullet list.
+Review triage, test tables, and generated-by footers belong in a PR comment,
+where they inform the reviewer without entering the permanent log.
 
-- This is where you can get into picky things.
-- Mention things you did not related to the main work.
-- Bullet items are optional but often helpful.
-- You are writing a message to future maintainers of this software.
-- Future-you might be one of those maintainers, with no memory of
-  doing the work. The message is your gift to them.
+Watch for _leaked frames_: references that parse only from inside the session
+that produced them ("as discussed", "the earlier approach", "round 3 of
+review"). From inside they read as clear, which is why the writer cannot see
+them. The reader has the repo and nothing else.
 
-Fixes #42, #44, #47.
-```
+## Anti-patterns
 
-## Anti-patterns when drafting
+| Don't                                                   | Why                                                                                                                   |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Accept the default squash message or `gh pr create --fill` | Both concatenate the branch's WIP commits. That is noise in trunk forever.                                         |
+| Narrate the diff                                        | Listing files or restating hunks doubles the length and buries the why, the one thing the message uniquely adds.      |
+| Skip the body on a "small" change                       | The change may be small; the reason rarely is. One sentence still helps.                                              |
+| Put issue numbers in the headline                       | They eat the 50 characters, and tooling reads them from the body anyway.                                              |
+| Write "see PR"                                          | In two years the PR is archived, link-rotted, or behind an org boundary.                                              |
+| Use markdown headers, bold, or tables in the body       | They render as literal `##` and `**` in `git log`, and they signal a change inventory rather than an explanation.     |
 
-| Don't | Why |
-| ----- | --- |
-| Accept GitHub's default squash message | It's the concatenation of your WIP commits. Almost always noise.                                                       |
-| Skip the body for "small" changes      | The change might be small; the _why_ often isn't. One body sentence body is still useful.                                  |
-| Cram bug numbers into the headline     | Put them at the end of the message.               |
-| Skip the _why_                         | The diff already says what changed. The why is the only thing the message uniquely contributes. |
-| Mix tenses within one message          | Use the past tense. |
-| Hand-wave "see PR"                     | Two years from now the PR may be archived, link-rotted, or behind an org boundary. The commit is the durable artifact. |
-| Write ten paragraphs.                  | Long explanatations belong in documentation |
-| Narrate what the diff already shows    | Listing changed files or restating hunks doubles the length and buries the why. Name only what the diff can't show. |
+## Examples
 
-## When asked to draft
-
-Procedure when the user asks for a commit/PR message draft:
-
-1. **Look at the diff first.** `git diff <range>` or `git log <range>` — don't draft from memory or conversation context alone. The diff is ground truth.
-2. **Draft the headline and body together.** The headline is the hardest line and should shape the rest, but it does not require a separate round trip unless a real ambiguity would change it.
-3. **Draft the body in inverted-pyramid order.** Lede first. Only add technical-choices and how-details paragraphs if the change actually warrants them — boring routine commits are headline + one paragraph.
-4. **Hard-wrap the body at 80 chars.** Always, per the Length rules above.
-5. **Respect the requested scope.** If the user asked only for a draft, return it for review. If they already authorized creating or updating the commit or PR, use the draft without asking again.
-
-## What a great commit message is NOT — real-world specimens
-
-CJ's collection from the wild. The fourth specimen is the most common — it's what GitHub gives you by default if you don't override the squash message.
+A routine change, finished at the lede:
 
 ```
-fixed bug
+ci: run the scalafmt version .scalafmt.conf pins in the format check
 
+The version of scalafmt we were running in CI was whatever was on the
+AMI, which comes from who-knows-where. Some runner AMIs have newer
+versions than others, which was resulting in inconsistent CI runs and
+impossible-to-pass CI checks.
 
-made this better probably
-
-
-fixed some lifestyle stuff
-
-
-[four-letter word]
-
-
-* a github workflow to kick off extra tests
-* YAML fix.
-* [expletive] YAML
-* I [expletive] hate debugging workflows
-* It has been 0 days since the last Bash quoting incident.
-* Friday is Hawaiian shirt day.
-* Will it work now?
-
-
-[ the entire text of On Walden Pond by Henry David Thoreau ]
+The fix is to pin the version of scalafmt the workflow uses to the one
+the repo demands.
 ```
 
-None of these belong in `main` forever.
+A change that earned a second paragraph and a note for the release:
+
+```
+fix(classify): write the resolved doc type back to the document row
+
+Classify recorded its label on classification_run and the cascade
+envelope but never on document.doc_type_id, so every classified
+document stayed type 0 forever and campaign cohorts, the failure
+survey, and the coming per-type coalescing policy never saw it.
+write_classification_run now types the row in the same transaction
+that completes the run, only when the row still reads 0: a source-
+supplied type is authoritative and rides back on doc.extracted, so an
+operator re-run that disagrees keeps the row and logs both ids. The
+completion log line carries the outcome.
+
+Side effect worth noting in the release: cohort previews and the
+failure survey widen to include classified documents.
+
+Closes #448. Refs #391, #392 (per-doc-type coalescing, step 0).
+```
