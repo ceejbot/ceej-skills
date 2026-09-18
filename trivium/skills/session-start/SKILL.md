@@ -43,8 +43,18 @@ recall(query = "<slug>/trivia-bootstrapped", tags = ["project:<slug>"], limit = 
 
 A hit counts only if the returned `mnemonic` is exactly
 `<slug>/trivia-bootstrapped`; recall always returns the nearest neighbour,
-so a different mnemonic means no memory for this project. Point at
-`project-trivia-setup` and stop; never fabricate context.
+so a different mnemonic means the sentinel is absent.
+
+An absent sentinel is not yet proof of an empty project. A corpus that grew
+retro-by-retro before bootstrapping existed has lessons, hubs, and often a
+live focus, and the sentinel is the one seed nothing else reconstructs — so
+it is the seed most likely to be missing while everything else is present.
+Before stopping, run step 3's `current-focus` recall. If it returns an exact
+mnemonic match, continue with the seeds you can recall, tell the user the
+project is unbootstrapped, and have the closing retro (or
+`project-trivia-setup`) write the missing sentinel, `overview`, and
+`conventions`. Stop only when the sentinel AND the focus are both absent:
+point at `project-trivia-setup`; never fabricate context.
 
 ### 3. Recall the seeds — exact mnemonic, one tag
 

@@ -130,7 +130,10 @@ MCP). Each returns JSON:
   single body that folds in every instance's `Situation` and keeps the
   sharpest `Why` and `What to try instead`.
 - **Aliases** for each survivor and each single: one or two questions a
-  future session would ask.
+  future session would ask. The export frontmatter lists a memory's
+  existing aliases; brief the agent to propose only aliases that ask a
+  *different* question, since the op compiler dedupes by exact string and
+  a paraphrase of an existing alias lands as a near-duplicate.
 - **Generality**: project-only or `general:<domain>`, with a one-line reason.
 - **Misfiled**: memories that belong in another theme.
 - **Links**: related-but-distinct pairs.
