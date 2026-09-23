@@ -30,9 +30,12 @@ session will focus on, and tailor the document to that focus.
 
 ### 1. Detect the trivia path
 
-Derive the project slug the way trivium does: `Cargo.toml` `[package].name`;
-if there's no manifest, the working-directory basename, lowercased, with
-non-alphanumerics replaced by hyphens.
+Derive the project slug the way trivium does, first match wins:
+`git config --get trivia.slug`; `Cargo.toml` `[package].name`; the basename
+of the **repository** directory (the parent of
+`git rev-parse --path-format=absolute --git-common-dir`, so a worktree
+resolves to its project, not its branch), lowercased with non-alphanumerics
+replaced by hyphens; outside git, the working-directory basename.
 
 If trivia MCP tools are available, check for the bootstrap sentinel:
 

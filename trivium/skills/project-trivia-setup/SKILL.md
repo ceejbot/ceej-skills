@@ -31,12 +31,21 @@ stays organized.
 
 ### 1. Derive the project slug
 
-In order:
+In order, take the first that resolves:
 
-1. Read `Cargo.toml` and use `[package].name` (lowercase, hyphens already
-   canonical).
-2. If no `Cargo.toml`, use the basename of the working directory, lowercased,
-   with non-alphanumerics replaced by hyphens.
+1. `git config --get trivia.slug` — a per-clone override, present only when
+   someone chose a slug the directory does not carry.
+2. `Cargo.toml` `[package].name` (lowercase, hyphens already canonical).
+3. The **repository directory**, not the working directory: the basename of
+   the parent of `git rev-parse --path-format=absolute --git-common-dir`,
+   lowercased, with non-alphanumerics replaced by hyphens. This is the
+   checkout directory for an ordinary clone and the shared directory for a
+   worktree, whose own basename is a branch name.
+4. Outside git, the working-directory basename, normalised the same way.
+
+If the user wants a different slug than step 3 would give — a short name the
+team already uses — record it with `git config trivia.slug <slug>` so every
+later session and worktree derives the same one.
 
 The slug becomes the project tag: `project:<slug>`.
 

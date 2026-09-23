@@ -30,10 +30,32 @@ what they want and says so.
 
 ### 1. Derive the project slug
 
-If the user supplied a slug with the skill invocation, use it. Otherwise read
-`Cargo.toml` and use `[package].name`; with no manifest, use the
-working-directory basename, lowercased with non-alphanumerics replaced by
-hyphens. The tag is `project:<slug>`.
+If the user supplied a slug with the skill invocation, use it. Otherwise take
+the first of these that resolves:
+
+1. `git config --get trivia.slug` — a per-clone override for a corpus
+   bootstrapped under a name the directory does not carry. It lives in the
+   clone's shared git config, so every worktree of the clone agrees.
+2. `Cargo.toml` `[package].name`.
+3. The **repository directory**, not the working directory: the basename of
+   the parent of `git rev-parse --path-format=absolute --git-common-dir`,
+   lowercased, with non-alphanumerics replaced by hyphens. For an ordinary
+   clone that is the checkout directory. For a worktree it is the directory
+   the worktrees share — a `.bare` layout or a clone with worktrees beside it
+   — where the working-directory basename is a branch name, not a project.
+4. Outside git, the working-directory basename, normalised the same way.
+
+```
+git config --get trivia.slug 2>/dev/null \
+  || basename "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")" \
+     | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9\n' '-'
+```
+
+The tag is `project:<slug>`. If step 2 then finds no sentinel, do not guess
+another slug: one untagged `recall("trivia-bootstrapped <repo name>",
+limit = 3)` shows whether the corpus exists under another prefix, and the
+`<slug>/trivia-bootstrapped` mnemonic it returns is the slug to use — and to
+record with `git config trivia.slug <slug>` so the next session derives it.
 
 ### 2. Check that trivia is bootstrapped
 

@@ -22,9 +22,14 @@ of silently acting on stale instructions.
 
 ### 1. Locate the handoff
 
-Derive the project slug the way trivium does: `Cargo.toml` `[package].name`,
-else the lowercased working-directory basename with non-alphanumerics replaced
-by hyphens. Then check, in order:
+Derive the project slug the way trivium does, first match wins:
+`git config --get trivia.slug`; `Cargo.toml` `[package].name`; the basename
+of the **repository** directory (the parent of
+`git rev-parse --path-format=absolute --git-common-dir`, so a worktree
+resolves to its project, not its branch), lowercased with non-alphanumerics
+replaced by hyphens; outside git, the working-directory basename. A recall
+whose mnemonic does not start with `<slug>/` is a miss, not a pointer. Then
+check, in order:
 
 1. **Trivia pointer.** If trivia MCP tools are available:
    `recall("<slug>/handoff", limit = 1)`. If the memory exists and the file it

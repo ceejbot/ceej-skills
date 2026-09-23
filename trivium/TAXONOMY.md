@@ -19,9 +19,13 @@ writes memories in this shape, so a memory written by `session-retro` is one
 | `<slug>/history/<yyyy-mm>-<arc>` | `archive` | Merged session summaries and retired state. Excluded from recall.     |
 | `general/habits/<domain>[-<facet>]` | `habits` | A cross-project hub, keyed by domain (never by a project's theme). |
 
-`<slug>` is the project's `Cargo.toml` `[package].name`, or the directory
-basename lowercased with non-alphanumerics replaced by hyphens. When a project
-is renamed, `memory-gardening` renames the prefix on every memory. Any other
+`<slug>` is, in order of precedence, the clone's `git config trivia.slug`,
+the project's `Cargo.toml` `[package].name`, or the **repository** directory's
+basename — the parent of `git rev-parse --git-common-dir`, so every worktree
+of a clone derives the same slug — lowercased with non-alphanumerics replaced
+by hyphens. When a project is renamed, `memory-gardening` renames the prefix
+on every memory; `trivia.slug` is the cheaper alternative when the old prefix
+should stay. Any other
 shape — `<slug>/reference/…`, a bare `<slug>/<thing>`, a sentence with spaces
 — is legacy; gardening reshapes it into one of the rows above.
 
