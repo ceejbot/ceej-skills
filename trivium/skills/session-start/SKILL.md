@@ -149,6 +149,13 @@ it at its consumption site:
   re-derive the frontier from the specs directory sorted by date, the target
   design doc's implementation-status header, and the roadmap's "last
   refreshed" line — the GROUND TRUTH section says where.
+- An item "blocked on an upstream issue" records past state: check the
+  upstream's real status, and ask about a local fork or branch (a
+  `~/code/forks/` checkout, a sibling worktree) before scoping a workaround.
+- An item that depends on a later stage's claim ("stage N will restate X")
+  is verified by the test "will this session's own artifacts restate it?"
+  — not by whether the later stage exists; a claim nothing this session
+  writes will re-derive is unverified, and the plan says so.
 
 A fan-out exploration task over the specs directory and the cited types —
 using a subagent when the host provides one — returns an authoritative map in

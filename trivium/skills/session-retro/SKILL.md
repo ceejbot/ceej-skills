@@ -149,7 +149,10 @@ exact mnemonic (a retro without a preceding `session-start` has no copy in
 context), then rewrite it in the four-section format: `memorize` the same
 mnemonic with tags `["project:<slug>", "seed"]`. `edit` cannot change a body.
 Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
-— `shipped <hash>` — and stay on the list. Retros hold durable lessons; state
+— `shipped <hash>` — and stay on the list. A follow-up that lives in another
+repository names that repository's absolute working-copy path, verified with
+`git -C <path> status -sb` as you write the line; a repo name alone is
+ambiguous across clones and worktrees. Retros hold durable lessons; state
 lives here.
 
 **Then verify the write with a tag-filtered recall** — `recall(query =

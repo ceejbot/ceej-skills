@@ -65,6 +65,12 @@ ratings, off-prefix and off-shape mnemonics, tag coverage, hubs present
 versus themes in use, alias coverage, and lexical near-duplicate pairs. Also
 run `trivia automerge --dry-run` once; on a corpus of distinct slugs it finds
 nothing, which confirms the duplicates are in the bodies and need step 5.
+Before triage, also grep the export bodies for `</content>` and
+`<parameter name=`: each hit is a mangled write whose tail landed in the
+body and whose tags never applied. Clean the body with a same-mnemonic
+`memorize` carrying the tag list the tail names, and expect two benign hits
+on a gardened corpus — the spoke that records this pattern and the archive
+keeper that absorbed the old ones.
 
 ### 2. Triage with the user
 
