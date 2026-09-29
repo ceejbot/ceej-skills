@@ -6,9 +6,10 @@ Usage: stats.py <export-dir> <slug> [<old-slug> ...] [--dupes-threshold 0.34]
 Reads the markdown files `trivia export` writes (YAML frontmatter + body) and
 prints the numbers memory-gardening triages on: recall concentration, never-
 recalled share, net-negative ratings, kind/theme tag coverage, hubs present
-versus themes in use, mnemonic prefix and shape drift, alias coverage, and
-lexical near-duplicate candidates. Reading files bumps no recall counters,
-unlike MCP recall, so this is the safe way to look at a whole corpus.
+versus themes in use, mnemonic prefix and shape drift, alias coverage, the
+weight of the project's hot memories, and lexical near-duplicate candidates.
+Reading files bumps no recall counters, unlike MCP recall, so this is the
+safe way to look at a whole corpus.
 
 Extra positional arguments are old project slugs; their tokens are dropped
 from the near-duplicate comparison along with the current slug's.
@@ -24,6 +25,8 @@ from collections import Counter
 
 KINDS = ("seed", "habits", "worked", "avoid", "learned", "archive")
 SPOKE_KINDS = ("worked", "avoid", "learned")
+# The taxonomy's cap on a hot memory, in characters (TAXONOMY.md, "Weight").
+CAP = 10_000
 STOP = {
     "the", "a", "of", "in", "on", "to", "is", "not", "for", "and", "vs", "as",
     "at", "by", "than", "over", "with", "when", "into", "from",
@@ -65,7 +68,7 @@ def parse(path):
         "tags": block("tags"),
         "aliases": block("mnemonics"),
         "links": "links:" in fm,
-        "size": len(body),
+        "size": len(body.strip()),
         "file": os.path.basename(path),
     }
 
@@ -192,6 +195,21 @@ def main():
     no_alias = [r for r in spokes if not r["aliases"]]
     print("spokes: %d; without aliases: %d; without links: %d" % (
         len(spokes), len(no_alias), sum(1 for r in spokes if not r["links"])))
+
+    section("weight (cap %d characters; hot memories over it are the slim set)" % CAP)
+    own = [r for r in rows if r["mn"].startswith(slug + "/") and "archive" not in r["tags"]]
+    hot = [r for r in own if re.match(r"^%s/(?:overview|conventions|current-focus|habits/.+)$" % re.escape(slug), r["mn"])]
+    print("seeds and hubs, always hot:")
+    for r in sorted(hot, key=lambda r: -r["size"]):
+        print("  %6d  rc=%4d  %s%s" % (r["size"], r["rc"], r["mn"], "  OVER" if r["size"] > CAP else ""))
+    if not hot:
+        print("  none on this prefix")
+    heavy = [r for r in own if r not in hot and r["size"] > CAP]
+    print("other memories over the cap (hot if a hub line or the conventions loads them every session; a high rc says so):")
+    for r in sorted(heavy, key=lambda r: -r["size"]):
+        print("  %6d  rc=%4d  %s" % (r["size"], r["rc"], r["mn"]))
+    if not heavy:
+        print("  none")
 
     section("lexical near-duplicate candidates (jaccard on mnemonic tokens >= %.2f)" % thr)
     toks = {r["mn"]: tokens(r["mn"]) for r in rows}

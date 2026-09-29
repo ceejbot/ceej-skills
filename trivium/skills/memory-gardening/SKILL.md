@@ -1,6 +1,6 @@
 ---
 name: memory-gardening
-description: Use when the user says "garden the memories" / "clean up our memories" / "tidy project memory", when session-start cannot find a lesson that current-focus names, when a project was renamed, or every ten sessions or so on a long-running project. Periodic reorganization of a project's trivia memories — archive stale state, merge duplicates, write and refresh habit hubs, add aliases and links — so recall keeps returning the lessons that matter.
+description: Use when the user says "garden the memories" / "clean up our memories" / "tidy project memory", when session-start cannot find a lesson that current-focus names, when current-focus or a ledger every session loads has outgrown its cap, when a project was renamed, or every ten sessions or so on a long-running project. Periodic reorganization of a project's trivia memories — archive stale state, merge duplicates, slim hot memories, write and refresh habit hubs, add aliases and links — so recall keeps returning the lessons that matter.
 ---
 
 # Memory Gardening
@@ -9,8 +9,9 @@ Reorganize a project's trivia memories so that recall keeps working. A corpus
 that grows one retro at a time drifts in predictable ways: old state memories
 accumulate recalls and outrank every specific lesson; the same lesson gets
 saved four times in different words; hubs fill with one-spoke lines that no
-retro clustered or evicted; a project rename leaves half the mnemonics under
-the old prefix.
+retro clustered or evicted; the focus and the ledgers every session loads
+swell past what a session should carry; a project rename leaves half the
+mnemonics under the old prefix.
 `session-retro` prevents some of this one lesson at a time. Gardening runs
 fresh, over the whole corpus, and repairs the rest. The target shape and the
 tool semantics this skill leans on are in `../../TAXONOMY.md`, relative to
@@ -31,6 +32,8 @@ ever sees the result.
 - A project was renamed; the old slug is still a mnemonic prefix.
 - A hub is full and retro reports its lines no longer cluster, or `stats.py`
   reports a theme over forty spokes.
+- A retro reports a **hot** memory over the taxonomy's cap: `current-focus`,
+  or a ledger every session of a kind loads.
 - Roughly every ten sessions on a project that retros regularly.
 
 **Skip if:** the project has fewer than ~30 memories. Nothing has had time to
@@ -62,7 +65,8 @@ old export.
 
 The report gives recall concentration, never-recalled share, net-negative
 ratings, off-prefix and off-shape mnemonics, tag coverage, hubs present
-versus themes in use, alias coverage, and lexical near-duplicate pairs. Also
+versus themes in use, alias coverage, weight (seeds, hubs, and spokes over
+the cap), and lexical near-duplicate pairs. Also
 run `trivia automerge --dry-run` once; on a corpus of distinct slugs it finds
 nothing, which confirms the duplicates are in the bodies and need step 5.
 Before triage, also grep the export bodies for `</content>` and
@@ -74,7 +78,7 @@ keeper that absorbed the old ones.
 
 ### 2. Triage with the user
 
-Present the numbers and four decisions:
+Present the numbers and five decisions:
 
 - **The adoption set.** The step-1 stray sweep's list of project-relevant
   memories missing `project:<slug>`. The user says which get adopted (tagged
@@ -90,6 +94,10 @@ Present the numbers and four decisions:
   name them and get a yes.
 - **Which lessons are general.** Candidates are the tooling, orchestration,
   and idiom spokes; the user confirms the `general:<domain>` tags.
+- **The slim set.** Every hot memory the weight section reports over the
+  cap, with the homes you propose for its content. When the slim set is the
+  pass's only finding, say so: it is a weight pass, and
+  [`SLIMMING.md`](SLIMMING.md) names the steps it runs.
 
 ### 3. Archive state by merge
 
@@ -133,7 +141,7 @@ MCP). Each returns JSON:
 
 - **Merge sets**: groups that state one lesson; the survivor's mnemonic
   (prefer the most-recalled; use the *renamed* name if step 4 renamed it); a
-  single body that folds in every instance's `Situation` and keeps the
+  single body that integrates every instance's `Situation` and keeps the
   sharpest `Why` and `What to try instead`.
 - **Aliases** for each survivor and each single: one or two questions a
   future session would ask. The export frontmatter lists a memory's
@@ -175,8 +183,10 @@ and no project tag. Hubs exist before step 7 links anything to them.
 
 Rewrite `<slug>/overview` if it is stale, and `<slug>/current-focus` into the
 four-section format if it isn't already, tombstoning any follow-up found
-shipped. Add the theme list and a `last gardened <date>` line to
-`<slug>/conventions`.
+shipped. Slim every memory in the slim set by the steps in
+[`SLIMMING.md`](SLIMMING.md): cold memories written and verified first, the
+hot one rewritten last. Add the theme list and a `last gardened <date>` line
+to `<slug>/conventions`.
 
 Every write in this step lands on an existing mnemonic, so every one can lose
 its tag set silently (see the taxonomy's tool semantics). Close the step with
@@ -215,7 +225,7 @@ merges into the history memory.
 
 Take a fresh export and rerun `stats.py`: kind tags `{1: N}`, every hub and
 spoke with a theme, zero off-shape mnemonics, every spoke aliased and
-linked. Then take a recall that missed in a recent session — `session-start`
+linked, no seed or hub over the cap. Then take a recall that missed in a recent session — `session-start`
 names one when it suggests gardening, or the user does — and run it again
 exactly. The expected memory comes back in the top three, or the pass isn't
 finished: add an alias or fix a tag and rerun. `rate` what came back.
@@ -239,6 +249,7 @@ lesson for this skill.
 | Treat any `limit = 1` hit as the hub                 | Recall returns the nearest neighbour; the mnemonic must match exactly or the hub is absent. |
 | Let a hub grow past twelve lines                     | A checklist nobody reads to the end is a list, not a habit. Cluster, evict, then split — in that order. |
 | Garden without the user on the archive set           | Merging state into history is irreversible.                                            |
+| Slim a hot memory before its cold stores verify      | `memorize` replaces the body. Until the cold copy is recalled intact, the hot one is the only copy in the store. |
 
 ## Example
 

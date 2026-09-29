@@ -118,7 +118,7 @@ costly to forget than the current line 12. A spoke without a hub line is
 healthy, not homeless — its aliases and the session-start probes still find
 it; it just isn't front of mind. When the cap presses, the moves in order:
 
-1. **Cluster** — fold sibling lines that state one rule into a single line
+1. **Cluster** — combine sibling lines that state one rule into a single line
    citing all their spokes. The test: if the merged rule as written would
    not have prevented each cited spoke's specific mistake, it is two rules.
 2. **Evict** — demote the line whose spokes have stopped earning recalls.
@@ -136,13 +136,50 @@ are visibly marked as such:
 
 ```
 FRONTIER: one sentence, with commit hash and date.
-GROUND TRUTH: where to re-derive this — spec directory, roadmap "last refreshed" line, status header.
+GROUND TRUTH: where to re-derive this — spec directory, roadmap "last refreshed" line, status header;
+              then the cold memories, one pointer each: <mnemonic> — load when <task>.
 NEXT (claims — verify at the consumption site before planning): …
 FOLLOW-UPS: <item> · added YYYY-MM-DD · open | shipped <hash>
 ```
 
 Follow-ups get a tombstone (`shipped <hash>`) when they land. Silent removal
-is how a list rots: the next session re-plans work that already shipped.
+is how a list rots: the next session re-plans work that already shipped. A
+tombstone keeps its line while the focus is under the cap below; at the cap
+the oldest shipped lines move to history and one pointer line replaces them.
+
+## Weight: hot and cold
+
+A **hot** memory is one a session loads by default: the seeds, every hub,
+and any spoke that `<slug>/conventions` or a hub line tells every session of
+a kind to load — a rulings ledger, a name roster. A hot memory is read on
+every load and re-sent whole on every rewrite, so its size is paid each
+session. A **cold** memory is loaded by task, through a pointer in the
+focus's GROUND TRUTH or on a hub line.
+
+**The cap: a hot memory stays under 10,000 characters.** Measure it with the
+verify recall you already make: `truncate = 200` prints the remainder as
+`(N more chars)`. A seed rewritten whole each session has no natural brake,
+and a ledger that keeps its evidence beside each ruling grows with every
+ruling; on the 2026-09 forsyte pass the focus had reached 32k and the
+rulings ledger 21k while every spoke in the corpus was aliased, linked, and
+unduplicated — the weight sat in two memories.
+
+Sort content by **when it is needed**, not by when it was learned:
+
+| Content                                                | Home                                                                 |
+| ------------------------------------------------------ | -------------------------------------------------------------------- |
+| Where the work stands and what is next                 | `current-focus`                                                      |
+| A standing decision or ruling                          | ONE line in a `learned` ledger spoke; hot when every session of a kind loads it |
+| The evidence and site history behind a ruling          | a `learned` log spoke, cold; the ledger names it                     |
+| A working list — debts owed, facts still unverified    | its own `learned` spoke, cold                                        |
+| Follow-ups shipped more than a week ago                | `<slug>/history/<yyyy-mm>-<arc>`, verbatim, tombstones intact        |
+
+**Retiring** is the move from hot to cold, in this order: write the cold
+memory, verify it with a tag-filtered recall, then rewrite the hot one with a
+pointer in the content's place. Text moves verbatim. Each quoted phrase,
+hash, or "still open" claim it carries is checked against its source as it
+moves — a claim that rode in the focus for weeks has usually drifted, and
+retiring is the one time every line is read.
 
 ## Tool semantics worth knowing
 

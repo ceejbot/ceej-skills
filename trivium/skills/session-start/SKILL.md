@@ -102,8 +102,13 @@ recall(query = "<slug>/habits/<theme>", tags = ["project:<slug>"], limit = 1)
 
 Hubs are each theme's working set — rule lines citing their spokes; this is
 the curated view, not the whole corpus. A result is a hub only if its
-`mnemonic` matches exactly; otherwise the theme has no hub yet. Then a task
-probe for spokes the hubs may not carry:
+`mnemonic` matches exactly; otherwise the theme has no hub yet.
+
+The focus's GROUND TRUTH may carry pointers to **cold** memories, each
+written `<mnemonic> — load when <task>`. Recall the ones whose task is
+today's, by exact mnemonic with `limit = 1`, and leave the rest cold.
+
+Then a task probe for spokes the hubs may not carry:
 
 ```
 recall(query = "<the NEXT sentence, in plain words>", tags = ["project:<slug>"],

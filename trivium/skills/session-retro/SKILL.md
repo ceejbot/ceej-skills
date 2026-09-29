@@ -82,10 +82,12 @@ recall(query = "<the lesson's gist in plain words>", tags = ["project:<slug>"],
 Three verdicts:
 
 - **Covered** — an existing spoke says this. *Reinforce* it: `memorize` the
-  same mnemonic with the same tags and a sharper body that folds in today's
+  same mnemonic with the same tags and a sharper body that integrates today's
   instance; `rate` it up. No new memory. **The body you pass REPLACES the old
-  one entirely** — fold means recall the full existing body and rewrite it
-  whole; an "ADDENDUM"-only save silently deletes everything else.
+  one entirely** — integrating means recalling the full existing body and
+  rewriting it whole; an "ADDENDUM"-only save silently deletes everything
+  else. A **hot** spoke (taxonomy, *Weight: hot and cold*) takes the instance
+  as ONE line; its evidence goes in the spoke's cold log.
 - **Related but distinct** — a new spoke, plus `link(new, existing,
   "related")` in step 5.
 - **Nothing** — a new spoke.
@@ -149,20 +151,35 @@ exact mnemonic (a retro without a preceding `session-start` has no copy in
 context), then rewrite it in the four-section format: `memorize` the same
 mnemonic with tags `["project:<slug>", "seed"]`. `edit` cannot change a body.
 Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
-— `shipped <hash>` — and stay on the list. A follow-up that lives in another
-repository names that repository's absolute working-copy path, verified with
+— `shipped <hash>` — and keep their line until the weight check below
+retires them. A follow-up that lives in another repository names that
+repository's absolute working-copy path, verified with
 `git -C <path> status -sb` as you write the line; a repo name alone is
 ambiguous across clones and worktrees. Retros hold durable lessons; state
 lives here.
 
+**The focus holds state.** A ruling, a protected decision, or a working list
+made this session is a spoke saved in step 5, and the focus gains one GROUND
+TRUTH pointer to it: `<mnemonic> — load when <task>`.
+
 **Then verify the write with a tag-filtered recall** — `recall(query =
-"<slug>/current-focus", tags = ["project:<slug>"], limit = 1)`, the exact call
-session-start makes — and confirm the result's mnemonic *and* its `tags:`
-line. `memorize` has been seen dropping the tag set despite being passed one;
-it reports success either way, and the untagged seed still answers a
-bare-mnemonic query, so this filtered recall is the only check that catches
-it. Repair with `edit(mnemonic, add_tags = ["project:<slug>", "seed"])`. Skip
-this and the next session-start silently reads a months-old focus instead.
+"<slug>/current-focus", tags = ["project:<slug>"], limit = 1, truncate =
+200)`, session-start's call with a truncation added — and confirm the
+result's mnemonic *and* its `tags:` line. `memorize` has been seen dropping
+the tag set despite being passed one; it reports success either way, and the
+untagged seed still answers a bare-mnemonic query, so this filtered recall is
+the only check that catches it. Repair with `edit(mnemonic, add_tags =
+["project:<slug>", "seed"])`. Skip this and the next session-start silently
+reads a months-old focus instead.
+
+**Weigh the focus on the same recall.** The `(N more chars)` remainder is its
+weight. Over the taxonomy's cap, **retire** content to its home (taxonomy,
+*Weight: hot and cold*), shipped follow-ups first: the cold memory written
+and verified, then the focus rewritten with a pointer in its place.
+
+Done when the filtered recall returns the focus with its tags and under the
+cap — or, when a retro has no time to retire, with the overage on the
+FOLLOW-UPS list as `focus at <N> chars · memory-gardening`.
 
 ### 7. Confirm with the user
 
@@ -188,6 +205,7 @@ Don't invent a lesson to have something to save.
 | ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | Memorize the diff or session transcript                | Git has it. Trivia holds the *meaning* you extracted.                                     |
 | Memorize "currently debugging X" as a retro            | State, not a lesson. It belongs in `current-focus`.                                       |
+| Park a ruling or a working list in `current-focus`     | The focus is rewritten whole every session, so whatever enters it is re-sent forever. It belongs in a spoke the focus points to. |
 | Save a lesson without running step 4                   | Four memories saying "nightly fmt got skipped" is how a corpus drowns its own lessons.    |
 | Save a spoke with no alias                             | The slug loses to older, vaguer memories; the lesson is unfindable by the session it's for.|
 | Give every spoke its own hub line                      | The hub is a working set; a line per spoke saturates the cap in weeks and buries the costly-to-forget rules. Cluster, or ship the spoke lineless. |
