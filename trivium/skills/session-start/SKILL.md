@@ -167,19 +167,14 @@ using a subagent when the host provides one — returns an authoritative map in
 one shot and keeps this context clean. Done when every item the plan depends
 on has been read at its source.
 
-An item found already shipped gets a tombstone now — re-`memorize`
-`<slug>/current-focus` with the same tags and the **full current body**, with
-`shipped <hash>` added on that line — so the next session doesn't re-plan it.
-**`memorize` on an existing mnemonic REPLACES the body**: saving only the
-tombstone line deletes the rest of the focus (this happened; a gardening pass
-had to restore the seed from a same-day recall). Carry everything forward.
-
-It can also **drop the tag set** even though you passed one, which quietly
-breaks step 3's tag-filtered recall next session — that lookup then returns a
-stale focus instead of nothing. So after re-`memorize`ing, repeat the step 3
-call and confirm both the mnemonic and the `tags:` line; repair with
-`edit(mnemonic, add_tags = ["project:<slug>", "seed"])`. A bare-mnemonic
-recall still finds the untagged seed, so it cannot be the check.
+An item found already shipped gets a tombstone now so the next session
+doesn't re-plan it. Follow [Editing an existing memory](../../EDITING.md):
+export `<slug>/current-focus`, patch `shipped <hash>` onto that line in a
+copy of its file, review the diff, and import only the edited file's
+directory. Verify the persisted body and metadata against the file, then
+repeat step 3's tag-filtered recall. Done when the tombstone is present,
+the rest of the focus is intact, and the recall returns the exact mnemonic
+with its tags.
 
 ### 7. Rate what helped
 

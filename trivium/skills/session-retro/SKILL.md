@@ -81,12 +81,12 @@ recall(query = "<the lesson's gist in plain words>", tags = ["project:<slug>"],
 
 Three verdicts:
 
-- **Covered** — an existing spoke says this. *Reinforce* it: `memorize` the
-  same mnemonic with the same tags and a sharper body that integrates today's
-  instance; `rate` it up. No new memory. **The body you pass REPLACES the old
-  one entirely** — integrating means recalling the full existing body and
-  rewriting it whole; an "ADDENDUM"-only save silently deletes everything
-  else. A **hot** spoke (taxonomy, *Weight: hot and cold*) takes the instance
+- **Covered** — an existing spoke says this. *Reinforce* it using
+  [Editing an existing memory](../../EDITING.md): export, patch, and import
+  long bodies; reserve `memorize` for short spokes whose complete body is
+  visible and easy to review. Integrate today's instance, verify the saved
+  body and tags, and `rate` it up. No new memory.
+  A **hot** spoke (taxonomy, *Weight: hot and cold*) takes the instance
   as ONE line; its evidence goes in the spoke's cold log.
 - **Related but distinct** — a new spoke, plus `link(new, existing,
   "related")` in step 5.
@@ -122,11 +122,12 @@ degrades.
      aliases and the session-start probes carry it. A normal outcome, not
      a deferral.
 
-   When a line changes, `memorize` `<slug>/habits/<theme>` with the full
-   new body and tags `["project:<slug>", "habits", "theme:<theme>"]`, then
-   verify the tags survived the write (see step 6 — hubs are hit by the
-   same tag-drop as the seeds, and an untagged hub vanishes from step 1's
-   recall next session). Eviction is a gardening move, not a retro move — only the export's
+   When an existing hub line changes, follow
+   [Editing an existing memory](../../EDITING.md) to export, patch, and
+   import `<slug>/habits/<theme>`, then verify the body and tags. For a new
+   hub, use `memorize` with tags `["project:<slug>", "habits",
+   "theme:<theme>"]` and verify it with step 1's recall.
+   Eviction is a gardening move, not a retro move — only the export's
    counters can say which lines are cold without the check itself bumping
    them — so a full hub where nothing clusters is the one case to flag
    for `memory-gardening`.
@@ -146,10 +147,11 @@ lineless by design.
 
 ### 6. Update `current-focus`
 
-If the session moved the frontier, first recall `<slug>/current-focus` by
-exact mnemonic (a retro without a preceding `session-start` has no copy in
-context), then rewrite it in the four-section format: `memorize` the same
-mnemonic with tags `["project:<slug>", "seed"]`. `edit` cannot change a body.
+If the session moved the frontier, update `<slug>/current-focus` using
+[Editing an existing memory](../../EDITING.md): start from a fresh export,
+patch its file in the four-section format, review the diff, import, and
+verify the persisted body and metadata. If the focus does not exist yet,
+create it with `memorize` and tags `["project:<slug>", "seed"]`.
 Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
 — `shipped <hash>` — and keep their line until the weight check below
 retires them. A follow-up that lives in another repository names that
@@ -165,20 +167,19 @@ TRUTH pointer to it: `<mnemonic> — load when <task>`.
 **Then verify the write with a tag-filtered recall** — `recall(query =
 "<slug>/current-focus", tags = ["project:<slug>"], limit = 1, truncate =
 200)`, session-start's call with a truncation added — and confirm the
-result's mnemonic *and* its `tags:` line. `memorize` has been seen dropping
-the tag set despite being passed one; it reports success either way, and the
-untagged seed still answers a bare-mnemonic query, so this filtered recall is
-the only check that catches it. Repair with `edit(mnemonic, add_tags =
-["project:<slug>", "seed"])`. Skip this and the next session-start silently
-reads a months-old focus instead.
+result's mnemonic *and* its `tags:` line. An untagged seed still answers a
+bare-mnemonic query but disappears from session-start's filtered recall.
+Repair missing tags with `edit(mnemonic, add_tags = ["project:<slug>",
+"seed"])` and repeat the filtered recall.
 
 **Weigh the focus on the same recall.** The `(N more chars)` remainder is its
 weight. Over the taxonomy's cap, **retire** content to its home (taxonomy,
 *Weight: hot and cold*), shipped follow-ups first: the cold memory written
 and verified, then the focus rewritten with a pointer in its place.
 
-Done when the filtered recall returns the focus with its tags and under the
-cap — or, when a retro has no time to retire, with the overage on the
+Done when the saved body matches the edited file (or the new focus's
+submitted body) and the filtered recall returns the focus with its tags
+and under the cap — or, when a retro has no time to retire, with the overage on the
 FOLLOW-UPS list as `focus at <N> chars · memory-gardening`.
 
 ### 7. Confirm with the user
@@ -205,12 +206,12 @@ Don't invent a lesson to have something to save.
 | ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | Memorize the diff or session transcript                | Git has it. Trivia holds the *meaning* you extracted.                                     |
 | Memorize "currently debugging X" as a retro            | State, not a lesson. It belongs in `current-focus`.                                       |
-| Park a ruling or a working list in `current-focus`     | The focus is rewritten whole every session, so whatever enters it is re-sent forever. It belongs in a spoke the focus points to. |
+| Park a ruling or a working list in `current-focus`     | The focus is loaded every session. Keep the ruling or list in a spoke the focus points to. |
 | Save a lesson without running step 4                   | Four memories saying "nightly fmt got skipped" is how a corpus drowns its own lessons.    |
 | Save a spoke with no alias                             | The slug loses to older, vaguer memories; the lesson is unfindable by the session it's for.|
 | Give every spoke its own hub line                      | The hub is a working set; a line per spoke saturates the cap in weeks and buries the costly-to-forget rules. Cluster, or ship the spoke lineless. |
 | Pass two tags to `recall`                              | OR semantics: the second tag pulls in every other project carrying it.                   |
-| `edit` to update content                               | `edit` only touches mnemonics, aliases, and tags. Re-`memorize` the same mnemonic.        |
+| `edit` to update content                               | The tool only changes metadata. For long bodies, export, patch the file, and import per [Editing an existing memory](../../EDITING.md). |
 | Write a lesson whose content is "be more careful"      | Too vague to match a future situation. Be specific or skip.                               |
 | Skip the `Why` field                                   | Without the reason, the lesson can't generalize.                                          |
 
@@ -237,7 +238,8 @@ You: [recall("ratatui-clock/habits/rendering", tags=["project:ratatui-clock"], l
      "how many buffer swaps per frame?"), a new line at the top of
      habits/rendering, and links to the hub and to frame-timing. OK?
 User: yes
-You: [memorize ×2, edit add_mnemonics ×2, memorize hub, link ×3, memorize current-focus]
+You: [memorize ×2, edit add_mnemonics ×2, export/patch/import existing hub,
+     link ×3, export/patch/import current-focus; verify bodies and filtered recalls]
 ```
 
 A smooth-sailing session reads: "Today went the way the saved lessons

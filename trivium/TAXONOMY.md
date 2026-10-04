@@ -184,9 +184,11 @@ retiring is the one time every line is read.
 ## Tool semantics worth knowing
 
 - `edit` changes mnemonics, aliases, and tags. It cannot change a body.
-- To rewrite a body, `memorize` with the **same mnemonic**. This overwrites
-  the content, **replaces the tag set** with the one you pass, and keeps the
-  memory's aliases and links. Pass the full tag set every time.
+- For long or multi-section body edits, follow
+  [Editing an existing memory](EDITING.md): export, patch the file, and
+  import. For a short, fully visible spoke, `memorize` with the **same
+  mnemonic** overwrites the content, **replaces the tag set** with the one
+  you pass, and keeps the memory's aliases and links. Pass the full tag set.
 - **Verify the tags survived.** `memorize` onto an existing mnemonic has been
   observed dropping the tag set entirely *despite* the call passing it —
   three times in one session, on a `current-focus` seed and two hubs. The
