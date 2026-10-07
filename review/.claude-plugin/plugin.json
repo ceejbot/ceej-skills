@@ -1,6 +1,6 @@
 {
 	"name": "review",
-	"version": "0.11.0",
+	"version": "0.12.0",
 	"description": "Holistic and change-set review for Rust, plus application-security and Rust-specific security reviews",
 	"author": {
 		"name": "ceej",
