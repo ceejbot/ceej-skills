@@ -66,8 +66,8 @@ Relay a session to a fresh agent with a clean context. Trivia is optional here, 
 
 General workflow skills for (mostly) Rust projects. No MCP servers required.
 
-- **`review-rust-project`** — Holistic code review pass with a general (architecture, README, simplicity, parse-don't-validate) section and a Rust-specific (types, errors, clippy, clones, idioms) section.
-- **`review-rust-change`** — Focused review of a scoped set of changes (uncommitted diff, unpushed commit stack, or GitHub PR). Applies the same quality lens as the full project review but restricted to the diff, plus targeted questions on intent, testing, documentation, and completeness. Produces a small number of ranked, highly actionable suggestions.
+- **`review-rust-project`** — Holistic review of a whole Rust workspace: orient, run the gates (doctests separately), sweep each crate against the shared hygiene reference, run seven cross-cutting probes for what lints cannot see (bounds, dual writes, supervision, boundary symmetry, startup truth, the project's irreversible class, and one you invent from its docs), verify every top finding at its line, then rank by production impact.
+- **`review-rust-change`** — Focused review of a scoped set of changes (uncommitted diff, unpushed commit stack, or GitHub PR). Applies the same hygiene reference and probes restricted to what the diff touches, plus targeted questions on intent, testing, documentation, and completeness. Produces a small number of ranked suggestions, each with an impact statement.
 - **`review-application-security`** — Language-neutral application and service security: threat modeling, injection, authorization, secrets and PHI, cryptography, abuse resistance, and dependency exposure. Produces ranked, exploitable-first findings with attacker paths and the smallest fixes.
 - **`review-rust-security`** — The Rust-specific overlay: unsafe and FFI invariants, attacker-reachable panics or allocation, deserialization limits, concurrency, cryptographic APIs, and Cargo supply-chain exposure. A comprehensive Rust service review combines it with `review-application-security` into one report.
 

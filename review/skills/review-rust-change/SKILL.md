@@ -1,109 +1,128 @@
 ---
 name: review-rust-change
-description: Use when reviewing a scoped Rust change — uncommitted diff, unpushed commit stack, or open PR. Triggers on phrases like "review this change", "review my diff", "review this PR", "look over what I'm about to push", or "is this ready to merge". Applies the project-review quality lens scoped to the diff and answers four targeted questions (intent match, testing, documentation, completeness). Produces a small number of ranked, highly actionable suggestions.
+description: Use when reviewing a scoped Rust change — uncommitted diff, unpushed commit stack, or open PR. Triggers on phrases like "review this change", "review my diff", "review this PR", "look over what I'm about to push", or "is this ready to merge". Applies the project-review hygiene lens and probes scoped to the diff and answers four targeted questions (intent match, testing, documentation, completeness). Produces a small number of ranked, highly actionable suggestions.
 ---
 
 # Rust Change / Diff / PR Review
 
-The change-oriented counterpart to `review-rust-project`. Same standards, but ruthlessly restricted to what the diff actually touches.
+The change-oriented counterpart to `review-rust-project`. Same standards,
+restricted to what the diff actually touches. The hygiene properties live in
+[`HYGIENE.md`](../../HYGIENE.md) and the probes in
+[`PROBES.md`](../../PROBES.md), both relative to this `SKILL.md`.
 
-**Core principle:** Every finding must cite a file and a line in the diff. "Could use more tests" is not a finding; "`src/parser.rs:42-58` adds the empty-header branch but no test covers empty input" is. Project-wide advice is out of scope unless the diff makes an existing problem materially worse.
+**Core principle:** every finding cites a file and a line in the diff. "Could
+use more tests" is not a finding; "`src/parser.rs:42-58` adds the empty-header
+branch and no test covers empty input" is. Project-wide advice is in scope only
+when the diff makes an existing problem materially worse.
 
 ## Determining scope
 
 Establish exactly what is under examination before reviewing anything:
 
-- **Uncommitted changes** — `git diff` (working tree) and `git diff --cached` (staged).
-- **Unpushed commits** — `git log --oneline origin/main..HEAD` and `git diff origin/main...HEAD` for a range, or a single commit hash.
-- **GitHub PR** — `gh pr view <number>` for the description, `gh pr diff <number>` for the patch.
+- **Uncommitted changes:** `git diff` (working tree) and `git diff --cached`.
+- **Unpushed commits:** `git log --oneline origin/main..HEAD` and
+  `git diff origin/main...HEAD`, or a single commit hash.
+- **GitHub PR:** `gh pr view <number>` for the description, `gh pr diff <number>`
+  for the patch.
 
 Always:
 
-- Capture the commit message(s) or PR description first — this is the "supposed to do" that grounds the review.
-- Get the list of changed files plus the unified diff.
-- Read the full content of every meaningfully changed file, not just the hunks. Context, neighboring tests, and module-level docs are part of the review.
-- Note which crates are touched. Tooling commands will be scoped to those crates.
+- Capture the commit messages or PR description first: this is the "supposed
+  to do" that grounds the review.
+- Read the full content of every meaningfully changed file, not just the
+  hunks. Context, neighbouring tests, and module docs are part of the review.
+- Read the prior review rounds and inline threads on a PR: they are the
+  discussion, and they carry the author's own deferrals.
+- Note which crates are touched; tooling is scoped to them.
 
 ## How to run
 
-1. Capture intent (commit message / PR description) and confirm scope.
-2. Walk the **Quality Lens** below, finding issues only where the diff touches them.
-3. Answer the **Four Questions** explicitly.
-4. Run **Tooling** scoped to the changed crate(s).
-5. Synthesize a small number of ranked suggestions (ideally 0–4 total) using the Output Template.
+1. **Capture intent** and confirm scope. Done when the claimed behaviour is
+   written down in one sentence.
+2. **Sweep the diff** against the sections of `HYGIENE.md` the change touches.
+   Skip what the diff leaves alone; listing untouched criteria is noise.
+3. **Probe the diff.** For each mechanism the change adds or alters, run the
+   matching probe from `PROBES.md` against the new instance and its
+   neighbours: a new timeout or pool size (§1 Bounds), a commit followed by a
+   publish (§2 Dual writes), a new spawn or shutdown path (§3 Supervision), a
+   new vendor call (§4 Boundary symmetry), a new config parse (§5 Startup
+   truth), a new type in the irreversible class (§6). Done when every new
+   instance is accounted for. The bounds probe in particular finds what bot
+   reviewers miss: they verify the bound is set, and never ask what it
+   releases.
+4. **Answer the Four Questions** explicitly.
+5. **Run Tooling** scoped to the changed crates.
+6. **Verify and rank.** Re-read each candidate finding at its line. Synthesize a
+   small number of ranked suggestions, ideally zero to four, using the output
+   template.
 
-Findings land in a single message. Don't fix anything in this pass — review only. Fixes come after the user picks priorities.
-
-## Quality lens (scoped to the diff)
-
-The project-review lens, restricted to what the change actually touches. Skip anything the diff doesn't touch — listing irrelevant criteria is noise.
-
-### General
-
-- **Intent vs. implementation** — does the diff plausibly achieve what the commit/PR text claims it does? Anything claimed but absent?
-- **Architecture impact** — does the new code sit in the right module? Does it cross a boundary it shouldn't, or smuggle a concern into a file that didn't have it?
-- **Information hiding** — does the change leak internals via new `pub` items, or is the new surface minimal? Could a `pub(crate)` work instead?
-- **Simplicity** — is the new code as simple as it can be? Premature abstraction, copy-pasted blocks, or three-line "helpers" used once?
-- **Parse, don't validate** — if the change accepts new input, is it converted to a strongly-typed representation at the edge so interior code can assume validity?
-- **Cleanup** — did the change leave behind `dbg!`, `eprintln!`, commented-out blocks, `#[allow(dead_code)]`, or TODOs without context?
-- **Documentation** — new public items have `///` docs explaining *why* and *when*, not just restating the signature? Module-level docs updated if the module's shape changed?
-- **README / examples** — if a user-visible feature changed, is the README still accurate? Do code examples still compile?
-
-### Rust-specific
-
-- **Types do work** — new primitives that should be newtypes (`UserId(u64)`, `Millis(u64)`, `Email(String)`)? Stringly-typed parameters that should be enums? `NonZeroU32` / `NonEmpty<T>` / `OnceLock` opportunities the diff just missed?
-- **Errors are typed** — new failure modes added as proper enum variants? Libraries: `thiserror` with `#[source]` / `#[from]` chaining. Binaries: `anyhow` / `eyre` with `.context()` at each call. No `Box<dyn Error>` in public APIs.
-- **No casual panics** — new `.unwrap()` / `.expect()` confined to tests, `main` returning `Result`, or genuine type-system invariants (with a `// SAFETY:`-style comment explaining why it can't fail)? New index access (`arr[i]`) that should be `.get()` or `.chunks()`?
-- **Idiomatic shape** — iterators over manual `for i in 0..n`, `?` over manual `match`, `if let` / `let else` to cut nesting, `From` / `Into` / `TryFrom` for conversions, `Default` where there's a sensible default, `#[must_use]` on builders and query results, `Display` hand-written where it's user-facing.
-- **Clones** — every new `.clone()` / `.to_string()` justified? Could it be a borrow, a move, or `Cow<'_, T>`? Particularly suspect inside hot loops, on large structs, or in trait impls.
-- **Lifetimes** — elided where the compiler infers correctly; explicit only when the relationship matters. No `'static` smuggled in to silence a borrow checker complaint.
-- **Module hygiene** — new `pub` intentional, not "the compiler asked for it"? `pub(crate)` / `pub(super)` used where appropriate? Re-exports build a clean public façade, not "reach through `internal::deeply::nested`"?
-- **Async hygiene** — no `block_on` deep in the call stack, no second runtime introduced, `Send + 'static` bounds only where required, cancel-safe across `.await` points (no half-mutated state if the future drops).
-- **`unsafe`** — every new `unsafe` block has a `// SAFETY:` comment justifying the invariants? Safer alternative considered? Default target for personal projects is zero `unsafe`.
-- **`Cargo.toml`** — new dependencies justified and not duplicating something already in the graph? Features documented? `[dev-dependencies]` separated? MSRV bump intentional if any?
-- **Security & supply chain** — does the diff handle new untrusted input, and is it parsed at a typed edge? Do new deps warrant a `cargo audit` / `cargo deny check` (RUSTSEC advisory, license, typosquat)? Any new `.unwrap()` / index access on an attacker-reachable path? Any hardcoded secret or credentialed URL introduced?
+Findings land in a single message. Review only: fixes come after the user
+picks priorities.
 
 ## The four change-specific questions
 
-Answer each one *explicitly* in the output, not just implicitly via the suggestion list.
+Answer each one explicitly in the output, not only through the suggestion
+list.
 
-1. **Intent match** — Do the changes do what the commit/PR text says they do? Anything claimed but not actually present? Anything present but unclaimed?
-2. **Testing** — Are the tests adequate? Specifically: do they cover the new behavior, the edges introduced or exercised by this diff, and the failure cases? If the change is in a binary that's hard to unit-test, is there at least an integration test or a reproducer?
-3. **Documentation** — Does the new/changed code have enough docs? Are they *concise* rather than verbose or repetitive? Doc comments should earn their length, not restate the signature.
-4. **Completeness** — Is the code complete for its stated goal? If something is intentionally deferred, is the deferral documented — a TODO with context, an issue link, or a follow-up commit listed in the PR body?
+1. **Intent match.** Do the changes do what the commit or PR text says?
+   Anything claimed but absent? Anything present but unclaimed?
+2. **Testing.** Do the tests cover the new behaviour, the edges this diff
+   introduces or exercises, and the failure cases? For a binary that is hard to
+   unit-test, is there an integration test or a reproducer?
+3. **Documentation.** Does the new or changed code have enough docs, and are
+   they concise? Doc comments earn their length rather than restating the
+   signature.
+4. **Completeness.** Is the code complete for its stated goal? Where something
+   is deferred, is the deferral documented: a TODO with context, an issue link,
+   or a follow-up named in the PR body?
 
 ## Tooling
 
-Run these scoped to the changed crate(s), not the whole workspace where possible:
+Run these scoped to the changed crates:
 
-- `cargo fmt --check` — should be clean.
-- `cargo clippy --all-targets -- -D warnings` on the touched crate. New `#[allow(clippy::...)]` should carry a comment explaining why.
-- `cargo test -p <crate>` — including `cargo test --doc -p <crate>` for any modified public items.
-- `cargo doc --no-deps -p <crate>` — warning-free, especially if the diff added new public items.
+- `cargo fmt --check`.
+- `cargo clippy --all-targets -- -D warnings` on the touched crate. A new
+  `#[allow(clippy::...)]` carries a comment saying why.
+- `cargo test -p <crate>`, and `cargo test --doc -p <crate>` for any modified
+  public item. A nextest recipe skips doctests, so run them separately.
+- `cargo doc --no-deps -p <crate>`, warning-free when the diff adds public
+  items.
 
-If any of these fail or warn on the change, that's a finding, not a footnote. If the change can't be built locally (cross-compile, missing dev deps), say so explicitly rather than silently skipping.
+A failure or warning on the change is a finding, not a footnote. When the
+change cannot be built locally (cross-compile, missing dev deps), say so
+rather than silently skipping.
 
 ## Writing the feedback
 
-Constructive review is more useful than exhaustive review. The goal is to help the work land cleanly, not to demonstrate rigor.
+Constructive review is more useful than exhaustive review. The goal is to help
+the work land cleanly.
 
-- **Lead with what works.** A one-sentence "this change is on the right track" before the suggestion list makes the rest easier to act on.
-- **Rank ruthlessly.** A short list (Critical / Important / Medium / Polish) beats ten equal-weight nits. If everything looks fine, say "ship it" — that *is* the review.
-- **Cite the diff.** Every finding names a file and a line. If you can't point at a line, the finding isn't ready.
-- **Describe the smallest fix.** Don't propose rewrites; propose the smallest move that resolves the concern. If a deeper rework is warranted, say so but mark it out-of-scope for this change.
-- **Distinguish blocker from taste.** Critical means "this is wrong, unsafe, or doesn't do what the PR claims." Polish means "I'd write it slightly differently." Don't blur the two.
-- **Say when it's done.** If a previous round of review has converged, note that explicitly: "After these adjustments the direction is solid." Don't manufacture findings to look engaged.
-- **No numeric scores.** A grade out of 10 feels rigorous and isn't. Specific findings are more useful.
-- **Frame feedback as the work, not the author.** "This branch could…" not "you could…". Keeps the focus on the change.
+- **Lead with what works.** One sentence on what the change gets right before
+  the suggestion list.
+- **Rank ruthlessly.** Critical / Important / Medium / Polish. If everything
+  looks fine, "ship it" is the review.
+- **Cite the diff.** Every finding names a file and a line. A finding that
+  cannot point at a line is not ready.
+- **Carry an impact statement on every Critical and Important finding.** One
+  sentence: what happens in production if this lands as is, written as a
+  scenario, not a category.
+- **Describe the smallest fix.** Where a deeper rework is warranted, say so
+  and mark it out of scope for this change.
+- **Distinguish blocker from taste.** Critical means wrong, unsafe, or not what
+  the PR claims. Polish means "I'd write it differently."
+- **Say when it's done.** When a previous round has converged, say so.
+- **Frame feedback as the work, not the author.** "This branch could…" rather
+  than "you could…".
+- **Specific findings, no numeric scores.**
 
 ## Output template
 
 ```
 ## Change under review
-<One-sentence description + reference to diff / PR / commit range>
+<One sentence plus a reference to the diff, PR, or commit range>
 
 ## Does it achieve its stated goal?
-<Direct answer with evidence from the diff and the commit/PR text>
+<Direct answer with evidence from the diff and the commit or PR text>
 
 ## Four questions
 - **Intent match:** ...
@@ -111,17 +130,19 @@ Constructive review is more useful than exhaustive review. The goal is to help t
 - **Documentation:** ...
 - **Completeness:** ...
 
+## Probes
+<One line per probe that applied, or "no new mechanisms in this diff">
+
 ## Tooling
 - `cargo fmt`: ...
 - `cargo clippy`: ...
-- `cargo test`: ...
+- `cargo test`: ... (doctests: ...)
 - `cargo doc`: ...
-(One line each. "Not run — <reason>" is acceptable when the change can't be built locally.)
 
 ## Suggestions (ranked)
 
 **Critical**
-1. `<file:line>` — <concrete problem>. <What a successful fix looks like>. <How to evaluate.>
+1. `<file:line>` — <concrete problem>. Impact: <production scenario>. <What a successful fix looks like.>
 
 **Important**
 1. ...
@@ -133,35 +154,23 @@ Constructive review is more useful than exhaustive review. The goal is to help t
 ...
 
 ## Overall verdict
-<One or two sentences. "Ready to merge", "One critical issue, the rest is minor", "Direction is good after X", etc.>
+<One or two sentences: "Ready to merge", "One critical issue, the rest is minor", "Direction is good after X".>
 
 ## Recommended next action
 <Single concrete step, or "None — this looks ready to land.">
 ```
 
-## Anti-patterns in the review itself
-
-| Don't | Why |
-|---|---|
-| Review the whole project instead of the diff | Out of scope. Project-wide concerns belong in `review-rust-project`. |
-| Give 10 nits at equal weight | Forces the user to do the prioritization. Top few, then a tail. |
-| Vague advice ("needs more tests") | Useless without naming the behavior or the file in the diff. |
-| Suggest large refactors unrelated to the goal | The diff has a job. Don't expand its scope to fit your review. |
-| Ignore the commit / PR description | The "supposed to do" is the rubric. Without it you're guessing at intent. |
-| Manufacture findings to look engaged | If the change is good, saying so *is* the review. |
-| Numeric scores ("7/10") | Feel rigorous, aren't. |
-| Recommend rewrites | This is a review pass. Smallest move that improves it. |
-| Skip Tooling because "it probably passes" | Run it. A failing clippy lint is a real finding, not a footnote. |
-
 ## Project-specific notes
 
 Check the repository's agent instructions (`AGENTS.md` or `CLAUDE.md`) and
-`docs/review-notes.md` for project-specific review notes, and honor them
-alongside this skill. Example of the shape such notes take (from Entropic):
+`docs/review-notes.md` for project-specific review notes, and honour them
+alongside this skill. The shape such notes take (from Entropic):
 
-- Pay special attention to pinned test vectors and whether new behavior has corresponding entries in the generator + regression test.
-- Changes that touch sigchain actions, admission policies, or transparency should reference the relevant design doc.
-- Documentation should be concise; this project values precise, non-repetitive comments and design docs over long inline prose.
-- "Complete" often means "the generator produces the vector and the test asserts it" for cryptographic or protocol work.
-
-Use the same high standards as `review-rust-project`, but ruthlessly scoped to the diff and the stated intent of the change.
+- Pay special attention to golden test vectors and whether new behaviour has
+  corresponding entries in the generator and regression test.
+- Changes that touch sigchain actions, admission policies, or transparency
+  should reference the relevant design doc.
+- Documentation should be concise; this project values precise,
+  non-repetitive comments and design docs over long inline prose.
+- "Complete" often means "the generator produces the vector and the test
+  asserts it" for cryptographic or protocol work.
