@@ -144,6 +144,14 @@ ship time from a tiring session's mental model — the one part of the memory
 nobody checked against the code. Before an item becomes a plan step, verify
 it at its consumption site:
 
+- The host's startup git block is a snapshot taken when the conversation
+  began, not the tree: run `git fetch` and `git status -sb` yourself before
+  reading branch, HEAD, or cleanliness against the focus, and again before
+  any commit later in the session. Three projects committed onto the wrong
+  branch, or diffed against a stale fetch, by trusting the block.
+- Merged is not shipped: before writing a tombstone, check trunk CI on the
+  merge commit — `gh run list --commit <sha>`, or the release PR the merge
+  spawned. A squash-merge can land red on main.
 - A deferred item may have shipped as a side effect of later work: `git log
   --oneline -S <keyword>`, or grep the generated artifact.
 - A named target may sit in the wrong component: read the cited spec section,
@@ -198,6 +206,7 @@ code is written.
 | Pass two tags to `recall`                                | OR semantics: the second tag pulls in other projects, which can outrank this one's seeds.     |
 | Plan against a NEXT item without reading its source      | Three sessions of this project's history lost their first hour to a stale pointer.           |
 | Plan against a stale focus without confirming            | Step 5 exists to verify direction before investing in a plan.                                |
+| Trust the host's startup git snapshot                    | It was taken when the conversation began; branch, HEAD, and cleanliness drift during a session. |
 | Start editing files before planning                      | Defeats "plan from the jump." Confirm, verify, plan, then act.                               |
 | Write a retro here                                       | That's `session-retro`'s job. This skill reads, rates, and tombstones shipped follow-ups.    |
 | Fabricate context when trivia isn't bootstrapped         | No memory means no recall. Point at `project-trivia-setup` and stop.                         |
