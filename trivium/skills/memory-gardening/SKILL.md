@@ -36,8 +36,11 @@ ever sees the result.
   or a ledger every session of a kind loads.
 - Roughly every ten sessions on a project that retros regularly.
 
-**Skip if:** the project has fewer than ~30 memories. Nothing has had time to
-drift; a retro's maintenance pass covers it.
+**Skip if:** the project has fewer than 30 memories, or its last gardening
+pass is under seven days old and none of the triggers above fired. Nothing
+has had time to drift; a retro's maintenance pass covers it. Step 1 checks
+both from the export, so the user does not have to remember when the last
+pass ran.
 
 ## Steps
 
@@ -50,7 +53,14 @@ python3 <skill-directory>/scripts/stats.py <scratch>/export-0 <slug> [<old-slug>
 
 Resolve `scripts/stats.py` relative to this `SKILL.md`. `export-0` is the undo
 for the whole pass: copy it somewhere durable and
-never write into it. Export the **whole store**, not just the project tag —
+never write into it.
+
+**Gate on the numbers before reading further.** The project's memory count
+comes from `stats.py`; the last pass's date is the `Last gardened:` line in
+the exported `<slug>/conventions` file. Under 30 memories, or a pass under
+seven days old with no trigger fired: report both numbers in one line and
+stop. A second pass in the same week reports "gardened earlier today" and
+changes nothing, at the cost of a full export and read. Export the **whole store**, not just the project tag —
 the project's real working set is usually bigger than its tag. Memories
 written during briefings and prep (person facts, calendar identities,
 preferences, voice notes) tend to carry topical tags (`calendar`, `meetings`,

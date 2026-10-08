@@ -18,17 +18,47 @@ instructions are Rust-oriented, but it's quite good.)
 lesson. "Don't reach for `Box<dyn Error>` in library APIs because we hit `?`
 ergonomic problems three times" is.
 
+**Budget.** A retro saves at most **three** new spokes and reports its own
+cost. Recurrence is the filter: a lesson costly enough to forget comes back
+and gets saved the next time. One week of ungated retros wrote 132 memories
+in four days, about eight per retro, and nobody recalls 132 lessons.
+
 ## When to use
 
-- End of a session.
+- End of a session, after a feature lands, a bug is fixed, a review is
+  posted, or an investigation concludes.
 - Before a final commit on a meaningful chunk of work.
-- After a feature lands, a bug is fixed, or an investigation concludes.
 - User asks for a retro explicitly.
 
-**Skip if:** the session was trivial (one-line fix, doc tweak) or was pure
-exploration with no conclusion.
+Step 0 decides between a full retro and a maintenance pass. The user does
+not need to remember whether the session earned one.
 
 ## Steps
+
+### 0. Gate: what landed, what surprised
+
+Fix the retro's **scope** first: everything since the last retro, handoff,
+or pickup in this session. A handoff and a retro are one event; a session
+that wrote a handoff retros only what happened after it.
+
+Then enumerate from the record, not from the user's memory. Exhaustion is
+why the user asked for a retro skill in the first place, so a gate that
+asks "did anything surprise you?" fails exactly when it matters.
+
+- **Landed:** `git log --since=<scope start>` and `gh pr list --author=@me
+  --state=all --search "updated:>=<date>"`; plus reviews posted, documents
+  written, and messages sent, which git does not see.
+- **Surprised:** scan the scope for the model's own self-corrections ("one
+  correction to my earlier report", "I called it wrong", "false alarm"),
+  the user's corrections, a tool-error cluster, an amended or reverted
+  commit, and a review finding that changed a verdict. Each hit is a
+  candidate for step 3.
+
+Present both lists in a line or two and let the user **veto**, not recall.
+Both empty, or the last retro under two hours old in this project: run
+the *Smooth sailing* pass below and stop. Budget for that pass: five tool
+calls. Either list non-empty: continue with the candidates as step 3's
+starting set.
 
 ### 1. Recall the hubs for the themes this session touched
 
@@ -64,9 +94,9 @@ in the taxonomy's format:
   codebase. Not process (that's worked/avoid), not state (that's
   `current-focus`). `Fact | Where it came from | Why it matters`.
 
-`Why` is non-negotiable in all three. A long subagent-driven session may
-legitimately produce three to five candidates; a short one, zero to two. The
-bar is per lesson, not per session: every candidate must pass step 4.
+`Why` is non-negotiable in all three. Draft freely, then **rank by cost to
+forget** and keep the top three; the rest are dropped, not parked. A short
+session keeps zero to two. Every kept candidate must pass step 4.
 
 ### 4. Dedupe every candidate
 
@@ -88,24 +118,27 @@ Three verdicts:
   body and tags, and `rate` it up. No new memory.
   A **hot** spoke (taxonomy, *Weight: hot and cold*) takes the instance
   as ONE line; its evidence goes in the spoke's cold log.
-- **Related but distinct** — a new spoke, plus `link(new, existing,
-  "related")` in step 5.
+- **Related but distinct** — a new spoke whose body names the existing
+  mnemonic in a `See also:` line. The link itself is a gardening move,
+  made when the export shows the whole neighbourhood at once.
 - **Nothing** — a new spoke.
 
 Done when every candidate has a verdict. A candidate that duplicates an
 existing spoke and gets saved anyway is the single most common way this corpus
 degrades.
 
-### 5. Save each new spoke — five moves
+### 5. Save each new spoke — three moves, sometimes five
 
 1. **Memorize** with the full tag set: `["project:<slug>", "<kind>",
    "theme:<theme>"]`, plus `"general:<domain>"` if it transfers. Read the
    response: if it reports an auto-merge into an existing memory, your
    mnemonic does not exist — switch to the *Covered* path and reinforce the
    memory it merged into instead.
-2. **Alias** it: `edit(mnemonic, add_mnemonics = [...])` with one or two
-   natural-phrasing questions a future session would ask. The slug alone
-   embeds poorly; the alias is what recall matches.
+2. **Alias** it, once: `edit(mnemonic, add_mnemonics = ["<question>"])`
+   with the one natural-phrasing question a future session would ask. The
+   slug alone embeds poorly (taxonomy, *Spokes*); one question is what
+   recall matches, and a second that rephrases the first adds a call, not
+   a hit.
 3. **Hub placement**: the hub from step 1 (exact mnemonic match, or none —
    no hub yet means this spoke's rule is the first line). The hub is a
    working set; place the spoke by the first test it passes:
@@ -131,23 +164,23 @@ degrades.
    counters can say which lines are cold without the check itself bumping
    them — so a full hub where nothing clusters is the one case to flag
    for `memory-gardening`.
-4. **Link** `link(spoke, hub, "related")`, plus `link(spoke, existing,
-   "related")` for each memory step 4 judged related but distinct. A general
+4. **Link** `link(spoke, hub, "related")`: one link, to the hub. A general
    spoke also links to its domain hub — `general/habits/agent-process`,
    `general/habits/rust-toolchain`, and so on per the taxonomy — created if
-   missing.
+   missing. Links to related spokes belong to gardening (step 4).
 5. **Bug report**: a spoke with `theme:memory` and kind `avoid` is a defect in
    these skills. Memorize it, then tell the user which skill step failed so
    the skill gets patched. A process lesson that lives only in project memory
    never flows back.
 
-Done when each saved spoke has an alias, a theme tag, a hub link, a link to
-every related memory from step 4, and a hub placement — cited on a line, or
-lineless by design.
+Done when each saved spoke has one alias, a theme tag, a hub link, and a
+hub placement — cited on a line, or lineless by design.
 
 ### 6. Update `current-focus`
 
-If the session moved the frontier, update `<slug>/current-focus` using
+The focus is rewritten only when FRONTIER or NEXT moved. A shipped
+follow-up, a new tombstone, or a changed status is a **one-line patch** to
+the exported file, not a rewrite. Either way, use
 [Editing an existing memory](../../EDITING.md): start from a fresh export,
 patch its file in the four-section format, review the diff, import, and
 verify the persisted body and metadata. If the focus does not exist yet,
@@ -174,38 +207,44 @@ Repair missing tags with `edit(mnemonic, add_tags = ["project:<slug>",
 "seed"])` and repeat the filtered recall.
 
 **Weigh the focus on the same recall.** The `(N more chars)` remainder is its
-weight. Over the taxonomy's cap, **retire** content to its home (taxonomy,
-*Weight: hot and cold*), shipped follow-ups first: the cold memory written
-and verified, then the focus rewritten with a pointer in its place.
-Name a history memory by month AND arc — `<slug>/history/<yyyy-mm>-<arc>`,
-never `<yyyy-mm>` alone: two month-only names differ by one token and embed
-inside `memorize`'s 0.15 auto-merge radius, so the October log lands inside
-September's with a unioned tag set and nothing looks wrong. Read every
-`memorize` response for "merged with" before trusting that a new memory
-exists.
+weight. Over the taxonomy's cap, add one FOLLOW-UPS line — `focus at <N>
+chars · memory-gardening` — and leave retirement to gardening, which sees
+the counters. The one retro-time exception is a focus more than half again
+over its cap: then **retire** shipped follow-ups to a history memory
+(taxonomy, *Weight: hot and cold*), write and verify the cold memory, and
+rewrite the focus with a pointer in its place. Name a history memory by
+month AND arc — `<slug>/history/<yyyy-mm>-<arc>`, never `<yyyy-mm>` alone:
+two month-only names differ by one token and embed inside `memorize`'s 0.15
+auto-merge radius, so the October log lands inside September's with a
+unioned tag set and nothing looks wrong. Read every `memorize` response for
+"merged with" before trusting that a new memory exists.
 
 Done when the saved body matches the edited file (or the new focus's
-submitted body) and the filtered recall returns the focus with its tags
-and under the cap — or, when a retro has no time to retire, with the overage on the
-FOLLOW-UPS list as `focus at <N> chars · memory-gardening`.
+submitted body) and the filtered recall returns the focus with its tags,
+under the cap or with the overage recorded on FOLLOW-UPS.
 
-### 7. Confirm with the user
+### 7. Confirm with the user, with the bill
 
-Show a table: mnemonic · reinforced or new · aliases · hub placement. Ask if any
-should be edited or dropped before they cement. For a smooth-sailing session,
-report the maintenance done instead.
+Show a table: mnemonic · reinforced or new · aliases · hub placement. Ask if
+any should be edited or dropped before they cement. For a smooth-sailing
+session, report the maintenance done instead.
+
+Close with one line, every time: `retro cost: <N> tool calls · <M> new
+memories · <K> reinforced`. A retro past forty calls or three new memories
+is the signal that the gate or the cap was skipped; say which.
 
 ## Smooth sailing is a valid outcome
 
 Some sessions produce zero new memories — everything went the way prior
-lessons said it would. That's a *successful* retro. Its work is maintenance of
-the memories that got you there:
+lessons said it would. That's a *successful* retro, and step 0 routes to it
+directly. Its work is maintenance of the memories that got you there, within
+a five-call budget:
 
 - `rate` up the hubs and spokes that guided the session, down the noise.
 - `edit` to add an alias to a memory that was hard to find this time.
-- `link` memories the session revealed are related.
 
-Don't invent a lesson to have something to save.
+Report it in two lines and stop. Running a second retro in the same session
+on the same scope produces invented lessons; decline it and say why.
 
 ## Anti-patterns
 
@@ -221,6 +260,8 @@ Don't invent a lesson to have something to save.
 | `edit` to update content                               | The tool only changes metadata. For long bodies, export, patch the file, and import per [Editing an existing memory](../../EDITING.md). |
 | Write a lesson whose content is "be more careful"      | Too vague to match a future situation. Be specific or skip.                               |
 | Skip the `Why` field                                   | Without the reason, the lesson can't generalize.                                          |
+| Ask the user whether anything surprised them           | The record holds the surprises; a tired user does not. Step 0 enumerates, the user vetoes. |
+| Save a fourth spoke because it is also true            | Three is the cap. A lesson worth keeping recurs and is saved then; the corpus stays recallable. |
 
 ## Example
 
@@ -245,11 +286,13 @@ You: [recall("ratatui-clock/habits/rendering", tags=["project:ratatui-clock"], l
      "how many buffer swaps per frame?"), a new line at the top of
      habits/rendering, and links to the hub and to frame-timing. OK?
 User: yes
-You: [memorize ×2, edit add_mnemonics ×2, export/patch/import existing hub,
-     link ×3, export/patch/import current-focus; verify bodies and filtered recalls]
+You: [memorize ×2, edit add_mnemonics ×1, export/patch/import existing hub,
+     link ×2, one-line patch to current-focus; verify bodies and filtered recalls]
+     retro cost: 14 tool calls · 2 new memories · 0 reinforced
 ```
 
-A smooth-sailing session reads: "Today went the way the saved lessons
-predicted — nothing new. I rated habits/rendering up and added the alias 'why
-does the clock flicker?' to single-swap-per-frame, which took two tries to
-find."
+A smooth-sailing session reads: "Step 0: one commit landed, no corrections
+in the record. Today went the way the saved lessons predicted. I rated
+habits/rendering up and added the alias 'why does the clock flicker?' to
+single-swap-per-frame, which took two tries to find. retro cost: 4 tool
+calls · 0 new · 1 reinforced."
