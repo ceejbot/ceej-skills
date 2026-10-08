@@ -44,7 +44,9 @@ once against its source.
 `memorize` each cold file under a new mnemonic with its full tag set. Choose
 mnemonics that read differently from the hot memory's and from each other's:
 a new mnemonic within distance 0.15 of an existing one is auto-merged into
-it, and the response is the only notice.
+it, and the response is the only notice. History memories are the usual
+casualty — `<slug>/history/2026-09-focus` and `…/2026-10-focus` merge — so
+a history mnemonic carries an arc word, never a month alone.
 
 The `trivia` CLI writes a file's text exactly:
 

@@ -160,6 +160,11 @@ MCP). Each returns JSON:
   exist than fit. The agent brief carries the taxonomy's hub-line format
   verbatim (numbered lines, ` — ` before the citations, comma-separated
   full mnemonics); fresh-context agents never see `TAXONOMY.md`.
+  Tell the agent that a citation on an EXISTING hub line may name a spoke
+  outside its slice (the spoke was filed under another theme, or has no
+  theme tag yet) and that such citations are kept and listed under
+  `out_of_slice`, never dropped: on the 2026-10 oda pass four hubs lost
+  real citations this way and the gardener restored them by hand.
 
 Validate the set with a script before reading it: every mnemonic exists in
 the export, none is claimed by two themes or two merge sets, every merge set

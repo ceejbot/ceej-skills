@@ -152,13 +152,14 @@ If the session moved the frontier, update `<slug>/current-focus` using
 patch its file in the four-section format, review the diff, import, and
 verify the persisted body and metadata. If the focus does not exist yet,
 create it with `memorize` and tags `["project:<slug>", "seed"]`.
-Every FOLLOW-UPS line carries forward; the ones that shipped get a tombstone
-— `shipped <hash>` — and keep their line until the weight check below
-retires them. A follow-up that lives in another repository names that
-repository's absolute working-copy path, verified with
-`git -C <path> status -sb` as you write the line; a repo name alone is
-ambiguous across clones and worktrees. Retros hold durable lessons; state
-lives here.
+A FOLLOW-UP asked of a person is verified at its channel, not carried: read
+the DM or thread from the ask's timestamp before writing `open`. Every
+FOLLOW-UPS line carries forward; the ones that shipped get a tombstone —
+`shipped <hash>` — and keep their line until the weight check below retires
+them. A follow-up that lives in another repository names that repository's
+absolute working-copy path, verified with `git -C <path> status -sb` as you
+write the line; a repo name alone is ambiguous across clones and worktrees.
+Retros hold durable lessons; state lives here.
 
 **The focus holds state.** A ruling, a protected decision, or a working list
 made this session is a spoke saved in step 5, and the focus gains one GROUND
@@ -176,6 +177,12 @@ Repair missing tags with `edit(mnemonic, add_tags = ["project:<slug>",
 weight. Over the taxonomy's cap, **retire** content to its home (taxonomy,
 *Weight: hot and cold*), shipped follow-ups first: the cold memory written
 and verified, then the focus rewritten with a pointer in its place.
+Name a history memory by month AND arc — `<slug>/history/<yyyy-mm>-<arc>`,
+never `<yyyy-mm>` alone: two month-only names differ by one token and embed
+inside `memorize`'s 0.15 auto-merge radius, so the October log lands inside
+September's with a unioned tag set and nothing looks wrong. Read every
+`memorize` response for "merged with" before trusting that a new memory
+exists.
 
 Done when the saved body matches the edited file (or the new focus's
 submitted body) and the filtered recall returns the focus with its tags
