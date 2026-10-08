@@ -91,7 +91,11 @@ Present the numbers and five decisions:
 - **The archive set.** Every memory that is *state* rather than a lesson —
   session summaries, "phase complete" reports, gap inventories, anything with
   a date in its mnemonic and a net-negative rating. Merge is irreversible, so
-  name them and get a yes.
+  name them and get a yes. Never propose `<slug>/trivia-bootstrapped`: it
+  reads like an empty bootstrap note, but `session-start` and
+  `project-trivia-setup` match it by exact mnemonic, and a merged alias on a
+  history memory does not match. Before naming any other memory, `rg` the
+  trivium skills for its mnemonic; a hit means it is a sentinel, not state.
 - **Which lessons are general.** Candidates are the tooling, orchestration,
   and idiom spokes; the user confirms the `general:<domain>` tags.
 - **The slim set.** Every hot memory the weight section reports over the
