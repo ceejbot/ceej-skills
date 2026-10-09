@@ -46,10 +46,11 @@ Always:
    neighbours: a new timeout or pool size (§1 Bounds), a commit followed by a
    publish (§2 Dual writes), a new spawn or shutdown path (§3 Supervision), a
    new vendor call (§4 Boundary symmetry), a new config parse (§5 Startup
-   truth), a new type in the irreversible class (§6). Done when every new
-   instance is accounted for. The bounds probe in particular finds what bot
-   reviewers miss: they verify the bound is set, and never ask what it
-   releases.
+   truth), a new type in the irreversible class (§6), a changed doc, runbook,
+   alert, or caller contract, or code behind one (§7 Promises). Done when
+   every new instance is accounted for. The bounds probe in particular finds
+   what bot reviewers miss: they verify the bound is set, and never ask what
+   it releases.
 4. **Answer the Four Questions** explicitly.
 5. **Run Tooling** scoped to the changed crates.
 6. **Verify and rank.** Re-read each candidate finding at its line. Synthesize a

@@ -6,10 +6,15 @@ consequence goes unexamined; a probe asks the consequence. Grep finds the
 instances, the probe is answered per instance, and the step completes when
 every instance is **accounted for**: answered with a file:line, or ruled out
 with a reason. Probes are cross-cutting: run each across the whole tree, not
-per crate.
+per crate. Docs, runbooks, and chart files are part of the tree.
 
 Each probe names its instances, its questions, and the shape a finding takes.
 A probe finding goes through the review's verify step like any other.
+
+Each probe run leaves a **ledger** line in the review: instances found,
+instances accounted for, findings. `§1 Bounds: 9 instances, 9 accounted,
+2 findings` is checkable. "Bounds are chained on purpose" is not, and a probe
+summarized in prose is one whose instances nobody can count.
 
 ## 1. Bounds
 
@@ -119,10 +124,36 @@ type in the class gets a row, including the ones that pass.
 log the fields; the one PHI payload that is a bare `String` while its siblings
 are newtypes.
 
-## 7. Invent one
+## 7. Promises
 
-The six above are the mechanisms most Rust services share. Each project has one
-more: the mechanism its docs are proudest of, or most worried about. Read the
-repo's ADRs and agent docs for it, then write the seventh probe in the same
-shape (instances, questions, finding shape) and run it. Name it in the review
-so the next reviewer inherits it.
+**Instances:** every sentence that tells a reader what the system does. That
+means README guarantees and "consequences" lists, runbook steps and the
+observations they expect, alert descriptions and annotations, integration
+contracts with callers, doc comments on public behaviour, and decisions
+recorded in ADRs and closed issues. Grep the docs for `always`, `never`,
+`within`, `guarantee`, the outcome words the service uses (`fails open`,
+`sheds`, `retries`), and each runbook's "you should see".
+
+**Ask, per promise:**
+
+- Does the code make it true under the production configuration: the
+  timeouts, sizes, and log levels the chart or deployment actually sets?
+- Who acts on it (a caller coding to the contract, on-call following the
+  runbook), and what do they do when it is false?
+- Where code and promise disagree, which one is right? The disagreement is the
+  finding; the fix is whichever side was wrong.
+
+**Finding shape:** a runbook lists a cause that the classifier routes
+somewhere else; an alert says "sustained" over an expression that fires on one
+sample; a closed issue records a decision that a later handler change made
+unreachable.
+
+## 8. Invent one
+
+The seven above are the mechanisms most Rust services share. Each project has
+one more: the mechanism its docs are proudest of, or most worried about. Read
+the repo's ADRs and agent docs for it, then write the eighth probe in the same
+shape (instances, questions, finding shape) and run it. Its instances are call
+sites you can grep: the calls that feed a liveness clock, every error an
+acquire can return. A probe whose instances are the project's goals restates
+§6 and §7. Name it in the review so the next reviewer inherits it.
