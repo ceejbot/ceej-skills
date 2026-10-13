@@ -178,9 +178,13 @@ hub placement — cited on a line, or lineless by design.
 
 ### 6. Update `current-focus`
 
-The focus is rewritten only when FRONTIER or NEXT moved. A shipped
-follow-up, a new tombstone, or a changed status is a **one-line patch** to
-the exported file, not a rewrite. Either way, use
+**A ship moves the frontier.** Read step 0's *Landed* list: a pushed
+commit, a tag, or a merged PR on it rewrites FRONTIER with that hash and
+date, whether the work was project state, a skill restructure, or a
+release. The list decides, not a judgement of whether the session moved
+the frontier. With nothing shipped, a landed follow-up, a new tombstone,
+or a changed status is a **one-line patch** to the exported file, not a
+rewrite. Either way, use
 [Editing an existing memory](../../EDITING.md): start from a fresh export,
 patch its file in the four-section format, review the diff, import, and
 verify the persisted body and metadata. If the focus does not exist yet,
@@ -219,9 +223,17 @@ auto-merge radius, so the October log lands inside September's with a
 unioned tag set and nothing looks wrong. Read every `memorize` response for
 "merged with" before trusting that a new memory exists.
 
+**Check the frontier against git before closing.** `git log -1
+--format='%h %cI'` and `git tag --sort=-creatordate | head -1`: FRONTIER
+names that hash, or a tag on it, or the focus is stale and this step is
+not done. The memory's `updated_at` is no substitute: export → import
+writes the exported timestamp back, so a focus patched today can carry
+last month's date.
+
 Done when the saved body matches the edited file (or the new focus's
-submitted body) and the filtered recall returns the focus with its tags,
-under the cap or with the overage recorded on FOLLOW-UPS.
+submitted body), FRONTIER names HEAD's hash or its tag, and the filtered
+recall returns the focus with its tags, under the cap or with the overage
+recorded on FOLLOW-UPS.
 
 ### 7. Confirm with the user, with the bill
 
@@ -262,6 +274,7 @@ on the same scope produces invented lessons; decline it and say why.
 | Skip the `Why` field                                   | Without the reason, the lesson can't generalize.                                          |
 | Ask the user whether anything surprised them           | The record holds the surprises; a tired user does not. Step 0 enumerates, the user vetoes. |
 | Save a fourth spoke because it is also true            | Three is the cap. A lesson worth keeping recurs and is saved then; the corpus stays recallable. |
+| Patch the focus after a release because "only skills changed" | A tag is a frontier move. The next session-start inherits a FRONTIER two releases old and re-plans shipped work. |
 
 ## Example
 
