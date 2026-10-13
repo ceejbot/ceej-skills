@@ -5,10 +5,12 @@ description: Use when reviewing a scoped Rust change — uncommitted diff, unpus
 
 # Rust Change / Diff / PR Review
 
-The change-oriented counterpart to `review-rust-project`. Same standards,
-restricted to what the diff actually touches. The hygiene properties live in
-[`HYGIENE.md`](../../HYGIENE.md) and the probes in
-[`PROBES.md`](../../PROBES.md), both relative to this `SKILL.md`.
+The change-oriented counterpart to `review-project`, for Rust. Same
+standards, restricted to what the diff actually touches. The hygiene
+properties live in [`HYGIENE.md`](../../HYGIENE.md) (General) and the Rust
+section of [`lenses/rust.md`](../../lenses/rust.md); the probes in
+[`PROBES.md`](../../PROBES.md) take their instances from the lens's matching
+§. All paths are relative to this `SKILL.md`.
 
 **Core principle:** every finding cites a file and a line in the diff. "Could
 use more tests" is not a finding; "`src/parser.rs:42-58` adds the empty-header
@@ -39,7 +41,8 @@ Always:
 
 1. **Capture intent** and confirm scope. Done when the claimed behaviour is
    written down in one sentence.
-2. **Sweep the diff** against the sections of `HYGIENE.md` the change touches.
+2. **Sweep the diff** against the sections of `HYGIENE.md` and the Rust lens's
+   Hygiene the change touches.
    Skip what the diff leaves alone; listing untouched criteria is noise.
 3. **Probe the diff.** For each mechanism the change adds or alters, run the
    matching probe from `PROBES.md` against the new instance and its

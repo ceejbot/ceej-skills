@@ -27,7 +27,7 @@
 		{
 			"name": "review",
 			"source": "./review",
-			"description": "Skills for holistic and change-set Rust review, language-neutral application security, and Rust-specific security."
+			"description": "Skills for holistic project review across Rust, Scala, Go, Python, and TypeScript, change-set Rust review, language-neutral application security, and Rust-specific security."
 		},
 		{
 			"name": "trivium",
@@ -38,7 +38,6 @@
 			"name": "writing",
 			"source": "./writing",
 			"description": "Skills for writing prose, commits, code comments, design docs, and agent documents clearly and concisely, without bafflegab and with the necessary information."
-
 		}
 	]
 }

@@ -1,7 +1,7 @@
 {
 	"name": "review",
 	"version": "0.12.1",
-	"description": "Holistic and change-set review for Rust, plus application-security and Rust-specific security reviews",
+	"description": "Holistic project review for Rust, Scala, Go, Python, and TypeScript with per-language lenses, change-set review for Rust, plus application-security and Rust-specific security reviews",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"
@@ -9,6 +9,11 @@
 	"license": "MIT",
 	"keywords": [
 		"rust",
+		"scala",
+		"go",
+		"python",
+		"typescript",
+		"monorepo",
 		"code-review",
 		"diff-review",
 		"pr-review",

@@ -6,10 +6,19 @@ consequence goes unexamined; a probe asks the consequence. Grep finds the
 instances, the probe is answered per instance, and the step completes when
 every instance is **accounted for**: answered with a file:line, or ruled out
 with a reason. Probes are cross-cutting: run each across the whole tree, not
-per crate. Docs, runbooks, and chart files are part of the tree.
+per module. Docs, runbooks, and chart files are part of the tree.
 
-Each probe names its instances, its questions, and the shape a finding takes.
-A probe finding goes through the review's verify step like any other.
+Each probe names the mechanism it asks about, its questions, and the shape a
+finding takes. **Where to find the instances is the lens's job**: the
+language file under `lenses/` lists, per probe number, the grep hints and the
+consequence that language attaches to the mechanism. A probe finding goes
+through the review's verify step like any other.
+
+One question rides along with every probe, in every language: **where is the
+witness?** A type, a lint, or a test that would fail if the answer changed.
+"None" on an instance in the irreversible class or at a parse boundary is a
+finding on its own, before the probe's own questions are asked. The lens's
+evidence model says which witnesses the language can offer.
 
 Each probe run leaves a **ledger** line in the review: instances found,
 instances accounted for, findings. `§1 Bounds: 9 instances, 9 accounted,
@@ -18,29 +27,29 @@ summarized in prose is one whose instances nobody can count.
 
 ## 1. Bounds
 
-**Instances:** `timeout(`, `timeout_at(`, `deadline`, `budget`, pool sizes
-(`max_connections`, `max_size`), `retry`, `max_attempts`, `message.timeout.ms`
-and its cousins in client config.
+**Mechanism:** every timeout, deadline, pool size, and retry count, in code
+and in client config. Instances: the lens, §1.
 
 **Ask, per bound:**
 
 - What does this bound release when it fires: the caller's wait, or the work
-  itself? A `tokio::time::timeout` drops the future; name what that future was
-  in the middle of.
+  itself? Name what the work was in the middle of when the bound fired; the
+  lens says whether the language cancels it or leaves it running.
 - What still holds the resource after it fires, and who releases that?
 - What is the next bound down the chain (upstream client timeout × retries,
   the broker's own timeout), and does this one sit inside it?
 - Has the house hit this before? `git log --grep` the config key.
 
-**Finding shape:** the timeout drops a future after the vendor committed but
+**Finding shape:** the timeout abandons work after the vendor committed but
 before the local write; the new bound is wider than the upstream bound it
 claims to protect; a retry count multiplies a timeout past the caller's own.
 
 ## 2. Dual writes
 
-**Instances:** a `commit(` followed by `send`, `publish`, `emit`, `put_object`,
-or a file write; any column, flag, or label that records "emitted", "sent",
-"published", "announced".
+**Mechanism:** two durable writes that must agree, with no transaction
+spanning them: a database commit beside a publish, an upload, or a file
+write; any column, flag, or label that records "emitted", "sent",
+"published", "announced". Instances: the lens, §2.
 
 **Ask, per pair:**
 
@@ -54,26 +63,29 @@ before the publish it counts; a comment promising a replay that has no code.
 
 ## 3. Supervision
 
-**Instances:** `tokio::spawn`, `spawn_blocking`, `JoinSet`, `TaskTracker`,
-`select!` arms on a shutdown token, anything with a `drain()` or `wait()`.
+**Mechanism:** every unit of work that runs off the caller's thread of
+control: spawned tasks, pool submissions, background threads, scheduled
+jobs, and the shutdown path that is supposed to wait for them. Instances:
+the lens, §3.
 
 **Ask, per task:**
 
-- When this task returns `Err`, who learns, and when? A join that matches only
-  `JoinError` discards `Ok(Err(_))`.
+- When this task fails, who learns, and when? A join site that handles only
+  the runtime's own failure discards the task's.
 - At shutdown, who waits for it, and what work can be mid-flight when the
   runtime drops it?
 - While it is dead, what does health or readiness report?
 - Was it spawned before the config it needs was validated?
 
-**Finding shape:** a tracker whose `drain()` only tests call; a consumer that
+**Finding shape:** a shutdown wait that only tests call; a consumer that
 fails on a missing env var while HTTP keeps serving; a join site that logs the
-join error and swallows the task's own.
+runtime's error and swallows the task's own.
 
 ## 4. Boundary symmetry
 
-**Instances:** every client for one vendor or service; `invalidate`, `refresh`,
-`re-mint`, backoff; 401, 403, 429 handling; status-to-error mappers.
+**Mechanism:** every client for one vendor or service, its token refresh
+and backoff, its 401, 403, and 429 handling, and its status-to-error
+mappers. Instances: the lens, §4.
 
 **Ask, per boundary:**
 
@@ -88,9 +100,9 @@ once; four mappers disagree on 403.
 
 ## 5. Startup truth
 
-**Instances:** `env::var`, config structs, `.parse().ok()`, `unwrap_or(default)`,
-`unwrap_or_default()` on anything that reaches a loop bound, a pool size, or a
-feature switch.
+**Mechanism:** every value read from the environment or a config file and
+parsed with a default, where the result reaches a loop bound, a pool size, or
+a feature switch. Instances: the lens, §5.
 
 **Ask, per parse:**
 
@@ -104,35 +116,40 @@ worker that runs no jobs.
 
 ## 6. The irreversible class
 
-**Instances:** the project's own rule, found in its `CLAUDE.md`, `AGENTS.md`,
+**Mechanism:** the project's own rule, found in its `CLAUDE.md`, `AGENTS.md`,
 or ADRs under a word like PHI, credentials, money, audit, or irreversible.
 Then every type that carries it: tokens, secrets, transcripts, addresses,
-names, account numbers, raw request and response bodies.
+names, account numbers, raw request and response bodies. The lens, §6, names
+the language's rendering sites: the places a whole value becomes a string
+without anyone writing a formatter.
 
 **Ask, per type:**
 
-- Can it be rendered? A derived `Debug`, a `Display`, a `{e:?}` on an error
-  path, an `anyhow` wrapper around a response body, a log line with `{err}`.
-- Can it be passed where it does not belong? A bare `String` payload accepts
-  any `&str` parameter, including a storage key or a metric label.
+- Can it be rendered? A derived or auto-generated string form, a wrapped
+  error that carries a response body, a log line that formats the whole
+  value or the whole error.
+- Can it be passed where it does not belong? A payload typed as the
+  language's plain string accepts any string, including a storage key or a
+  metric label.
 - Where is the redaction test, and does this type have one?
 
-**Output:** a table of type, location, and whether `Debug` redacts. Every
-type in the class gets a row, including the ones that pass.
+**Output:** a table of type, location, and whether its rendering redacts.
+Every type in the class gets a row, including the ones that pass.
 
-**Finding shape:** `derive(Debug)` two lines under a comment saying never to
-log the fields; the one PHI payload that is a bare `String` while its siblings
-are newtypes.
+**Finding shape:** an auto-generated string form two lines under a comment
+saying never to log the fields; the one PHI payload that is a plain string
+while its siblings are wrapped types.
 
 ## 7. Promises
 
-**Instances:** every sentence that tells a reader what the system does. That
+**Mechanism:** every sentence that tells a reader what the system does. That
 means README guarantees and "consequences" lists, runbook steps and the
 observations they expect, alert descriptions and annotations, integration
 contracts with callers, doc comments on public behaviour, and decisions
 recorded in ADRs and closed issues. Grep the docs for `always`, `never`,
 `within`, `guarantee`, the outcome words the service uses (`fails open`,
-`sheds`, `retries`), and each runbook's "you should see".
+`sheds`, `retries`), and each runbook's "you should see". The lens, §7,
+adds the language's doc-comment and contract conventions.
 
 **Ask, per promise:**
 
@@ -150,10 +167,11 @@ unreachable.
 
 ## 8. Invent one
 
-The seven above are the mechanisms most Rust services share. Each project has
+The seven above are the mechanisms most services share, in any language. Each project has
 one more: the mechanism its docs are proudest of, or most worried about. Read
 the repo's ADRs and agent docs for it, then write the eighth probe in the same
 shape (instances, questions, finding shape) and run it. Its instances are call
 sites you can grep: the calls that feed a liveness clock, every error an
-acquire can return. A probe whose instances are the project's goals restates
+acquire can return, every background thread that needs a per-request context
+the framework only sets on request threads. A probe whose instances are the project's goals restates
 §6 and §7. Name it in the review so the next reviewer inherits it.
