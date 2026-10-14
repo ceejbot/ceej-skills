@@ -159,6 +159,10 @@ adds the language's doc-comment and contract conventions.
   runbook), and what do they do when it is false?
 - Where code and promise disagree, which one is right? The disagreement is the
   finding; the fix is whichever side was wrong.
+- Has reality tested it? For an alert rule: the alert state series over the
+  last week, and whether each firing was the condition the annotation
+  describes. For a runbook: whether its first check would have explained the
+  last real event. A promise that fired on something else is a finding.
 
 **Finding shape:** a runbook lists a cause that the classifier routes
 somewhere else; an alert says "sustained" over an expression that fires on one

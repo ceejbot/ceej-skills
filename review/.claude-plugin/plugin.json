@@ -1,7 +1,7 @@
 {
 	"name": "review",
 	"version": "0.13.0",
-	"description": "Holistic project review for Rust, Scala, Go, Python, and TypeScript with per-language lenses, change-set review for Rust, plus application-security and Rust-specific security reviews",
+	"description": "Holistic project review: review-rust-project for Rust, review-project with per-language lenses for Scala, Go, Python, and TypeScript; change-set review for Rust; application-security and Rust-specific security reviews",
 	"author": {
 		"name": "ceej",
 		"url": "https://blog.ceejbot.com"

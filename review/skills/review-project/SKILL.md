@@ -1,6 +1,6 @@
 ---
 name: review-project
-description: Use when the user asks for a holistic review of a project or of one internal system inside a monorepo — "review the project", "is this codebase healthy", "find bugs in the entities system", "audit the database access layer", "audit before sharing", or a periodic checkpoint — in Rust, Scala, Go, Python, or TypeScript. Scopes by named system, loads the language's lens, and reports verified findings ranked by production impact.
+description: Use when the user asks for a holistic review of a Scala, Go, Python, or TypeScript project, or of one internal system inside a monorepo — "review the project", "is this codebase healthy", "find bugs in the entities system", "audit the database access layer", "audit before sharing", or a periodic checkpoint. In a Rust project use review-rust-project instead. Scopes by named system, loads the language's lens, and reports verified findings ranked by production impact.
 ---
 
 # Project Review
@@ -13,7 +13,9 @@ in [`PROBES.md`](../../PROBES.md); and the **lens** for the language under
 review, in [`lenses/`](../../lenses/), which says where the probes' instances
 live, what the toolchain already proves, and which properties the language
 adds. The output is a ranked set of findings, each at a file:line, each with
-an impact statement, each verified before it is ranked.
+an impact statement, each verified before it is ranked. Rust has a lens here
+for `review-rust-change`; the holistic Rust review is `review-rust-project`
+until this skill matches it finding for finding.
 
 **Core principle:** every finding cites a file and a reason. "The architecture
 could be cleaner" is not a finding; "`src/lib.rs:42` re-exports
@@ -51,18 +53,21 @@ no witness in the irreversible class or at a parse boundary is a finding.
      runs the tests and what that recipe skips, and what the project itself
      calls irreversible (PHI, credentials, money, audit).
    - **Actors, deployment, production values.** Who calls it, who operates
-     it, who gets paged by it, who deploys it. Whether it serves live traffic:
-     telemetry when you can reach it, otherwise ask the user, or record
-     "unknown". The timeouts, pool sizes, and log level, read from the chart
-     or deployment config.
+     it, who gets paged by it, who deploys it. Whether it serves live traffic
+     and **which version each environment runs**, from a build-info metric or
+     the deployed chart's image tag: telemetry when you can reach it,
+     otherwise ask the user, or record "unknown". A checkout at HEAD is not
+     what production runs. The timeouts, pool sizes, and log level, read from
+     the chart or deployment config.
 
    Priority depends on all of these.
-2. **Tooling.** Run the gates the lens's *Tooling gates* section names,
-   through the project's own recipes first and then the gaps the recipes
-   leave (the doctest a nextest recipe skips, the race detector a plain `go
-   test` skips, the type checker a Python project runs non-strict). Scope
-   them to the modules in scope. Done when every gate has a result in a table,
-   or a "not run: reason" line.
+2. **Tooling.** Copy the lens's *Tooling gates* list into the results table
+   first, one row per gate, then run each row: the project's own recipes
+   first, then the gaps the recipes leave (the doctest a nextest recipe
+   skips, the race detector a plain `go test` skips, the type checker a
+   Python project runs non-strict). Scope them to the modules in scope. Done
+   when every gate the lens names has a result or a "not run: reason" line;
+   a table that lists only the gates you chose to run is not done.
 3. **Sweep.** Partition the scope by the lens's *Partition unit* and sweep
    each partition against every section of `HYGIENE.md` General and the
    lens's *Hygiene* section, plus one cross-cutting sweep for the irreversible
@@ -83,8 +88,11 @@ no witness in the irreversible class or at a parse boundary is a finding.
    transport, a paused clock) or trace its trigger to a real caller.
    - Reproduce under the production values from Orient, and state them in the
      finding. A repro under other values proves the code, not the consequence.
-   - For a claim that something is broken, check whether it has run since:
-     CI history, release history, telemetry.
+   - For a claim that something is broken, check whether it has run since,
+     in three places: CI and release history; the alert state series
+     (`ALERTS` or its equivalent) for every rule in scope over the last week,
+     with the events behind each firing; and the log lines the runbooks tell
+     an operator to search for. One metric query is not telemetry.
    - A finding that was traced but not run says so in its impact line.
 
    Findings that fail the re-read land under **Demoted after verification**,
