@@ -14,11 +14,13 @@ language file under `lenses/` lists, per probe number, the grep hints and the
 consequence that language attaches to the mechanism. A probe finding goes
 through the review's verify step like any other.
 
-One question rides along with every probe, in every language: **where is the
-witness?** A type, a lint, or a test that would fail if the answer changed.
-"None" on an instance in the irreversible class or at a parse boundary is a
-finding on its own, before the probe's own questions are asked. The lens's
-evidence model says which witnesses the language can offer.
+One more question rides along: **where is the witness?** A type, a lint, or
+a test that would fail if the answer changed. "None" on an instance in the
+irreversible class or at a parse boundary is a finding on its own, before
+the probe's own questions are asked. The lens's evidence model says which
+witnesses the language can offer and where the question is asked: of every
+instance where the type checker is advisory; at the irreversible class and
+the parse boundaries where the compiler is the witness.
 
 Each probe run leaves a **ledger** line in the review: instances found,
 instances accounted for, findings. `§1 Bounds: 9 instances, 9 accounted,
@@ -146,10 +148,13 @@ while its siblings are wrapped types.
 means README guarantees and "consequences" lists, runbook steps and the
 observations they expect, alert descriptions and annotations, integration
 contracts with callers, doc comments on public behaviour, and decisions
-recorded in ADRs and closed issues. Grep the docs for `always`, `never`,
-`within`, `guarantee`, the outcome words the service uses (`fails open`,
-`sheds`, `retries`), and each runbook's "you should see". The lens, §7,
-adds the language's doc-comment and contract conventions.
+recorded in ADRs and closed issues. It also means every setup artifact the
+docs tell an operator to apply: a schema or migration file, a compose file,
+a chart; applying it is the promise that the system then works. Grep the
+docs for `always`, `never`, `within`, `guarantee`, the outcome words the
+service uses (`fails open`, `sheds`, `retries`), and each runbook's "you
+should see". The lens, §7, adds the language's doc-comment and contract
+conventions.
 
 **Ask, per promise:**
 

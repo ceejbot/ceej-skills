@@ -31,13 +31,15 @@ project that does not run them has only its tests.
 | Panic-freedom on attacker input           | fuzz target (`go test -fuzz`)                     | index arithmetic on request bytes                                 |
 | Doc examples still compile                | `Example*` functions, run by `go test`            | code blocks in README only                                        |
 
+**Where the witness question is asked:** of every instance, in every probe.
+
 ## Partition unit
 
 The package, grouped by import graph: `cmd/*` entry points, their internal
 packages, shared `pkg/` libraries. A multi-module workspace partitions by
 module first.
 
-## Tooling gates
+## Tooling checks
 
 - `gofmt -l .` or `goimports -l .`; `go vet ./...`.
 - `staticcheck ./...`, `errcheck ./...`, and `golangci-lint run` when the repo

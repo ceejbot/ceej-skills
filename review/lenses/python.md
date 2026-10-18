@@ -36,6 +36,8 @@ not over the tree.
 | Behaviour under a timeout                 | a test with a fake clock or a slow fake                   | none; §1 carries the question                                     |
 | Doc examples still run                    | `doctest` or `pytest --doctest-modules`                   | code blocks in README only                                        |
 
+**Where the witness question is asked:** of every instance, in every probe.
+
 ## Partition unit
 
 The package (a directory with `__init__.py` or a namespace package), grouped
@@ -43,11 +45,11 @@ by import graph: entry points (`__main__`, CLI commands, app factories),
 their internal packages, shared libraries. A monorepo of several
 `pyproject.toml` files partitions by distribution first.
 
-## Tooling gates
+## Tooling checks
 
 - `ruff check` and `ruff format --check` (or `black --check` and `flake8`
   where the repo still uses them).
-- The type checker **as a finding source, not a gate**: `mypy --strict` or
+- The type checker **as a finding source, not a check**: `mypy --strict` or
   `pyright --strict` on the scope, and read the errors. A project that runs
   the checker non-strict has told you which properties it has chosen not to
   witness; list them.

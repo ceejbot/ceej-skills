@@ -38,10 +38,12 @@ are not. Java interop punches holes the type system cannot see.
 | Absence of null                           | `Option` at the Java boundary, by convention              | a Java getter's result used directly; `.get` on an `Option`      |
 | Exceptions handled                        | none from the compiler; `Try`/`Either` by convention      | a `Future` or `Try` whose failure is never read                  |
 | Thread safety of shared state             | none; `synchronized`, `@volatile`, `java.util.concurrent` by hand | a `var` or mutable collection reached from a pool thread  |
-| Collection semantics across 2.12/2.13     | the crossbuild gate with warnings fatal                   | `Predef.Seq`, `asScala` results, `Stream` in a module not yet on the ready list |
+| Collection semantics across 2.12/2.13     | the crossbuild check with warnings fatal                   | `Predef.Seq`, `asScala` results, `Stream` in a module not yet on the ready list |
 | Input shape at an edge                    | a case class with a parser, or a test posting malformed input | a `Map[String, Any]` or `JsonNode` past the edge             |
 | Secret never rendered                     | a redaction test, or a hand-written `toString`            | a case class holding the secret with its generated `toString`    |
 | Per-request context on background threads | a test that runs the handler off-request                 | a scheduler callback that reaches a thread-local                 |
+
+**Where the witness question is asked:** of every instance, in every probe.
 
 ## Partition unit
 
@@ -51,7 +53,7 @@ and key classes; otherwise grep the system's word across module names and
 package paths. Spark jobs partition separately from the services that submit
 them, because the probes answer differently on an executor.
 
-## Tooling gates
+## Tooling checks
 
 - Formatting and lint: `scalafmt --check` and `scalafix --check` through the
   repo's recipes (`just fmt`, `just lint`, or the sbt/Maven plugin).

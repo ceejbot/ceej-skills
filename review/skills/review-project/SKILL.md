@@ -13,9 +13,7 @@ in [`PROBES.md`](../../PROBES.md); and the **lens** for the language under
 review, in [`lenses/`](../../lenses/), which says where the probes' instances
 live, what the toolchain already proves, and which properties the language
 adds. The output is a ranked set of findings, each at a file:line, each with
-an impact statement, each verified before it is ranked. Rust has a lens here
-for `review-rust-change`; the holistic Rust review is `review-rust-project`
-until this skill matches it finding for finding.
+an impact statement, each verified before it is ranked.
 
 **Core principle:** every finding cites a file and a reason. "The architecture
 could be cleaner" is not a finding; "`src/lib.rs:42` re-exports
@@ -25,49 +23,45 @@ lets callers stop reaching" is.
 **The bar is one bar, read through the lens.** Every property the review
 cares about needs a witness: a type, a lint, or a test that fails when the
 property stops holding. The lens's evidence model says which witnesses the
-language can offer. In Rust the compiler witnesses most of them; in Python
-and TypeScript the type checker is advisory and the witness for a boundary
-property is a runtime validator or a test. The standard does not drop for a
-dynamic language; the location of the evidence moves, and an instance with
+language can offer and where the review asks for one: of every instance where
+the type checker is advisory, at the irreversible class and the parse
+boundaries where the compiler is the witness. The standard does not drop for
+a dynamic language; the location of the evidence moves, and an instance with
 no witness in the irreversible class or at a parse boundary is a finding.
 
 ## How to run
 
-1. **Orient.** Four sub-steps, in order.
-   - **Detect.** Match the repo against each lens's *Detect* section and load
-     `../../lenses/<lang>.md`. Done when you can state in one sentence the
-     language, the dialect the lens asks about (effect system or plain JVM,
-     asyncio or threads, Node or browser), and the build system. A monorepo
-     that mixes languages gets one sentence per language in scope.
-   - **Scope.** The whole project, or a **named system** the user gave:
-     "the entities system", "the database access layer". Resolve the name to
-     modules through the repo's own doc for it: `docs/`, `CLAUDE.md` or
-     `AGENTS.md`, ADRs, a design doc that names the system and lists its
-     modules and key classes. Without such a doc, grep the system's word
-     across module names, package paths, and class names. Done when scope
-     is a list of modules with their entry points and the doc that describes
-     the system, or the sentence "whole project, N modules".
-   - **Read the house rules.** The repo's `CLAUDE.md` / `AGENTS.md`, its ADRs
-     or design docs, its justfile or CI config. Done when you can state in one
-     sentence each: the module map and entry points of the scope, which recipe
-     runs the tests and what that recipe skips, and what the project itself
-     calls irreversible (PHI, credentials, money, audit).
-   - **Actors, deployment, production values.** Who calls it, who operates
-     it, who gets paged by it, who deploys it. Whether it serves live traffic
-     and **which version each environment runs**, from a build-info metric or
-     the deployed chart's image tag: telemetry when you can reach it,
-     otherwise ask the user, or record "unknown". A checkout at HEAD is not
-     what production runs. The timeouts, pool sizes, and log level, read from
-     the chart or deployment config.
+1. **Orient.** Match the repo against each lens's *Detect* section and load
+   `../../lenses/<lang>.md`. Read the repo's `CLAUDE.md` / `AGENTS.md`, its
+   ADRs or design docs, and its justfile or CI config. Done when you can
+   state in one sentence each: the language, the dialect the lens asks about
+   (effect system or plain JVM, asyncio or threads, Node or browser), and the
+   build system; the module map and entry points; which recipe runs the tests
+   and what that recipe skips; and what the project itself calls irreversible
+   (PHI, credentials, money, audit). A monorepo that mixes languages gets one
+   language sentence per language in scope. Then write down four more things:
+   - **Scope**: "whole project, N modules", unless the user named a system
+     inside it ("the entities system", "the database access layer"); a named
+     system resolves to modules through [`SCOPING.md`](./SCOPING.md).
+   - **Actors**: who calls it, who operates it, who gets paged by it, who
+     deploys it.
+   - **Deployment state**: whether it serves live traffic, and which version
+     each environment runs, from a build-info metric or the deployed chart's
+     image tag. Telemetry when you can reach it; otherwise ask the user, or
+     record "unknown". A checkout at HEAD is not what production runs.
+   - **Production values**: the timeouts, pool sizes, and log level, read
+     from the chart or deployment config.
 
    Priority depends on all of these.
-2. **Tooling.** Copy the lens's *Tooling gates* list into the results table
-   first, one row per gate, then run each row: the project's own recipes
-   first, then the gaps the recipes leave (the doctest a nextest recipe
-   skips, the race detector a plain `go test` skips, the type checker a
-   Python project runs non-strict). Scope them to the modules in scope. Done
-   when every gate the lens names has a result or a "not run: reason" line;
-   a table that lists only the gates you chose to run is not done.
+2. **Tooling.** Seed the results table before running anything, one row per
+   check, from two sources: every checking recipe in the justfile, Makefile,
+   or CI config (format, lint, test, audit, docs, whatever the project runs on
+   itself), and the lens's *Tooling checks* list. Then run each row: the
+   project's own recipes first, then the gaps the recipes leave (the doctest a
+   nextest recipe skips, the race detector a plain `go test` skips, the type
+   checker a Python project runs non-strict). Scope them to the modules in
+   scope. Done when every row has a result or a "not run: reason" line; a
+   table that lists only the checks you chose to run is not done.
 3. **Sweep.** Partition the scope by the lens's *Partition unit* and sweep
    each partition against every section of `HYGIENE.md` General and the
    lens's *Hygiene* section, plus one cross-cutting sweep for the irreversible
@@ -75,15 +69,18 @@ no witness in the irreversible class or at a parse boundary is a finding.
    §6 rendering sites. Fan out to subagents when the host provides them. Done
    when every partition has been swept and every type in the irreversible
    class has a row.
-4. **Probe.** Run all eight probes in `PROBES.md` across the scope, taking
-   each probe's instances from the lens's matching § and asking the witness
-   question of each. §4 Boundary symmetry and §7 Promises reach one hop out
-   of the scope to its callers: a client's symmetry and a system's promises
-   are judged from outside it. The eighth probe is the one you invent from
-   the repo's own docs; the lens may name a candidate. Done when every probe
-   has a ledger line and every instance is accounted for: a finding at a
-   file:line, or a reason it is fine.
-5. **Verify.** Re-read every candidate top finding at its file:line. For at
+4. **Compose the probe sheet.** Write one scratch file with eight sections.
+   For each of the seven probes in `PROBES.md`, copy its questions and finding
+   shape, then the lens's matching § beneath them: the grep hints and the
+   consequence the language attaches to the mechanism. The eighth is the one
+   you invent from the repo's own docs; `PROBES.md` §8 says how, and the lens
+   may name a candidate. Done when every section carries grep hints you can
+   run as written.
+5. **Probe.** Run all eight probes from the sheet across the scope, asking
+   the witness question where the lens's evidence model says to. Done when
+   every probe has a ledger line and every instance is accounted for: a
+   finding at a file:line, or a reason it is fine.
+6. **Verify.** Re-read every candidate top finding at its file:line. For at
    least one, reproduce it with the lens's test runner (a failing test, a fake
    transport, a paused clock) or trace its trigger to a real caller.
    - Reproduce under the production values from Orient, and state them in the
@@ -98,7 +95,7 @@ no witness in the irreversible class or at a parse boundary is a finding.
    Findings that fail the re-read land under **Demoted after verification**,
    with the reason. Done when every issue in the Summary has survived a
    re-read.
-6. **Summarize.** Strengths, issues in priority order with impact, witness
+7. **Summarize.** Strengths, issues in priority order with impact, witness
    gaps, demoted findings, one recommended next action. Priority follows
    impact on the actors Orient named, given the deployment state, not the
    section a finding came from: a probe finding, a hygiene finding, and a
@@ -170,8 +167,4 @@ the list and the work proceeds together from there.
   feeding a missing retry), say so: one fix pattern beats three patches, and
   the interaction is often the real P1.
 - Name what the review did not exercise: environment-gated tests, live-service
-  paths, a module you ran out of time on, the hop-out callers you did not
-  read.
-- In a monorepo, a finding in a module outside the scope is reported in one
-  line under Issues' tail with "out of scope" and left for that system's
-  review.
+  paths, a module you ran out of time on.

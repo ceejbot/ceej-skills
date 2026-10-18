@@ -31,13 +31,18 @@ to what the compiler cannot see.
 | Panic-freedom on attacker input           | fuzz target or property test                   | `unwrap()` on parsed input                               |
 | Doc examples still compile                | `cargo test --doc`                             | a nextest-only recipe                                    |
 
+**Where the witness question is asked:** at §6, and wherever untrusted
+input crosses into the code: a response body in §4, a config parse in §5,
+the edge *Types do work* names. Elsewhere the compiler answers it, and the
+row's "unwitnessed" shape is the finding instead.
+
 ## Partition unit
 
 The crate group: binaries, their direct library crates, shared libraries,
 test and bench crates. A workspace of one crate partitions by top-level
 module.
 
-## Tooling gates
+## Tooling checks
 
 Run through the project's own recipes first, then the gaps the recipes leave:
 
@@ -103,9 +108,11 @@ accepts any `&str`, including a storage key or a metric label.
 ### §7 Promises
 
 README guarantees, runbook steps and the observations they expect, alert
-annotations, doc comments on `pub` items, ADRs and closed issues. Grep the
-docs for `always`, `never`, `within`, `guarantee`, and the service's outcome
-words (`fails open`, `sheds`, `retries`).
+annotations, doc comments on `pub` items, ADRs and closed issues. Setup
+artifacts: `docs/**/*.sql`, `migrations/`, `docker-compose.yml`, a Helm
+chart; read each against the SQL and config the code actually requires.
+Grep the docs for `always`, `never`, `within`, `guarantee`, and the
+service's outcome words (`fails open`, `sheds`, `retries`).
 
 ## Hygiene
 

@@ -32,7 +32,7 @@ secrets) lives in `PROBES.md`, not here.
 - Public items carry doc comments that explain _why_ and _when_.
 - Doc examples compile or run, by whatever the lens names as the doc test.
 - Agent docs (`CLAUDE.md`, `AGENTS.md`, `docs/agents/`) describe the tree as it
-  is: file names, recipes, gates, env vars that exist. ADR numbering is
+  is: file names, recipes, checks, env vars that exist. ADR numbering is
   contiguous or explained; ADR status matches shipped code; citations point at
   the ADR they mean.
 

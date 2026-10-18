@@ -32,15 +32,17 @@ property with no runtime witness is unwitnessed**, whatever the type says.
 | Behaviour under a timeout                 | a test with fake timers or `AbortSignal`                  | none; §1 carries the question                                     |
 | Doc examples still compile                | `typedoc` with examples checked, or example tests         | code blocks in README only                                        |
 
+**Where the witness question is asked:** of every instance, in every probe.
+
 ## Partition unit
 
 The workspace package, then the directory under `src/` by import graph:
 entry points (server, CLI, pages), their internal modules, shared packages.
 
-## Tooling gates
+## Tooling checks
 
 - `tsc --noEmit` with the project's config; if `strict` is off, say so in the
-  gates table: the project has chosen not to witness nullability.
+  checks table: the project has chosen not to witness nullability.
 - `eslint` with `@typescript-eslint/no-floating-promises`,
   `no-misused-promises`, and `no-explicit-any` reported (read the config for
   what is disabled).
