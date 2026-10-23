@@ -1,6 +1,6 @@
 {
 	"name": "enotime",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "ENOTIME draws an Oblique Strategy at session start in Claude Code and provides a cross-host skill for drawing one on demand",
 	"author": {
 		"name": "ceej",
